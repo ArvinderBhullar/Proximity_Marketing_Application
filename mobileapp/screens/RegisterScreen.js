@@ -55,11 +55,7 @@ const RegisterScreen = () => {
     <ScrollView>
       <View style={styles.container}>
         <View style={styles.content}>
-          <Image
-            source={require('../assets/freepik_logo.jpg')}
-            style={styles.image}
-          />
-          <Text style={styles.title}>Register</Text>
+          <Text style={styles.title}>Welcome</Text>
           <TextInput
             style={styles.input}
             placeholder="First Name"

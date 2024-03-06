@@ -1,3 +1,4 @@
+import 'react-native-gesture-handler';
 import {StyleSheet, Text, View} from 'react-native';
 import {NavigationContainer} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
@@ -5,19 +6,22 @@ import LoginScreen from './screens/LoginScreen';
 import HomeScreen from './screens/HomeScreen';
 import RegisterScreen from './screens/RegisterScreen';
 import React, {useEffect, useState} from 'react';
-// import {getAuth, onAuthStateChanged} from 'firebase/auth';
-import auth from '@react-native-firebase/auth';
-// import {app} from './services/config';
+import {getAuth, onAuthStateChanged} from 'firebase/auth';
+// import auth from '@react-native-firebase/auth';
+import {firebaseConfig} from './services/Config';
+import {initializeApp} from 'firebase/app';
+import {getFirestore} from 'firebase/firestore';
 
 export default function App() {
   const Stack = createNativeStackNavigator();
-  // const auth = getAuth(app);
   // Set an initializing state whilst Firebase connects
   const [initializing, setInitializing] = useState(true);
   const [user, setUser] = useState();
-
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  const db = getFirestore(app);
   // Handle user state changes
-  function onAuthStateChanged(user: any) {
+  function onAuthStateChangedHandler(user: any) {
     setUser(user);
     if (initializing) {
       setInitializing(false);
@@ -25,8 +29,8 @@ export default function App() {
   }
 
   useEffect(() => {
-    const subscriber = auth().onAuthStateChanged(onAuthStateChanged);
-    return subscriber; // unsubscribe on unmount
+    const unsubscribe = onAuthStateChanged(auth, onAuthStateChangedHandler);
+    return unsubscribe;
   }, []);
 
   if (initializing) {

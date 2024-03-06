@@ -40,15 +40,15 @@ const LoginScreen = () => {
     }
   };
 
+  const handleSignup = async () => {
+    navigation.navigate('Register');
+  };
+
   return (
     <ScrollView>
       <View style={styles.container}>
         <View style={styles.content}>
-          <Image
-            source={require('../assets/freepik_logo.jpg')}
-            style={styles.image}
-          />
-          <Text style={styles.title}>Login</Text>
+          <Text style={styles.title}>Welcome</Text>
           <TextInput
             style={styles.input}
             placeholder="Email"
@@ -67,6 +67,9 @@ const LoginScreen = () => {
           />
           <TouchableOpacity style={styles.button} onPress={handleSignin}>
             <Text style={styles.button}> Login </Text>
+          </TouchableOpacity>
+          <TouchableOpacity onPress={handleSignup}>
+            <Text> Don't have an account? Sign-up here. </Text>
           </TouchableOpacity>
         </View>
       </View>

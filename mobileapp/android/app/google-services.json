@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "60271493425",
+    "project_id": "closetify-f83ec",
+    "storage_bucket": "closetify-f83ec.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:60271493425:android:98c915b6f89501ac787010",
+        "android_client_info": {
+          "package_name": "com.mobileapp"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD3srqkiL_10fou5UEcdSOJewua5Hh3BnY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
