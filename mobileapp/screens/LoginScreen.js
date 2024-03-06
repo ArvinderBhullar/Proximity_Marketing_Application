@@ -10,6 +10,7 @@ import React, {useState} from 'react';
 import {getAuth, signInWithEmailAndPassword} from 'firebase/auth';
 import styles from '../cssStyles/styles';
 import {useNavigation} from '@react-navigation/native';
+import RegisterScreen from './RegisterScreen';
 // import {saveUserData} from '../services/firebaseDatabase';
 
 const LoginScreen = () => {
@@ -27,7 +28,7 @@ const LoginScreen = () => {
           if (user) {
             const id = user.uid;
             const name = user.displayName;
-            navigation.navigate('Home');
+            // navigation.navigate('Home');
           }
         })
         .catch(error => {
@@ -41,14 +42,14 @@ const LoginScreen = () => {
   };
 
   const handleSignup = async () => {
-    navigation.navigate('Register');
+    navigation.navigate(RegisterScreen);
   };
 
   return (
     <ScrollView>
       <View style={styles.container}>
         <View style={styles.content}>
-          <Text style={styles.title}>Welcome</Text>
+          <Text style={styles.title}>Closetify!</Text>
           <TextInput
             style={styles.input}
             placeholder="Email"
@@ -69,7 +70,9 @@ const LoginScreen = () => {
             <Text style={styles.button}> Login </Text>
           </TouchableOpacity>
           <TouchableOpacity onPress={handleSignup}>
-            <Text> Don't have an account? Sign-up here. </Text>
+            <Text style={styles.button}>
+              Don't have an account? Sign-up here.
+            </Text>
           </TouchableOpacity>
         </View>
       </View>

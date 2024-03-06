@@ -43,7 +43,7 @@ export default function App() {
 
   return (
     <NavigationContainer>
-      <Stack.Navigator>
+      <Stack.Navigator screenOptions={{headerShown: false}}>
         {user ? (
           <Stack.Screen name="Home" component={HomeScreen} />
         ) : (

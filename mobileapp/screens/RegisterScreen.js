@@ -10,6 +10,7 @@ import React, {useState} from 'react';
 import {getAuth, createUserWithEmailAndPassword} from 'firebase/auth';
 import styles from '../cssStyles/styles';
 import {useNavigation} from '@react-navigation/native';
+import LoginScreen from './LoginScreen';
 // import {saveUserData} from '../services/firebaseDatabase';
 
 const RegisterScreen = () => {
@@ -29,7 +30,7 @@ const RegisterScreen = () => {
           if (user) {
             const id = user.uid;
             const name = user.displayName;
-            navigation.navigate('Home');
+            // navigation.navigate('Home');
           }
         })
         .catch(error => {
@@ -48,7 +49,7 @@ const RegisterScreen = () => {
   };
 
   const handleLogin = async () => {
-    navigation.navigate('Login');
+    navigation.navigate(LoginScreen);
   };
 
   return (
@@ -89,7 +90,7 @@ const RegisterScreen = () => {
           <TouchableOpacity style={styles.button} onPress={handleSignup}>
             <Text style={styles.button}> Register </Text>
           </TouchableOpacity>
-          <TouchableOpacity onPress={handleLogin}>
+          <TouchableOpacity style={styles.button} onPress={handleLogin}>
             <Text> Already have an account? Login here. </Text>
           </TouchableOpacity>
         </View>

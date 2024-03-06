@@ -9,10 +9,6 @@ const styles = StyleSheet.create({
   title: {
     marginTop: 16,
     paddingVertical: 8,
-    borderWidth: 4,
-    borderColor: '#20232a',
-    borderRadius: 6,
-    backgroundColor: '#61dafb',
     color: '#20232a',
     textAlign: 'center',
     fontSize: 30,
@@ -20,8 +16,10 @@ const styles = StyleSheet.create({
   },
   button: {
     alignItems: 'center',
-    backgroundColor: '#DDDDDD',
+    backgroundColor: '#ffffff',
     padding: 10,
+    margin: 5,
+    color: '#000000',
   },
 });
 
