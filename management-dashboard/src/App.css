@@ -7,15 +7,15 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  height: 100vh;
+  height: fit-content;
 }
 
 .titleContainer {
   display: flex;
   flex-direction: column;
-  font-size: 64px;
+  font-size: 32px;
   font-weight: bolder;
-  align-items: center;
+  align-items: start;
   justify-content: center;
 }
 
@@ -51,9 +51,9 @@
   justify-content: center;
 }
 
-.inputContainer > .errorLabel {
+.errorLabel {
   color: red;
-  font-size: 12px;
+  font-size: 15px;
 }
 
 .inputBox {

@@ -1,6 +1,6 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
-import {  createUserWithEmailAndPassword  } from 'firebase/auth';
+import {createUserWithEmailAndPassword, onAuthStateChanged} from 'firebase/auth';
 import { auth } from '../firebase';
 
 const Register = () => {
@@ -8,6 +8,7 @@ const Register = () => {
 
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('');
+    const [registrationError, setRegistrationError] = useState('');
 
     const onSubmit = async (e) => {
         e.preventDefault()
@@ -17,18 +18,25 @@ const Register = () => {
                 // Signed in
                 const user = userCredential.user;
                 console.log(user);
-                navigate("/home")
+                navigate("/")
                 // ...
             })
             .catch((error) => {
                 const errorCode = error.code;
                 const errorMessage = error.message;
                 console.log(errorCode, errorMessage);
+                setRegistrationError(errorMessage);
                 // ..
             });
-
-
     }
+
+    useEffect(()=>{
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                navigate("/");
+            }
+        });
+    }, [])
 
     return (
         <div className={'mainContainer'}>
@@ -58,6 +66,9 @@ const Register = () => {
                                     className={'inputBox'}
                                 />
                             </div>
+                            <label className={'errorLabel'}>
+                                {registrationError}
+                            </label>
                             <br/>
                             <button
                                 type="submit"
@@ -69,7 +80,7 @@ const Register = () => {
 
                         <p>
                             Already have an account?{' '}
-                            <NavLink to="/" >
+                            <NavLink to="/login" >
                                 Sign in
                             </NavLink>
                         </p>
