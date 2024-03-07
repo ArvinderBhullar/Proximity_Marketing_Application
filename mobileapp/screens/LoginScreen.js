@@ -10,7 +10,6 @@ import React, {useState} from 'react';
 import {getAuth, signInWithEmailAndPassword} from 'firebase/auth';
 import styles from '../cssStyles/styles';
 import {useNavigation} from '@react-navigation/native';
-import RegisterScreen from './RegisterScreen';
 // import {saveUserData} from '../services/firebaseDatabase';
 
 const LoginScreen = () => {
@@ -42,7 +41,7 @@ const LoginScreen = () => {
   };
 
   const handleSignup = async () => {
-    navigation.navigate(RegisterScreen);
+    navigation.navigate('Register');
   };
 
   return (

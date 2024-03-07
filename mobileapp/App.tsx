@@ -40,7 +40,6 @@ export default function App() {
       </View>
     );
   }
-
   return (
     <NavigationContainer>
       <Stack.Navigator screenOptions={{headerShown: false}}>

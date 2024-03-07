@@ -8,11 +8,12 @@ import {
 } from 'react-native';
 import {useNavigation} from '@react-navigation/native';
 import styles from '../cssStyles/styles';
+import {auth} from '../services/Config';
 import {getAuth, signOut, onAuthStateChanged} from 'firebase/auth';
 
 const HomeScreen = () => {
   const navigation = useNavigation();
-  const auth = getAuth();
+  // const auth = getAuth();
   var displayName = '';
   var uid = '';
 
