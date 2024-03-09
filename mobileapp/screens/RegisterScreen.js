@@ -10,7 +10,6 @@ import React, {useState} from 'react';
 import {getAuth, createUserWithEmailAndPassword} from 'firebase/auth';
 import styles from '../cssStyles/styles';
 import {useNavigation} from '@react-navigation/native';
-import LoginScreen from './LoginScreen';
 // import {saveUserData} from '../services/firebaseDatabase';
 
 const RegisterScreen = () => {
@@ -48,9 +47,9 @@ const RegisterScreen = () => {
     }
   };
 
-  const handleLogin = async () => {
-    navigation.navigate(LoginScreen);
-  };
+  // const handleLogin = async () => {
+  //   navigation.navigate(LoginScreen);
+  // };
 
   return (
     <ScrollView>
@@ -90,9 +89,9 @@ const RegisterScreen = () => {
           <TouchableOpacity style={styles.button} onPress={handleSignup}>
             <Text style={styles.button}> Register </Text>
           </TouchableOpacity>
-          <TouchableOpacity style={styles.button} onPress={handleLogin}>
-            <Text> Already have an account? Login here. </Text>
-          </TouchableOpacity>
+          {/*<TouchableOpacity style={styles.button} onPress={handleLogin}>*/}
+          {/*  <Text> Already have an account? Login here. </Text>*/}
+          {/*</TouchableOpacity>*/}
         </View>
       </View>
     </ScrollView>
