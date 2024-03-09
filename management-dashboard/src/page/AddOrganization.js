@@ -2,26 +2,46 @@ import React, {useEffect, useState} from 'react';
 import { NavLink, useNavigate } from 'react-router-dom'
 import {onAuthStateChanged, signInWithEmailAndPassword} from "firebase/auth";
 import {auth} from "../firebase";
+import {db} from "../firebase";
+import { collection, addDoc } from "firebase/firestore";
+import { doc, setDoc } from "firebase/firestore";
+// import { getDatabase, ref, set } from "firebase/database";
 
 const AddOrganization = () => {
     const navigate = useNavigate();
     const [storeName, setStoreName] = useState('');
     const [storeCreationError, setStoreCreationError] = useState('');
+    // const database = getDatabase();
+    const {uid} = auth.currentUser;
 
-    const onRegister = (e) => {
+    // async function add_dummy() {
+    //     const res = await database.collection('cities').add({
+    //         name: 'Tokyo',
+    //         country: 'Japan'
+    //     });
+    //
+    //     console.log('Added document with ID: ', res.id);
+    // }
+
+    const onRegister = async (e) => {
         e.preventDefault();
-        // signInWithEmailAndPassword(auth, email, password)
-        //     .then((userCredential) => {
-        //         // Signed in
-        //         const user = userCredential.user;
-        //         navigate("/")
-        //         console.log(user);
+        console.log(storeName);
+
+        const data = {
+            storeName: storeName,
+        };
+        await setDoc(doc(db, "Organization", uid), data);
+
+        // addDoc(collection(db, "cities"), {
+        //     name: 'Los Angeles',
+        //     state: 'CA',
+        //     country: 'USA'
+        // })
+        //     .then(() => {
+        //         alert('Message submitted 👍' );
         //     })
         //     .catch((error) => {
-        //         const errorCode = error.code;
-        //         const errorMessage = error.message;
-        //         console.log(errorCode, errorMessage);
-        //         setloginError(errorMessage);
+        //         alert(error.message);
         //     });
     }
 
