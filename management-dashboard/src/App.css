@@ -130,3 +130,35 @@ button {
   cursor: pointer;
 }
 
+.coupon-list {
+  list-style: none;
+  padding: 0;
+  margin: 10px;
+}
+
+.coupon-item {
+  background-color: darkslategray;
+  color: white;
+  font-size: large;
+  border-radius: 8px;
+  margin-bottom: 15px;
+  padding: 12px 24px;
+  display: block;
+  cursor: pointer;
+  justify-content: space-between;
+}
+
+.coupon-title {
+  font-size: 18px;
+  font-weight: bold;
+}
+
+.delete-icon {
+  cursor: pointer;
+  color: #fff;
+  font-size: 20px;
+}
+
+
+
+

@@ -7,13 +7,49 @@ import {db} from "../firebase";
 import {doc, getDoc, setDoc} from "firebase/firestore";
 // import { getDatabase, ref, set } from "firebase/database";
 
-const AddOrganization = () => {
+const Coupons = () => {
     const navigate = useNavigate();
     const [storeName, setStoreName] = useState('');
     const [storeAddress, setStoreAddress] = useState('');
     const [storeCreationError, setStoreCreationError] = useState('');
     // const database = getDatabase();
     const [uid, setuid] = useState('');
+
+    const initialCoupons = [
+        {
+            id: 1,
+            name: 'Coupon 1',
+            description: 'Lorem ipsum dolor sit amet.',
+            beginDate: '2022-01-01',
+            endDate: '2022-12-31',
+        },
+        {
+            id: 2,
+            name: 'Coupon 2',
+            description: 'Lorem ipsum dolor sit amet.',
+            beginDate: '2022-01-01',
+            endDate: '2022-12-31',
+        },
+    ];
+    const [coupons, setCoupons] = useState(initialCoupons);
+    const renderCoupons = () => {
+        return coupons.map((coupon) => (
+            <li key={coupon.id} className="coupon-item">
+                <div onClick={() => handleEditCoupon(coupon)}>
+                    <div className="coupon-title">{coupon.name}</div>
+                    <div>Description: {coupon.description}</div>
+                    <div>Begin Date: {coupon.beginDate}</div>
+                    <div>End Date: {coupon.endDate}</div>
+                </div>
+            </li>
+        ));
+    };
+
+    const handleEditCoupon = (coupon) => {
+        // You can implement the logic to open the pop-up for editing with the selected coupon data
+        // Example: setEditCoupon(coupon); openPopup();
+        alert('Coupon clicked 👍' );
+    };
 
     const readOrganizationData = async (uid) => {
 
@@ -85,9 +121,19 @@ const AddOrganization = () => {
     return(
         <div className={'mainContainer'}>
             <div className={'titleContainer'}>
-                <div>Add/Edit Organization</div>
+                <div>Add/Edit Coupons</div>
             </div>
             <br/>
+            <ul className="coupon-list">
+                {renderCoupons()}
+            </ul>
+            <br/>
+            <button
+                onClick={onRegister}
+                className={'buttonContainer'}
+            >
+                Add Coupons
+            </button>
             <div className={'inputContainer'}>
                 <input
                     id="storeName"
@@ -116,14 +162,8 @@ const AddOrganization = () => {
                 {storeCreationError}
             </label>
             <br/>
-            <button
-                onClick={onRegister}
-                className={'buttonContainer'}
-            >
-                Save changes
-            </button>
         </div>
     )
 }
 
-export default AddOrganization;
+export default Coupons;

@@ -4,6 +4,7 @@ import Register from './page/Register';
 import Login from './page/Login';
 import FloorPlan from "./page/FloorPlan";
 import AddOrganization from "./page/AddOrganization";
+import Coupons from "./page/Coupons";
 import { BrowserRouter as Router} from 'react-router-dom';
 import {Routes, Route} from 'react-router-dom';
 import './App.css'
@@ -19,6 +20,7 @@ function App() {
                     <Route path="/login" element={<Login />} />
                     <Route path="/floorplan" element={<FloorPlan />}/>
                     <Route path="/addorganization" element={<AddOrganization />}/>
+                    <Route path="/coupons" element={<Coupons />}/>
                 </Routes>
             </Router>
         </div>
