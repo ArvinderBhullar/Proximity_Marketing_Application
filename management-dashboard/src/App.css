@@ -137,26 +137,59 @@ button {
 }
 
 .coupon-item {
-  background-color: darkslategray;
+  background-image: linear-gradient(
+          cornflowerblue, black
+  );
   color: white;
-  font-size: large;
-  border-radius: 8px;
-  margin-bottom: 15px;
-  padding: 12px 24px;
+  margin-bottom: 24px;
+  padding: 24px;
   display: block;
   cursor: pointer;
+  border-radius: 8px;
   justify-content: space-between;
 }
 
 .coupon-title {
-  font-size: 18px;
+  font-size: 15px;
+}
+
+.coupon-description {
+  font-size: 24px;
   font-weight: bold;
 }
+
+.coupon-date {
+  font-size: 12px;
+}
+
 
 .delete-icon {
   cursor: pointer;
   color: #fff;
   font-size: 20px;
+}
+
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5); /* Semi-transparent background */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.popup-container {
+  background: #fff;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+  max-width: 600px; /* Adjust the max-width as needed */
+  width: 100%;
+  text-align: left;
+  display: block;
 }
 
 

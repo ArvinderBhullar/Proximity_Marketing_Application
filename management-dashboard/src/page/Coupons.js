@@ -14,19 +14,28 @@ const Coupons = () => {
     const [storeCreationError, setStoreCreationError] = useState('');
     // const database = getDatabase();
     const [uid, setuid] = useState('');
+    const [showPopup, setShowPopup] = useState(false);
+
+    const openPopup = () => {
+        setShowPopup(true);
+    };
+
+    const closePopup = () => {
+        setShowPopup(false);
+    };
 
     const initialCoupons = [
         {
             id: 1,
-            name: 'Coupon 1',
-            description: 'Lorem ipsum dolor sit amet.',
+            name: 'SHALMART',
+            description: '20% off on beans!',
             beginDate: '2022-01-01',
             endDate: '2022-12-31',
         },
         {
             id: 2,
-            name: 'Coupon 2',
-            description: 'Lorem ipsum dolor sit amet.',
+            name: 'SHALMART',
+            description: 'Buy one get one 50% off!',
             beginDate: '2022-01-01',
             endDate: '2022-12-31',
         },
@@ -36,10 +45,13 @@ const Coupons = () => {
         return coupons.map((coupon) => (
             <li key={coupon.id} className="coupon-item">
                 <div onClick={() => handleEditCoupon(coupon)}>
+                    <br/>
                     <div className="coupon-title">{coupon.name}</div>
-                    <div>Description: {coupon.description}</div>
-                    <div>Begin Date: {coupon.beginDate}</div>
-                    <div>End Date: {coupon.endDate}</div>
+                    <br/>
+                    <div className="coupon-description">{coupon.description}</div>
+                    <br/>
+                    <div className="coupon-date">Expires: {coupon.endDate}</div>
+                    <br/>
                 </div>
             </li>
         ));
@@ -77,7 +89,7 @@ const Coupons = () => {
         }
     };
 
-    const onRegister = async (e) => {
+    const onAddCoupon = async (e) => {
         e.preventDefault();
         console.log(storeName);
 
@@ -123,44 +135,81 @@ const Coupons = () => {
             <div className={'titleContainer'}>
                 <div>Add/Edit Coupons</div>
             </div>
+            <button
+                onClick={onAddCoupon}
+                className={'buttonContainer'}
+            >
+                Add Coupons
+            </button>
             <br/>
             <ul className="coupon-list">
                 {renderCoupons()}
             </ul>
             <br/>
-            <button
-                onClick={onRegister}
-                className={'buttonContainer'}
-            >
-                Add Coupons
+            <button className="add-coupon-button" onClick={openPopup}>
+                Add Coupon
             </button>
-            <div className={'inputContainer'}>
-                <input
-                    id="storeName"
-                    name="storeName"
-                    value={storeName}
-                    onChange={(e) => setStoreName(e.target.value)}
-                    required
-                    placeholder="Store Name"
-                    className={'inputBox'}
-                />
-            </div>
-            <br/>
-            <div className={'inputContainer'}>
-                <input
-                    id="storeAddress"
-                    name="storeAddress"
-                    value={storeAddress}
-                    onChange={(e) => setStoreAddress(e.target.value)}
-                    required
-                    placeholder="Store Address"
-                    className={'inputBox'}
-                />
-            </div>
-            <br/>
-            <label className={'errorLabel'}>
-                {storeCreationError}
-            </label>
+            {/* Popup Window */}
+            {showPopup && (
+                <div className="overlay">
+                <div id="popup" className="popup-container">
+                    <div>
+                        {/* Form for adding a new coupon */}
+                        <h2>Add Coupon</h2>
+                        <form id="addCouponForm">
+                            {/* Input fields for Coupon details (name, description, begin date, end date) go here */}
+                            <label htmlFor="couponName">Coupon Name:</label>
+                            <input type="text" id="couponName" name="couponName" required/>
+                            <br/>
+                            <br/>
+                            <label htmlFor="couponDescription">Description:</label>
+                            <textarea id="couponDescription" name="couponDescription" required></textarea>
+                            <br/>
+                            <br/>
+                            <label htmlFor="beginDate">Begin Date:</label>
+                            <input type="date" id="beginDate" name="beginDate" required/>
+                            <br/>
+                            <br/>
+                            <label htmlFor="endDate">End Date:</label>
+                            <input type="date" id="endDate" name="endDate" required/>
+                            <br/>
+                            <br/>
+                            <button type="submit">Save Coupon</button>
+                        </form>
+
+                        <button onClick={closePopup}>Close</button>
+                    </div>
+                </div>
+                </div>
+            )}
+
+            {/*<div className={'inputContainer'}>*/}
+            {/*    <input*/}
+            {/*        id="storeName"*/}
+            {/*        name="storeName"*/}
+            {/*        value={storeName}*/}
+            {/*        onChange={(e) => setStoreName(e.target.value)}*/}
+            {/*        required*/}
+            {/*        placeholder="Store Name"*/}
+            {/*        className={'inputBox'}*/}
+            {/*    />*/}
+            {/*</div>*/}
+            {/*<br/>*/}
+            {/*<div className={'inputContainer'}>*/}
+            {/*    <input*/}
+            {/*        id="storeAddress"*/}
+            {/*        name="storeAddress"*/}
+            {/*        value={storeAddress}*/}
+            {/*        onChange={(e) => setStoreAddress(e.target.value)}*/}
+            {/*        required*/}
+            {/*        placeholder="Store Address"*/}
+            {/*        className={'inputBox'}*/}
+            {/*    />*/}
+            {/*</div>*/}
+            {/*<br/>*/}
+            {/*<label className={'errorLabel'}>*/}
+            {/*    {storeCreationError}*/}
+            {/*</label>*/}
             <br/>
         </div>
     )
