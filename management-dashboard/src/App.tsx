@@ -19,14 +19,6 @@ function App() {
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
           <Route
-            path="/"
-            element={
-              <PrivateRoute>            
-                <Home />
-              </PrivateRoute>
-            }
-          />
-          <Route
             path="/map"
             element={
               <PrivateRoute>            
@@ -34,6 +26,15 @@ function App() {
               </PrivateRoute>
             }
           />
+          <Route
+            path="/"
+            element={
+              <PrivateRoute>            
+                <Home />
+              </PrivateRoute>
+            }
+          />
+         
         </Routes>
       </Router>
     </div>
