@@ -19,12 +19,8 @@ const firebaseConfig = {
 
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
-// Initialize Firebase Authentication and get a reference to the service
-export const auth = getAuth(app);
+const auth = getAuth(app);
 
-// Export firestore database
-// It will be imported into your React app whenever it is needed
-export const db = getFirestore(app);
 
-export default app;
+export default auth;
 
