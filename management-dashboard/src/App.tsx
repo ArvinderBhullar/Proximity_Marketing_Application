@@ -8,6 +8,7 @@ import Appbar from "./components/Appbar";
 import Register from "./pages/Register";
 import Home from "./pages/Home";
 import Map from "./pages/Map";
+import Coupons from "./pages/Coupons";
 import PrivateRoute from "./PrivateRoute";
 
 function App() {
@@ -31,6 +32,14 @@ function App() {
             element={
               <PrivateRoute>            
                 <Home />
+              </PrivateRoute>
+            }
+          />
+           <Route
+            path="/coupons"
+            element={
+              <PrivateRoute>            
+                <Coupons />
               </PrivateRoute>
             }
           />
