@@ -1,28 +1,53 @@
-import React, {useState, useEffect} from 'react';
-import Home from './page/Home';
-import Register from './page/Register';
-import Login from './page/Login';
-import FloorPlan from "./page/FloorPlan";
-import AddOrganization from "./page/AddOrganization";
-import { BrowserRouter as Router} from 'react-router-dom';
-import {Routes, Route} from 'react-router-dom';
-import './App.css'
-import Navbar from "./components/Navbar";
+import React, { useState, useEffect } from "react";
+
+import { BrowserRouter as Router } from "react-router-dom";
+import { Routes, Route } from "react-router-dom";
+import "./App.css";
+import Login from "./pages/Login";
+import Appbar from "./components/Appbar";
+import Register from "./pages/Register";
+import Home from "./pages/Home";
+import Map from "./pages/Map";
+import Coupons from "./pages/Coupons";
+import PrivateRoute from "./PrivateRoute";
+
 function App() {
-    return (
-        <div className="app">
-            <Router>
-                <Navbar/>
-                <Routes>
-                    <Route path="/" element={<Home />} />
-                    <Route path="/register" element={<Register />} />
-                    <Route path="/login" element={<Login />} />
-                    <Route path="/floorplan" element={<FloorPlan />}/>
-                    <Route path="/addorganization" element={<AddOrganization />}/>
-                </Routes>
-            </Router>
-        </div>
-    );
+  return (
+    <div>
+      <Appbar />
+      <Router>
+        <Routes>
+          <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Register />} />
+          <Route
+            path="/map"
+            element={
+              <PrivateRoute>            
+                <Map />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/"
+            element={
+              <PrivateRoute>            
+                <Home />
+              </PrivateRoute>
+            }
+          />
+           <Route
+            path="/coupons"
+            element={
+              <PrivateRoute>            
+                <Coupons />
+              </PrivateRoute>
+            }
+          />
+         
+        </Routes>
+      </Router>
+    </div>
+  );
 }
 
 export default App;
