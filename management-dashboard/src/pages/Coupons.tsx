@@ -71,6 +71,7 @@ const Coupons: React.FC = () => {
             <TableRow>
               <TableCell>Name</TableCell>
               <TableCell>Description</TableCell>
+              <TableCell>Promo Code</TableCell>
               <TableCell>Start Date</TableCell>
               <TableCell>End Date</TableCell>
             </TableRow>
@@ -92,6 +93,7 @@ const Coupons: React.FC = () => {
               >
                 <TableCell>{row.name}</TableCell>
                 <TableCell>{row.description}</TableCell>
+                <TableCell>{row.promocode}</TableCell>
                 <TableCell>{new Date(row.start.seconds * 1000).toISOString()}</TableCell>
                 <TableCell>{new Date(row.end.seconds * 1000).toISOString()}</TableCell>
               </TableRow>

@@ -3,7 +3,7 @@ import { Box, Dialog, Typography, TextField, Button } from "@mui/material";
 import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { db } from "../FirebaseConfig";
-import { collection, addDoc, doc } from "firebase/firestore";
+import { collection, addDoc, doc,  Timestamp} from "firebase/firestore";
 import { AuthContext } from "../AuthProvider";
 
 interface CouponModalProps {
@@ -26,6 +26,8 @@ const CouponModal: React.FC<CouponModalProps> = ({ open, onClose }) => {
     }
   };
 
+
+
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const form = event.target as HTMLFormElement;
@@ -34,14 +36,22 @@ const CouponModal: React.FC<CouponModalProps> = ({ open, onClose }) => {
 
     const name = form.elements["name"].value;
     const description = form.elements["description"].value;
-    const promoCode = form.elements["promocode"].value;
-    const start = form.elements["start"].value;
-    const end = form.elements["end"].value;
+    const promocode = form.elements["promocode"].value;
+
+    // TODO: Refactor - reduce code duplication
+
+
+    // ...
+
+
+    const start = Timestamp.fromDate(new Date(form.elements["start"].value));
+    const end = Timestamp.fromDate(new Date(form.elements["end"].value));
+   
 
     const couponData = {
       name,
       description,
-      promoCode,
+      promocode,
       start,
       end,
     };
