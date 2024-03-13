@@ -1,5 +1,8 @@
 import Button from "@mui/material/Button";
-
+import { useContext, useEffect, useState } from "react";
+import { query, collection, getDocs, where, doc } from "firebase/firestore";
+import { db } from "../FirebaseConfig";
+import { AuthContext } from "../AuthProvider";
 import React from "react";
 import {
   Box,
@@ -12,29 +15,33 @@ import {
   TableRow,
 } from "@mui/material";
 
-const Map: React.FC = () => {
+const Coupons: React.FC = () => {
   let showAddCoupon = false;
+  const { user } = useContext(AuthContext);
+  const [coupons, setCoupons] = useState([]);
 
   const editCoupon = (coupon) => {
-    console.log("edditing", coupon);
+    console.log("editing", coupon);
   };
 
-  const initialCoupons = [
-    {
-      id: 1,
-      name: "SHALMART",
-      description: "20% off on beans!",
-      startDate: "2022-01-01",
-      endDate: "2022-12-31",
-    },
-    {
-      id: 2,
-      name: "SHALMART",
-      description: "Buy one get one 50% off!",
-      startDate: "2022-01-01",
-      endDate: "2022-12-31",
-    },
-  ];
+  const fetchCoupons = async () => {
+    const q = query(
+      collection(db, "Coupons"),
+      where("userId", "==", doc(db, "Organizations/" + user.uid))
+    );
+    const querySnapshot = await getDocs(q);
+    const coupons = querySnapshot.docs.map((doc) => {
+      const data = doc.data();
+      data.uid = doc.id;
+      return data;
+    });
+    console.log(coupons);
+    setCoupons(coupons);
+  };
+
+  useEffect(() => {
+    fetchCoupons();
+  }, []);
 
   return (
     <Box sx={{ m: 3 }}>
@@ -55,29 +62,31 @@ const Map: React.FC = () => {
         <Table sx={{ minWidth: 650 }} aria-label="simple table">
           <TableHead>
             <TableRow>
-              <TableCell>Id</TableCell>
-              <TableCell align="right">Name</TableCell>
-              <TableCell align="right">Description</TableCell>
-              <TableCell align="right">Start Date</TableCell>
-              <TableCell align="right">End Date</TableCell>
+              <TableCell>Name</TableCell>
+              <TableCell>Description</TableCell>
+              <TableCell>Start Date</TableCell>
+              <TableCell>End Date</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
-            {initialCoupons.map((row) => (
+            {coupons.map((row) => (
               <TableRow
-                key={row.id}
-                sx={{ "&:last-child td, &:last-child th": { border: 0 }, "&:hover": { backgroundColor: "lightgray", cursor: 'pointer' },}}
+                key={row.uid}
+                sx={{
+                  "&:last-child td, &:last-child th": { border: 0 },
+                  "&:hover": {
+                    backgroundColor: "lightgray",
+                    cursor: "pointer",
+                  },
+                }}
                 onClick={() => {
                   editCoupon(row);
                 }}
               >
-                <TableCell component="th" scope="row">
-                  {row.id}
-                </TableCell>
-                <TableCell align="right">{row.name}</TableCell>
-                <TableCell align="right">{row.description}</TableCell>
-                <TableCell align="right">{row.startDate}</TableCell>
-                <TableCell align="right">{row.endDate}</TableCell>
+                <TableCell>{row.name}</TableCell>
+                <TableCell>{row.description}</TableCell>
+                <TableCell>{new Date(row.start.seconds * 1000).toISOString()}</TableCell>
+                <TableCell>{new Date(row.end.seconds * 1000).toISOString()}</TableCell>
               </TableRow>
             ))}
           </TableBody>
@@ -87,4 +96,4 @@ const Map: React.FC = () => {
   );
 };
 
-export default Map;
+export default Coupons;
