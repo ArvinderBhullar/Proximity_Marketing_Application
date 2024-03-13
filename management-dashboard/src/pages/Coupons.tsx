@@ -30,7 +30,11 @@ const Coupons: React.FC = () => {
       where("userId", "==", doc(db, "Organizations/" + user.uid))
     );
     const querySnapshot = await getDocs(q);
-    const coupons = querySnapshot.docs.map((doc) => doc.data());
+    const coupons = querySnapshot.docs.map((doc) => {
+      const data = doc.data();
+      data.uid = doc.id;
+      return data;
+    });
     console.log(coupons);
     setCoupons(coupons);
   };
