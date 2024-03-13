@@ -15,22 +15,26 @@ import {
 const Map: React.FC = () => {
   let showAddCoupon = false;
 
+  const editCoupon = (coupon) => {
+    console.log("edditing", coupon);
+  };
+
   const initialCoupons = [
     {
-        id: 1,
-        name: 'SHALMART',
-        description: '20% off on beans!',
-        startDate: '2022-01-01',
-        endDate: '2022-12-31',
+      id: 1,
+      name: "SHALMART",
+      description: "20% off on beans!",
+      startDate: "2022-01-01",
+      endDate: "2022-12-31",
     },
     {
-        id: 2,
-        name: 'SHALMART',
-        description: 'Buy one get one 50% off!',
-        startDate: '2022-01-01',
-        endDate: '2022-12-31',
+      id: 2,
+      name: "SHALMART",
+      description: "Buy one get one 50% off!",
+      startDate: "2022-01-01",
+      endDate: "2022-12-31",
     },
-];
+  ];
 
   return (
     <Box sx={{ m: 3 }}>
@@ -42,7 +46,7 @@ const Map: React.FC = () => {
         onClick={() => {
           showAddCoupon = true;
         }}
-        sx={{marginBottom: 2}}
+        sx={{ marginBottom: 2 }}
       >
         Add Coupon
       </Button>
@@ -61,8 +65,11 @@ const Map: React.FC = () => {
           <TableBody>
             {initialCoupons.map((row) => (
               <TableRow
-                key={row.name}
-                sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
+                key={row.id}
+                sx={{ "&:last-child td, &:last-child th": { border: 0 }, "&:hover": { backgroundColor: "lightgray", cursor: 'pointer' },}}
+                onClick={() => {
+                  editCoupon(row);
+                }}
               >
                 <TableCell component="th" scope="row">
                   {row.id}

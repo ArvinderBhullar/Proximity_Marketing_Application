@@ -30,9 +30,9 @@ export default function ButtonAppBar() {
           )}
 
           <Box sx={{ dispaly: "flex", flexDirection: "row", flexGrow: 1 }}>
-            {/* <Typography variant="h6" component='span' sx={{justifyContent: 'center'}}>
+            <Typography variant="h6" component='span' sx={{justifyContent: 'center'}}>
               Management Dashboard
-            </Typography> */}
+            </Typography>
             {user && (
               <span>
               <Button sx={{m: 1}} color="inherit" href="map">
