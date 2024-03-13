@@ -14,11 +14,13 @@ import {
   TableHead,
   TableRow,
 } from "@mui/material";
+import CouponModal from "../components/CouponModal";
 
 const Coupons: React.FC = () => {
-  let showAddCoupon = false;
   const { user } = useContext(AuthContext);
   const [coupons, setCoupons] = useState([]);
+  const [open, setOpen] = React.useState(false);
+
 
   const editCoupon = (coupon) => {
     console.log("editing", coupon);
@@ -39,6 +41,11 @@ const Coupons: React.FC = () => {
     setCoupons(coupons);
   };
 
+  const dialogClosed = () => {
+    setOpen(false);
+    fetchCoupons();
+  };
+
   useEffect(() => {
     fetchCoupons();
   }, []);
@@ -51,7 +58,7 @@ const Coupons: React.FC = () => {
         variant="contained"
         color="primary"
         onClick={() => {
-          showAddCoupon = true;
+          setOpen(true);
         }}
         sx={{ marginBottom: 2 }}
       >
@@ -64,6 +71,7 @@ const Coupons: React.FC = () => {
             <TableRow>
               <TableCell>Name</TableCell>
               <TableCell>Description</TableCell>
+              <TableCell>Promo Code</TableCell>
               <TableCell>Start Date</TableCell>
               <TableCell>End Date</TableCell>
             </TableRow>
@@ -85,6 +93,7 @@ const Coupons: React.FC = () => {
               >
                 <TableCell>{row.name}</TableCell>
                 <TableCell>{row.description}</TableCell>
+                <TableCell>{row.promocode}</TableCell>
                 <TableCell>{new Date(row.start.seconds * 1000).toISOString()}</TableCell>
                 <TableCell>{new Date(row.end.seconds * 1000).toISOString()}</TableCell>
               </TableRow>
@@ -92,6 +101,9 @@ const Coupons: React.FC = () => {
           </TableBody>
         </Table>
       </TableContainer>
+
+      <CouponModal open={open} onClose={() => dialogClosed()} />
+      
     </Box>
   );
 };
