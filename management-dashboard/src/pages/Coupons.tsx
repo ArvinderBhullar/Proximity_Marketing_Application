@@ -14,11 +14,13 @@ import {
   TableHead,
   TableRow,
 } from "@mui/material";
+import CouponModal from "../components/CouponModal";
 
 const Coupons: React.FC = () => {
-  let showAddCoupon = false;
   const { user } = useContext(AuthContext);
   const [coupons, setCoupons] = useState([]);
+  const [open, setOpen] = React.useState(false);
+
 
   const editCoupon = (coupon) => {
     console.log("editing", coupon);
@@ -39,6 +41,11 @@ const Coupons: React.FC = () => {
     setCoupons(coupons);
   };
 
+  const dialogClosed = () => {
+    setOpen(false);
+    fetchCoupons();
+  };
+
   useEffect(() => {
     fetchCoupons();
   }, []);
@@ -51,7 +58,7 @@ const Coupons: React.FC = () => {
         variant="contained"
         color="primary"
         onClick={() => {
-          showAddCoupon = true;
+          setOpen(true);
         }}
         sx={{ marginBottom: 2 }}
       >
@@ -92,6 +99,9 @@ const Coupons: React.FC = () => {
           </TableBody>
         </Table>
       </TableContainer>
+
+      <CouponModal open={open} onClose={() => dialogClosed()} />
+      
     </Box>
   );
 };
