@@ -192,6 +192,10 @@ button {
   display: block;
 }
 
+.coupon-header {
+  cursor: pointer;
+}
+
 
 
 
