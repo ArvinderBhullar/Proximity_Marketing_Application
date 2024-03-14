@@ -3,7 +3,7 @@ import { Box, Dialog, Typography, TextField, Button } from "@mui/material";
 import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { db } from "../FirebaseConfig";
-import { collection, addDoc, doc, updateDoc, Timestamp} from "firebase/firestore";
+import { collection, addDoc, doc, updateDoc, deleteDoc, Timestamp} from "firebase/firestore";
 import { AuthContext } from "../AuthProvider";
 import { DocumentReference } from 'firebase/firestore';
 import dayjs from "dayjs";
@@ -31,6 +31,7 @@ const CouponModal: React.FC<CouponModalProps> = ({ open, onClose, selectedCoupon
   const [start, setStart] = useState(new Date());
   const [end, setEnd] = useState(Timestamp.now().toDate());
   const [userId, setUserId] = useState(doc(db, "Organizations/" + user.uid));
+  const [confirmationOpen, setConfirmationOpen] = useState(false);
 
   useEffect(() => {
     if (selectedCoupon) {
@@ -81,6 +82,28 @@ const CouponModal: React.FC<CouponModalProps> = ({ open, onClose, selectedCoupon
       }
     }
     onClose();
+  };
+
+  const handleDelete = async () => {
+    setConfirmationOpen(true);
+  };
+
+  const confirmDelete = async () => {
+    if (selectedCoupon) {
+      try {
+        const couponRef = doc(db, "Coupons", selectedCoupon.uid);
+        await deleteDoc(couponRef); // Delete the selected coupon
+        console.log("Coupon deleted successfully!");
+        onClose();
+      } catch (error) {
+        console.error("Error deleting coupon:", error);
+      }
+    }
+    setConfirmationOpen(false);
+  };
+
+  const cancelDelete = () => {
+    setConfirmationOpen(false);
   };
 
   return (
@@ -143,6 +166,29 @@ const CouponModal: React.FC<CouponModalProps> = ({ open, onClose, selectedCoupon
           <Button variant="contained" onClick={onClose} sx={{ m: 1 }}>
             Cancel
           </Button>
+          {selectedCoupon && (
+              <div>
+                <Button variant="contained" onClick={handleDelete} sx={{ m: 1 }}>
+                  Delete
+                </Button>
+                <Dialog open={confirmationOpen} onClose={cancelDelete}>
+                  <Box sx={{ p: 2 }}>
+                    <Typography variant="h6" gutterBottom>
+                      Confirm Delete
+                    </Typography>
+                    <Typography variant="body1" gutterBottom>
+                      Are you sure you want to delete this coupon?
+                    </Typography>
+                    <Button variant="contained" onClick={confirmDelete} sx={{ m: 1 }}>
+                      Yes
+                    </Button>
+                    <Button variant="contained" onClick={cancelDelete} sx={{ m: 1 }}>
+                      No
+                    </Button>
+                  </Box>
+                </Dialog>
+              </div>
+          )}
         </form>
       </Box>
     </Dialog>
