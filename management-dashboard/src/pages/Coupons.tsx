@@ -20,10 +20,13 @@ const Coupons: React.FC = () => {
   const { user } = useContext(AuthContext);
   const [coupons, setCoupons] = useState([]);
   const [open, setOpen] = React.useState(false);
+  const [selectedCoupon, setSelectedCoupon] = useState(null);
 
 
   const editCoupon = (coupon) => {
     console.log("editing", coupon);
+    setSelectedCoupon({ ...coupon});
+    setOpen(true);
   };
 
   const fetchCoupons = async () => {
@@ -43,6 +46,7 @@ const Coupons: React.FC = () => {
 
   const dialogClosed = () => {
     setOpen(false);
+    setSelectedCoupon(null);
     fetchCoupons();
   };
 
@@ -58,6 +62,7 @@ const Coupons: React.FC = () => {
         variant="contained"
         color="primary"
         onClick={() => {
+          setSelectedCoupon(null);
           setOpen(true);
         }}
         sx={{ marginBottom: 2 }}
@@ -102,8 +107,8 @@ const Coupons: React.FC = () => {
         </Table>
       </TableContainer>
 
-      <CouponModal open={open} onClose={() => dialogClosed()} />
-      
+      <CouponModal open={open} onClose={() => dialogClosed()} selectedCoupon={selectedCoupon} />
+
     </Box>
   );
 };
