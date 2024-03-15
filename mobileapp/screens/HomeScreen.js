@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useCallback} from 'react';
 import {
   ScrollView,
   Text,
@@ -6,11 +6,18 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
+// import { createNavigator, TabRouter } from 'react-navigation'
 import {useNavigation} from '@react-navigation/native';
 import styles from '../cssStyles/styles';
 import {auth} from '../services/Config';
 import {getAuth, signOut, onAuthStateChanged} from 'firebase/auth';
+import {createMaterialBottomTabNavigator} from 'react-native-paper/react-navigation';
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import Profile from './Profile';
+import Coupons from './Coupons';
+import SavedCoupons from './SavedCoupons';
 
+const Tab = createMaterialBottomTabNavigator();
 const HomeScreen = () => {
   const navigation = useNavigation();
   // const auth = getAuth();
@@ -28,30 +35,51 @@ const HomeScreen = () => {
       // User is signed out
     }
   });
-  const handleLogout = async () => {
-    // const auth = getAuth();
-    signOut(auth)
-      .then(() => {
-        // Sign-out successful.
-        console.log('User signed out!');
-      })
-      .catch(error => {
-        // An error happened.
-        alert('Logout error: ' + error.message);
-      });
+
+  const couponsTabOptions = {
+    tabBarLabel: 'Coupons',
+    tabBarIcon: ({color}) => (
+      <MaterialCommunityIcons name="basket" color={color} size={20} />
+    ),
+  };
+
+  const favoritesTabOptions = {
+    tabBarLabel: 'Saved',
+    tabBarIcon: ({color}) => (
+      <MaterialCommunityIcons name="heart" color={color} size={20} />
+    ),
+  };
+
+  const profileTabOptions = {
+    tabBarLabel: 'Profile',
+    tabBarIcon: ({color}) => (
+      <MaterialCommunityIcons name="account" color={color} size={20} />
+    ),
   };
 
   return (
-    <ScrollView>
-      <View style={styles.container}>
-        <View style={styles.content}>
-          <Text style={styles.title}>Hello World!</Text>
-        </View>
-      </View>
-      <TouchableOpacity style={styles.button} onPress={handleLogout}>
-        <Text style={styles.button}> Logout </Text>
-      </TouchableOpacity>
-    </ScrollView>
+    <View style={{flex: 1}}>
+      <Tab.Navigator
+        activeColor={'#03145b'}
+        inactiveColor={'#0bb3e0'}
+        initialRouteName="Coupons">
+        <Tab.Screen
+          name="Coupons"
+          component={Coupons}
+          options={couponsTabOptions}
+        />
+        <Tab.Screen
+          name="Saved Coupons"
+          component={SavedCoupons}
+          options={favoritesTabOptions}
+        />
+        <Tab.Screen
+          name="Profile"
+          component={Profile}
+          options={profileTabOptions}
+        />
+      </Tab.Navigator>
+    </View>
   );
 };
 

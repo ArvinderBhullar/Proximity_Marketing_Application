@@ -1,6 +1,5 @@
 import {
   ScrollView,
-  Image,
   Text,
   TextInput,
   TouchableOpacity,
@@ -47,9 +46,9 @@ const RegisterScreen = () => {
     }
   };
 
-  // const handleLogin = async () => {
-  //   navigation.navigate(LoginScreen);
-  // };
+  const handleLogin = async () => {
+    navigation.navigate('Login');
+  };
 
   return (
     <ScrollView>
@@ -89,9 +88,12 @@ const RegisterScreen = () => {
           <TouchableOpacity style={styles.button} onPress={handleSignup}>
             <Text style={styles.button}> Register </Text>
           </TouchableOpacity>
-          {/*<TouchableOpacity style={styles.button} onPress={handleLogin}>*/}
-          {/*  <Text> Already have an account? Login here. </Text>*/}
-          {/*</TouchableOpacity>*/}
+          <TouchableOpacity style={styles.button} onPress={handleLogin}>
+            <Text style={styles.button}>
+              {' '}
+              Already have an account? Login here.{' '}
+            </Text>
+          </TouchableOpacity>
         </View>
       </View>
     </ScrollView>

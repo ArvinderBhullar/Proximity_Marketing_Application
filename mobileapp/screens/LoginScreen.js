@@ -11,6 +11,8 @@ import {getAuth, signInWithEmailAndPassword} from 'firebase/auth';
 import styles from '../cssStyles/styles';
 import {useNavigation} from '@react-navigation/native';
 // import {saveUserData} from '../services/firebaseDatabase';
+import {useTheme} from 'react-native-paper';
+import { Button } from 'react-native-paper';
 
 const LoginScreen = () => {
   const [email, setEmail] = useState('');
@@ -44,6 +46,8 @@ const LoginScreen = () => {
     navigation.navigate('Register');
   };
 
+  const theme = useTheme();
+
   return (
     <ScrollView>
       <View style={styles.container}>
@@ -68,7 +72,7 @@ const LoginScreen = () => {
           <TouchableOpacity style={styles.button} onPress={handleSignin}>
             <Text style={styles.button}> Login </Text>
           </TouchableOpacity>
-          <TouchableOpacity onPress={handleSignup}>
+          <TouchableOpacity style={styles.button} onPress={handleSignup}>
             <Text style={styles.button}>
               Don't have an account? Sign-up here.
             </Text>
