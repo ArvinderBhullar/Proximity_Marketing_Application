@@ -30,6 +30,17 @@ const styles = StyleSheet.create({
     fontSize: 15,
     backgroundColor: '#ffffff',
   },
+  couponItem: {
+    marginBottom: 15,
+    padding: 30,
+    borderRadius: 8,
+  },
+  couponTitle: {
+    fontSize: 20,
+  },
+  couponDate: {
+    fontSize: 10,
+  },
 });
 
 export default styles;
