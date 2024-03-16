@@ -1,5 +1,5 @@
-import React, {useEffect, useState} from 'react';
-import {View, ScrollView, TouchableOpacity, Modal, Text} from 'react-native';
+import React, {useCallback, useEffect, useState} from 'react';
+import {View, ScrollView, Text} from 'react-native';
 import {
   Card,
   Title,
@@ -13,13 +13,15 @@ import {
   query,
   collection,
   getDocs,
+  deleteDoc,
   DocumentData,
   addDoc,
   where,
+  doc,
 } from 'firebase/firestore';
 import {Timestamp} from 'react-native-reanimated/lib/typescript/reanimated2/commonTypes';
-import styles from '../cssStyles/styles';
-import LinearGradient from 'react-native-linear-gradient';
+import {useNavigation} from '@react-navigation/native';
+
 interface Coupon {
   id: string;
   name: string;
@@ -31,6 +33,7 @@ const Coupons = () => {
   const [coupons, setCoupons] = useState<DocumentData[]>([]);
   const [searchQuery, setSearchQuery] = useState('');
   const [progress, setProgress] = useState(0);
+  const navigation = useNavigation();
 
   const fetchCoupons = async () => {
     try {
@@ -39,10 +42,20 @@ const Coupons = () => {
       if (user) {
         userId = user.uid;
       }
+      const savedCouponIds: string[] = [];
+      // Fetch the coupon IDs saved by the user
+      if (userId) {
+        const savedCouponQuerySnapshot = await getDocs(
+          query(collection(db, 'Saved Coupons'), where('userId', '==', userId)),
+        );
+
+        savedCouponIds.push(
+          ...savedCouponQuerySnapshot.docs.map(doc => doc.data().couponId),
+        );
+      }
 
       const couponsRef = collection(db, 'Coupons');
       const queryRef = query(couponsRef);
-
       const querySnapshot = await getDocs(queryRef);
 
       const fetchedCoupons: Coupon[] = [];
@@ -59,7 +72,10 @@ const Coupons = () => {
               where('couponId', '==', couponId),
             ),
           );
-          if (redemptionQuerySnapshot.empty) {
+          if (
+            redemptionQuerySnapshot.empty &&
+            !savedCouponIds.includes(couponId)
+          ) {
             fetchedCoupons.push({...data, id: couponId});
           }
         } else {
@@ -71,17 +87,17 @@ const Coupons = () => {
       console.error('Error fetching coupons:', error);
     }
   };
-  // const fetchCoupons = async () => {
-  //   const q = query(collection(db, 'Coupons'));
-  //
-  //   const querySnapshot = await getDocs(q);
-  //   const fetchedCoupons: Coupon[] = querySnapshot.docs.map(doc => {
-  //     const data = doc.data() as Coupon; // Assuming your document data matches the Coupon interface
-  //     return {...data, id: doc.id};
-  //   });
-  //   setCoupons(fetchedCoupons);
-  // };
-  //
+
+  const fetchCouponsOnFocus = useCallback(() => {
+    fetchCoupons();
+  }, []);
+
+  // Add a listener for the tab focus event
+  useEffect(() => {
+    // Clean up the listener when component unmounts
+    return navigation.addListener('focus', fetchCouponsOnFocus);
+  }, [navigation, fetchCouponsOnFocus]);
+
   useEffect(() => {
     fetchCoupons();
   }, []);
@@ -99,6 +115,9 @@ const Coupons = () => {
           redeemedAt: new Date().toISOString(), // Store the redemption timestamp
         });
 
+        // Delete the coupon from the "Saved Coupons" collection
+        await deleteDoc(doc(db, 'Saved Coupons', `${userId}_${couponId}`));
+        fetchCoupons();
         console.log('Coupon redeemed successfully');
       } else {
         console.error('No user signed in');
@@ -108,20 +127,41 @@ const Coupons = () => {
     }
   };
 
-  const handleSaveChipPress = () => {
-    // Implement logic to start the progress bar when the "Save" chip is pressed
-    setProgress(0);
+  const handleSaveChipPress = async (couponId: string) => {
+    // Implement logic to save the coupon
+    try {
+      const user = auth.currentUser;
+      if (user) {
+        const userId = user.uid;
 
-    // Increment progress every second until it reaches 100% after 30 seconds
-    const interval = setInterval(() => {
-      setProgress(prevProgress => {
-        const newProgress = prevProgress + (1 / 30);
-        if (newProgress >= 1) {
-          clearInterval(interval);
-        }
-        return newProgress;
-      });
-    }, 1000);
+        // Add a new document with a generated ID to the "Redemptions" collection
+        await addDoc(collection(db, 'Saved Coupons'), {
+          userId: userId,
+          couponId: couponId,
+          savedOn: new Date().toISOString(), // Store the redemption timestamp
+        });
+        fetchCoupons();
+        console.log('Coupon saved successfully');
+      } else {
+        console.error('No user signed in');
+      }
+    } catch (error) {
+      console.error('Error saving coupon:', error);
+    }
+
+    // // Implement logic to start the progress bar when the "Save" chip is pressed
+    // setProgress(0);
+    //
+    // // Increment progress every second until it reaches 100% after 30 seconds
+    // const interval = setInterval(() => {
+    //   setProgress(prevProgress => {
+    //     const newProgress = prevProgress + 1 / 30;
+    //     if (newProgress >= 1) {
+    //       clearInterval(interval);
+    //     }
+    //     return newProgress;
+    //   });
+    // }, 1000);
   };
 
   return (
@@ -145,7 +185,7 @@ const Coupons = () => {
                 <Chip
                   icon="heart"
                   mode="outlined"
-                  onPress={() => handleSaveChipPress}>
+                  onPress={() => handleSaveChipPress(coupon.id)}>
                   Save
                 </Chip>
                 <Chip

@@ -9,6 +9,7 @@ import React, {useState} from 'react';
 import {getAuth, createUserWithEmailAndPassword} from 'firebase/auth';
 import styles from '../cssStyles/styles';
 import {useNavigation} from '@react-navigation/native';
+import { Alert } from 'react-native';
 // import {saveUserData} from '../services/firebaseDatabase';
 
 const RegisterScreen = () => {
@@ -35,9 +36,11 @@ const RegisterScreen = () => {
           const errorCode = error.code;
           const errorMessage = error.message;
           if (error.code === 'auth/email-already-in-use') {
-            alert('Email already in use! Please choose a different email.');
+            Alert.alert(
+              'Email already in use! Please choose a different email.',
+            );
           } else {
-            alert('Signup error: ' + error.message);
+            Alert.alert('Signup error: ' + error.message);
           }
           // ..
         });
@@ -47,13 +50,14 @@ const RegisterScreen = () => {
   };
 
   const handleLogin = async () => {
+    // @ts-ignore
     navigation.navigate('Login');
   };
 
   return (
     <ScrollView>
       <View style={styles.container}>
-        <View style={styles.content}>
+        <View>
           <Text style={styles.title}>Welcome</Text>
           <TextInput
             style={styles.input}

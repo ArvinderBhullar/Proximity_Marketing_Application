@@ -5,14 +5,13 @@ import {
   TextInput,
   TouchableOpacity,
   View,
+  Alert,
 } from 'react-native';
 import React, {useState} from 'react';
 import {getAuth, signInWithEmailAndPassword} from 'firebase/auth';
 import styles from '../cssStyles/styles';
 import {useNavigation} from '@react-navigation/native';
 // import {saveUserData} from '../services/firebaseDatabase';
-import {useTheme} from 'react-native-paper';
-import { Button } from 'react-native-paper';
 
 const LoginScreen = () => {
   const [email, setEmail] = useState('');
@@ -35,7 +34,7 @@ const LoginScreen = () => {
         .catch(error => {
           const errorCode = error.code;
           const errorMessage = error.message;
-          alert('Login error: ' + error.message);
+          Alert.alert('Login error: ' + error.message);
         });
     } catch (error) {
       throw error;
@@ -43,15 +42,14 @@ const LoginScreen = () => {
   };
 
   const handleSignup = async () => {
+    // @ts-ignore
     navigation.navigate('Register');
   };
-
-  const theme = useTheme();
 
   return (
     <ScrollView>
       <View style={styles.container}>
-        <View style={styles.content}>
+        <View>
           <Text style={styles.title}>Closetify!</Text>
           <TextInput
             style={styles.input}
