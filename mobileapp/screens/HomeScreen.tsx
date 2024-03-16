@@ -1,16 +1,9 @@
-import React, {useCallback} from 'react';
-import {
-  ScrollView,
-  Text,
-  TextInput,
-  TouchableOpacity,
-  View,
-} from 'react-native';
+import React from 'react';
+import {View} from 'react-native';
 // import { createNavigator, TabRouter } from 'react-navigation'
-import {useNavigation} from '@react-navigation/native';
-import styles from '../cssStyles/styles';
+// import {useNavigation} from '@react-navigation/native';
 import {auth} from '../services/Config';
-import {getAuth, signOut, onAuthStateChanged} from 'firebase/auth';
+import {onAuthStateChanged} from 'firebase/auth';
 import {createMaterialBottomTabNavigator} from 'react-native-paper/react-navigation';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import Profile from './Profile';
@@ -19,18 +12,18 @@ import SavedCoupons from './SavedCoupons';
 
 const Tab = createMaterialBottomTabNavigator();
 const HomeScreen = () => {
-  const navigation = useNavigation();
-  // const auth = getAuth();
-  var displayName = '';
-  var uid = '';
+  // const navigation = useNavigation();
+  // // const auth = getAuth();
+  // var displayName = '';
+  // var uid = '';
 
   onAuthStateChanged(auth, user => {
     if (user) {
       // User is signed in, see docs for a list of available properties
       // https://firebase.google.com/docs/reference/js/auth.user
       console.log('User email: ', user.email);
-      uid = user.uid;
-      displayName = user.displayName;
+      // uid = user.uid;
+      // displayName = user.displayName;
     } else {
       // User is signed out
     }
@@ -38,21 +31,21 @@ const HomeScreen = () => {
 
   const couponsTabOptions = {
     tabBarLabel: 'Coupons',
-    tabBarIcon: ({color}) => (
+    tabBarIcon: ({color}: {color: string}) => (
       <MaterialCommunityIcons name="basket" color={color} size={20} />
     ),
   };
 
   const favoritesTabOptions = {
     tabBarLabel: 'Saved',
-    tabBarIcon: ({color}) => (
+    tabBarIcon: ({color}: {color: string}) => (
       <MaterialCommunityIcons name="heart" color={color} size={20} />
     ),
   };
 
   const profileTabOptions = {
     tabBarLabel: 'Profile',
-    tabBarIcon: ({color}) => (
+    tabBarIcon: ({color}: {color: string}) => (
       <MaterialCommunityIcons name="account" color={color} size={20} />
     ),
   };
@@ -60,9 +53,8 @@ const HomeScreen = () => {
   return (
     <View style={{flex: 1}}>
       <Tab.Navigator
-        activeColor={'#03145b'}
-        inactiveColor={'#0bb3e0'}
-        initialRouteName="Coupons">
+        initialRouteName="Coupons"
+        barStyle={{height: 70}}>
         <Tab.Screen
           name="Coupons"
           component={Coupons}

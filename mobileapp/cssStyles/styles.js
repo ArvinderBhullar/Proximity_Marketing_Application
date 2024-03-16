@@ -34,11 +34,14 @@ const styles = StyleSheet.create({
     marginBottom: 15,
     padding: 30,
     borderRadius: 8,
+    height: 150,
   },
   couponTitle: {
+    color: 'white',
     fontSize: 20,
   },
   couponDate: {
+    color: 'white',
     fontSize: 10,
   },
 });
