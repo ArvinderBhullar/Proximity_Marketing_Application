@@ -1,26 +1,28 @@
 import {
   ScrollView,
-  Image,
   Text,
   TextInput,
   TouchableOpacity,
   View,
 } from 'react-native';
 import React, {useState} from 'react';
-import {getAuth, signInWithEmailAndPassword} from 'firebase/auth';
+import {getAuth, createUserWithEmailAndPassword} from 'firebase/auth';
 import styles from '../cssStyles/styles';
 import {useNavigation} from '@react-navigation/native';
+import { Alert } from 'react-native';
 // import {saveUserData} from '../services/firebaseDatabase';
 
-const LoginScreen = () => {
+const RegisterScreen = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [firstname, setFirstname] = useState('');
+  const [lastname, setLastname] = useState('');
   const navigation = useNavigation();
 
-  const handleSignin = async () => {
+  const handleSignup = async () => {
     try {
       const auth = getAuth();
-      signInWithEmailAndPassword(auth, email, password)
+      createUserWithEmailAndPassword(auth, email, password)
         .then(userCredential => {
           // Signed up
           const user = userCredential.user;
@@ -33,22 +35,44 @@ const LoginScreen = () => {
         .catch(error => {
           const errorCode = error.code;
           const errorMessage = error.message;
-          alert('Login error: ' + error.message);
+          if (error.code === 'auth/email-already-in-use') {
+            Alert.alert(
+              'Email already in use! Please choose a different email.',
+            );
+          } else {
+            Alert.alert('Signup error: ' + error.message);
+          }
+          // ..
         });
     } catch (error) {
       throw error;
     }
   };
 
-  const handleSignup = async () => {
-    navigation.navigate('Register');
+  const handleLogin = async () => {
+    // @ts-ignore
+    navigation.navigate('Login');
   };
 
   return (
     <ScrollView>
       <View style={styles.container}>
-        <View style={styles.content}>
-          <Text style={styles.title}>Closetify!</Text>
+        <View>
+          <Text style={styles.title}>Welcome</Text>
+          <TextInput
+            style={styles.input}
+            placeholder="First Name"
+            autoCapitalize="none"
+            value={firstname}
+            onChangeText={setFirstname}
+          />
+          <TextInput
+            style={styles.input}
+            placeholder="Last Name"
+            autoCapitalize="none"
+            value={lastname}
+            onChangeText={setLastname}
+          />
           <TextInput
             style={styles.input}
             placeholder="Email"
@@ -65,12 +89,13 @@ const LoginScreen = () => {
             value={password}
             onChangeText={setPassword}
           />
-          <TouchableOpacity style={styles.button} onPress={handleSignin}>
-            <Text style={styles.button}> Login </Text>
+          <TouchableOpacity style={styles.button} onPress={handleSignup}>
+            <Text style={styles.button}> Register </Text>
           </TouchableOpacity>
-          <TouchableOpacity onPress={handleSignup}>
+          <TouchableOpacity style={styles.button} onPress={handleLogin}>
             <Text style={styles.button}>
-              Don't have an account? Sign-up here.
+              {' '}
+              Already have an account? Login here.{' '}
             </Text>
           </TouchableOpacity>
         </View>
@@ -79,4 +104,4 @@ const LoginScreen = () => {
   );
 };
 
-export default LoginScreen;
+export default RegisterScreen;

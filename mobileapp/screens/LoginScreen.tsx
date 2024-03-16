@@ -5,24 +5,23 @@ import {
   TextInput,
   TouchableOpacity,
   View,
+  Alert,
 } from 'react-native';
 import React, {useState} from 'react';
-import {getAuth, createUserWithEmailAndPassword} from 'firebase/auth';
+import {getAuth, signInWithEmailAndPassword} from 'firebase/auth';
 import styles from '../cssStyles/styles';
 import {useNavigation} from '@react-navigation/native';
 // import {saveUserData} from '../services/firebaseDatabase';
 
-const RegisterScreen = () => {
+const LoginScreen = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [firstname, setFirstname] = useState('');
-  const [lastname, setLastname] = useState('');
   const navigation = useNavigation();
 
-  const handleSignup = async () => {
+  const handleSignin = async () => {
     try {
       const auth = getAuth();
-      createUserWithEmailAndPassword(auth, email, password)
+      signInWithEmailAndPassword(auth, email, password)
         .then(userCredential => {
           // Signed up
           const user = userCredential.user;
@@ -35,41 +34,23 @@ const RegisterScreen = () => {
         .catch(error => {
           const errorCode = error.code;
           const errorMessage = error.message;
-          if (error.code === 'auth/email-already-in-use') {
-            alert('Email already in use! Please choose a different email.');
-          } else {
-            alert('Signup error: ' + error.message);
-          }
-          // ..
+          Alert.alert('Login error: ' + error.message);
         });
     } catch (error) {
       throw error;
     }
   };
 
-  // const handleLogin = async () => {
-  //   navigation.navigate(LoginScreen);
-  // };
+  const handleSignup = async () => {
+    // @ts-ignore
+    navigation.navigate('Register');
+  };
 
   return (
     <ScrollView>
       <View style={styles.container}>
-        <View style={styles.content}>
-          <Text style={styles.title}>Welcome</Text>
-          <TextInput
-            style={styles.input}
-            placeholder="First Name"
-            autoCapitalize="none"
-            value={firstname}
-            onChangeText={setFirstname}
-          />
-          <TextInput
-            style={styles.input}
-            placeholder="Last Name"
-            autoCapitalize="none"
-            value={lastname}
-            onChangeText={setLastname}
-          />
+        <View>
+          <Text style={styles.title}>Closetify!</Text>
           <TextInput
             style={styles.input}
             placeholder="Email"
@@ -86,16 +67,18 @@ const RegisterScreen = () => {
             value={password}
             onChangeText={setPassword}
           />
-          <TouchableOpacity style={styles.button} onPress={handleSignup}>
-            <Text style={styles.button}> Register </Text>
+          <TouchableOpacity style={styles.button} onPress={handleSignin}>
+            <Text style={styles.button}> Login </Text>
           </TouchableOpacity>
-          {/*<TouchableOpacity style={styles.button} onPress={handleLogin}>*/}
-          {/*  <Text> Already have an account? Login here. </Text>*/}
-          {/*</TouchableOpacity>*/}
+          <TouchableOpacity style={styles.button} onPress={handleSignup}>
+            <Text style={styles.button}>
+              Don't have an account? Sign-up here.
+            </Text>
+          </TouchableOpacity>
         </View>
       </View>
     </ScrollView>
   );
 };
 
-export default RegisterScreen;
+export default LoginScreen;
