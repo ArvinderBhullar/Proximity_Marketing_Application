@@ -1,8 +1,19 @@
 import { Box, Button, TextField } from "@mui/material";
-import React from "react";
+import React, { useContext, useEffect } from "react";
 import { Stage, Layer, Rect, Circle, Text } from "react-konva";
+import {
+  query,
+  collection,
+  getDocs,
+  where,
+  doc,
+  orderBy,
+} from "firebase/firestore";
+import { db } from "../FirebaseConfig";
+import { AuthContext } from "../AuthProvider";
 
 export const MapObject = () => {
+  const { user } = useContext(AuthContext);
   const [beacons, setBeacons] = React.useState<
     { x: number; y: number; id: string }[]
   >([]);
@@ -12,15 +23,38 @@ export const MapObject = () => {
   const [stageHeight, setStageHeight] = React.useState<number>(
     window.innerHeight
   );
+  const [width, setWidth] = React.useState<number>(20);
+  const [height, setHeight] = React.useState<number>(10);
 
-  const [width, setWidth] = React.useState<number>(100);
-  const [height, setHeight] = React.useState<number>(100);
+  useEffect(() => {
+    const fetchBeacons = async () => {
+      const q = query(
+        collection(db, "Beacons"),
+        where("userId", "==", doc(db, "Organizations/" + user.uid))
+      );
+      const querySnapshot = await getDocs(q);
+      const beacons = querySnapshot.docs.map((doc) => {
+        const data = doc.data();
+        return {
+          id: doc.id,
+          x: (data.x / width) * stageWidth,
+          y: (data.y / height) * stageHeight,
+          uuid: data.beaconUUID,
+        }
+      });
+      console.log(beacons);
+      setBeacons(beacons);
+    };
+
+    fetchBeacons();
+  }, []);
 
   const handleAddBeacon = () => {
     const newBeacon = {
-      x: 0, // set the initial x coordinate
-      y: 0, // set the initial y coordinate
-      id: Math.random().toString(), // generate a unique id
+      x: 0,
+      y: 0, 
+      uuid: Math.random().toString(), 
+      id: Math.random().toString(),
       isDragging: false,
     };
 
@@ -46,8 +80,7 @@ export const MapObject = () => {
   const heightChange = (e) => {
     setHeight(Number(e.target.value));
     setStageHeight(stageWidth * (height / width));
-
-   }
+  };
 
   const getScaledX = (x: number) => {
     return Math.round((x / stageWidth) * width * 2) / 2;
@@ -55,7 +88,7 @@ export const MapObject = () => {
 
   const getScaledY = (y: number) => {
     return Math.round((y / stageHeight) * height * 2) / 2;
-  }
+  };
 
   return (
     <div>
@@ -73,7 +106,7 @@ export const MapObject = () => {
         type="number"
         value={width}
         onChange={(e) => setWidth(Number(e.target.value))}
-        sx={{ m: 1 }} // Add margin to the TextField component
+        sx={{ m: 1 }} 
       />
 
       <TextField
@@ -81,13 +114,13 @@ export const MapObject = () => {
         type="number"
         value={height}
         onChange={(e) => heightChange(e)}
-        sx={{ m: 1 }} // Add margin to the TextField component
+        sx={{ m: 1 }}
       />
 
       <Stage
         width={stageWidth}
         height={stageHeight}
-        style={{ border: "1px solid black" , width: stageWidth}}
+        style={{ border: "1px solid black", width: stageWidth }}
       >
         <Layer>
           {beacons.map((beacon) => (
