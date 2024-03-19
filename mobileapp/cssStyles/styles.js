@@ -16,10 +16,33 @@ const styles = StyleSheet.create({
   },
   button: {
     alignItems: 'center',
-    backgroundColor: '#ffffff',
+    backgroundColor: '#0bb3e0',
+    borderRadius: 10,
     padding: 10,
     margin: 5,
+    fontSize: 15,
+    color: '#ffffff',
+  },
+  input: {
+    margin: 5,
+    padding: 10,
     color: '#000000',
+    fontSize: 15,
+    backgroundColor: '#ffffff',
+  },
+  couponItem: {
+    marginBottom: 15,
+    padding: 30,
+    borderRadius: 8,
+    height: 150,
+  },
+  couponTitle: {
+    color: 'white',
+    fontSize: 20,
+  },
+  couponDate: {
+    color: 'white',
+    fontSize: 10,
   },
 });
 
