@@ -8,12 +8,13 @@ import {createMaterialBottomTabNavigator} from 'react-native-paper/react-navigat
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import Profile from './Profile';
 import Coupons from './Coupons';
+import Scanning from './Scanning';
 import SavedCoupons from './SavedCoupons';
 
 const Tab = createMaterialBottomTabNavigator();
 const HomeScreen = () => {
   // const navigation = useNavigation();
-  // // const auth = getAuth();
+  // const auth = getAuth();
   // var displayName = '';
   // var uid = '';
 
@@ -50,11 +51,16 @@ const HomeScreen = () => {
     ),
   };
 
+  const scanningTabOptions = {
+    tabBarLabel: 'Scanning',
+    tabBarIcon: ({color}: {color: string}) => (
+      <MaterialCommunityIcons name="bluetooth" color={color} size={20} />
+    ),
+  };
+
   return (
     <View style={{flex: 1}}>
-      <Tab.Navigator
-        initialRouteName="Coupons"
-        barStyle={{height: 70}}>
+      <Tab.Navigator initialRouteName="Coupons" barStyle={{height: 70}}>
         <Tab.Screen
           name="Coupons"
           component={Coupons}
@@ -69,6 +75,11 @@ const HomeScreen = () => {
           name="Profile"
           component={Profile}
           options={profileTabOptions}
+        />
+        <Tab.Screen
+          name="Scanning"
+          component={Scanning}
+          options={scanningTabOptions}
         />
       </Tab.Navigator>
     </View>
