@@ -1,15 +1,6 @@
-import { Box, Button, TextField } from "@mui/material";
+import { Button, TextField } from "@mui/material";
 import React, { useContext, useEffect, useState } from "react";
 import { Stage, Layer, Rect, Circle, Text } from "react-konva";
-import {
-  query,
-  collection,
-  getDocs,
-  where,
-  doc,
-  orderBy,
-} from "firebase/firestore";
-import { db } from "../FirebaseConfig";
 import { AuthContext } from "../AuthProvider";
 import BeaconModal from "./BeaconModal";
 import BeaconService from "../services/BeaconService";
@@ -53,7 +44,7 @@ export const MapObject = () => {
           isDragging: false,
           userId: coupons.userId,
           id: coupons.id,
-          // add additonal coupon fieldss
+          // TODO add additonal coupon fieldss
         };
       })
     );

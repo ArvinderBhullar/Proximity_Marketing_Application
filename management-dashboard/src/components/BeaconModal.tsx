@@ -1,9 +1,15 @@
 import React, { useContext, useState, useEffect } from "react";
 import { Box, Dialog, Typography, TextField, Button } from "@mui/material";
 import { db } from "../FirebaseConfig";
-import { collection, addDoc, doc, updateDoc, deleteDoc} from "firebase/firestore";
+import {
+  collection,
+  addDoc,
+  doc,
+  updateDoc,
+  deleteDoc,
+} from "firebase/firestore";
 import { AuthContext } from "../AuthProvider";
-import { DocumentReference } from 'firebase/firestore';
+import { DocumentReference } from "firebase/firestore";
 import BeaconService from "../services/BeaconService";
 
 interface BeaconModalProps {
@@ -20,11 +26,14 @@ interface BeaconData {
   userId: DocumentReference;
 }
 
-const BeaconModal: React.FC<BeaconModalProps> = ({ open, onClose, selectedBeacon }) => {
+const BeaconModal: React.FC<BeaconModalProps> = ({
+  open,
+  onClose,
+  selectedBeacon,
+}) => {
   const { user } = useContext(AuthContext);
   const [name, setName] = useState("");
   const [uuid, setUuid] = useState("");
-  const [userId, setUserId] = useState(doc(db, "Organizations/" + user.uid));
   const [x, setX] = useState(0);
   const [y, setY] = useState(0);
   const [confirmationOpen, setConfirmationOpen] = useState(false);
@@ -35,9 +44,8 @@ const BeaconModal: React.FC<BeaconModalProps> = ({ open, onClose, selectedBeacon
       setUuid(selectedBeacon.uuid);
       setX(selectedBeacon.x);
       setY(selectedBeacon.y);
-    } 
+    }
   }, [open, onClose, selectedBeacon]);
-
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -48,18 +56,13 @@ const BeaconModal: React.FC<BeaconModalProps> = ({ open, onClose, selectedBeacon
       uuid: form.elements["uuid"].value,
       x: parseFloat(form.elements["x"].value),
       y: parseFloat(form.elements["y"].value),
-      userId: doc(db, "Organizations/" + user.uid) 
+      userId: doc(db, "Organizations/" + user.uid),
     };
 
     if (selectedBeacon) {
-      BeaconService.updateBeacon({ ...beaconData, uid: selectedBeacon.id });
+      BeaconService.updateBeacon({ ...beaconData, id: selectedBeacon.id });
     } else {
-      try {
-        await addDoc(collection(db, "Beacons"),  { ...beaconData }); 
-        console.log("Beacon created successfully!");
-      } catch (error) {
-        console.error("Error creating Beacon:", error);
-      }
+      BeaconService.addBeacon(beaconData);
     }
     onClose();
   };
@@ -70,16 +73,10 @@ const BeaconModal: React.FC<BeaconModalProps> = ({ open, onClose, selectedBeacon
 
   const confirmDelete = async () => {
     if (selectedBeacon) {
-      try {
-        const beaconRef = doc(db, "Beacons", selectedBeacon.id);
-        await deleteDoc(beaconRef); 
-        console.log("Beacon deleted successfully!");
-        onClose();
-      } catch (error) {
-        console.error("Error deleting Beacon:", error);
-      }
+      BeaconService.deleteBeacon(selectedBeacon.id);
     }
     setConfirmationOpen(false);
+    onClose();
   };
 
   const cancelDelete = () => {
@@ -94,41 +91,45 @@ const BeaconModal: React.FC<BeaconModalProps> = ({ open, onClose, selectedBeacon
         </Typography>
         <form onSubmit={handleSubmit}>
           <div>
-            <TextField id='name'
-                       label="Name"
-                       value={name}
-                       onChange={e => setName(e.target.value)}
-                       sx={{ m: 1, width: "50ch" }} />
+            <TextField
+              id="name"
+              label="Name"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              sx={{ m: 1, width: "50ch" }}
+            />
           </div>
           <div>
             <TextField
-              id='uuid'
+              id="uuid"
               multiline
               label="UUID"
               value={uuid}
-              onChange={e => setUuid(e.target.value)}
+              onChange={(e) => setUuid(e.target.value)}
               sx={{ m: 1, width: "50ch" }}
             />
           </div>
           <div>
             <TextField
-              id='x'
+              id="x"
               label="X"
               type="number"
               value={x}
-              onChange={e => setX(parseFloat(e.target.value))}
+              onChange={(e) => setX(parseFloat(e.target.value))}
               sx={{ m: 1, width: "50ch" }}
             />
           </div>
           <div>
-          <TextField id='y'
-                       label="y"
-                       type="number"
-                       value={y}
-                       onChange={e => setY(parseFloat(e.target.value))}
-                       sx={{ m: 1, width: "50ch" }} />
+            <TextField
+              id="y"
+              label="y"
+              type="number"
+              value={y}
+              onChange={(e) => setY(parseFloat(e.target.value))}
+              sx={{ m: 1, width: "50ch" }}
+            />
           </div>
-        
+
           <Button
             type="submit"
             variant="contained"
@@ -141,27 +142,35 @@ const BeaconModal: React.FC<BeaconModalProps> = ({ open, onClose, selectedBeacon
             Cancel
           </Button>
           {selectedBeacon && (
-              <div>
-                <Button variant="contained" onClick={handleDelete} sx={{ m: 1 }}>
-                  Delete
-                </Button>
-                <Dialog open={confirmationOpen} onClose={cancelDelete}>
-                  <Box sx={{ p: 2 }}>
-                    <Typography variant="h6" gutterBottom>
-                      Confirm Delete
-                    </Typography>
-                    <Typography variant="body1" gutterBottom>
-                      Are you sure you want to delete this beacon?
-                    </Typography>
-                    <Button variant="contained" onClick={confirmDelete} sx={{ m: 1 }}>
-                      Yes
-                    </Button>
-                    <Button variant="contained" onClick={cancelDelete} sx={{ m: 1 }}>
-                      No
-                    </Button>
-                  </Box>
-                </Dialog>
-              </div>
+            <div>
+              <Button variant="contained" onClick={handleDelete} sx={{ m: 1 }}>
+                Delete
+              </Button>
+              <Dialog open={confirmationOpen} onClose={cancelDelete}>
+                <Box sx={{ p: 2 }}>
+                  <Typography variant="h6" gutterBottom>
+                    Confirm Delete
+                  </Typography>
+                  <Typography variant="body1" gutterBottom>
+                    Are you sure you want to delete this beacon?
+                  </Typography>
+                  <Button
+                    variant="contained"
+                    onClick={confirmDelete}
+                    sx={{ m: 1 }}
+                  >
+                    Yes
+                  </Button>
+                  <Button
+                    variant="contained"
+                    onClick={cancelDelete}
+                    sx={{ m: 1 }}
+                  >
+                    No
+                  </Button>
+                </Box>
+              </Dialog>
+            </div>
           )}
         </form>
       </Box>
