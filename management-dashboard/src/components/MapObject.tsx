@@ -19,51 +19,47 @@ export const MapObject = () => {
   const { user } = useContext(AuthContext);
   const [beacons, setBeacons] = useState<any>([]);
   const [coupons, setCoupons] = useState<any>([]);
-  const [stageWidth, setStageWidth] = useState<number>(
-    window.innerWidth - 200
-  );
-  const [stageHeight, setStageHeight] = useState<number>(
-    window.innerHeight
-  );
+  const [stageWidth, setStageWidth] = useState<number>(window.innerWidth - 200);
+  const [stageHeight, setStageHeight] = useState<number>(window.innerHeight);
   const [open, setOpen] = useState(false);
   const [width, setWidth] = useState<number>(20);
   const [height, setHeight] = useState<number>(10);
   const [selectedBeacon, setSelectedBeacon] = useState(null);
 
-
   const fetchBeacons = async () => {
-    const beaconObjs = await BeaconService.fetchBeacons()
-    setBeacons(beaconObjs.map((beacon) => {
-      return {
-        x: (beacon.x / width) * stageWidth,
-        y: (beacon.y / height) * stageHeight,
-        isDragging: false,
-        userId: beacon.userId,
-        name: beacon.name,
-        uuid: beacon.uuid,
-        uid: beacon.id,
-        id: beacon.id,
-      }
-    }));
+    const beaconObjs = await BeaconService.fetchBeacons();
+    setBeacons(
+      beaconObjs.map((beacon) => {
+        return {
+          x: (beacon.x / width) * stageWidth,
+          y: (beacon.y / height) * stageHeight,
+          isDragging: false,
+          userId: beacon.userId,
+          name: beacon.name,
+          uuid: beacon.uuid,
+          uid: beacon.id,
+          id: beacon.id,
+        };
+      })
+    );
   };
-
 
   const fetchCoupons = async () => {
-    const couponObjs = await CouponService.fetchCoupons()
-    setCoupons(couponObjs.map((coupons) => {
-      return {
-        x: (coupons.x / width) * stageWidth,
-        y: (coupons.y / height) * stageHeight,
-        isDragging: false,
-        userId: coupons.userId,
-        // add additonal coupon fieldss
-      }
-    }));
+    const couponObjs = await CouponService.fetchCoupons();
+    setCoupons(
+      couponObjs.map((coupons) => {
+        return {
+          x: (coupons.x / width) * stageWidth,
+          y: (coupons.y / height) * stageHeight,
+          isDragging: false,
+          userId: coupons.userId,
+          id: coupons.id,
+          // add additonal coupon fieldss
+        };
+      })
+    );
   };
 
-
-  
-  
   useEffect(() => {
     fetchBeacons();
     fetchCoupons();
@@ -101,7 +97,6 @@ export const MapObject = () => {
   const getScaledY = (y: number) => {
     return Math.round((y / stageHeight) * height * 2) / 2;
   };
-  
 
   const dialogClosed = () => {
     setOpen(false);
@@ -109,10 +104,10 @@ export const MapObject = () => {
     fetchBeacons();
   };
 
-  const editBeacon = (beacon) => {  
+  const editBeacon = (beacon) => {
     setSelectedBeacon(beacon);
     setOpen(true);
-  }
+  };
 
   return (
     <div>
@@ -130,7 +125,7 @@ export const MapObject = () => {
         type="number"
         value={width}
         onChange={(e) => setWidth(Number(e.target.value))}
-        sx={{ m: 1 }} 
+        sx={{ m: 1 }}
       />
 
       <TextField
@@ -170,8 +165,7 @@ export const MapObject = () => {
             </React.Fragment>
           ))}
 
-
-{coupons.map((coupon) => (
+          {coupons.map((coupon) => (
             <React.Fragment key={coupon.id}>
               <Rect
                 x={coupon.x}
@@ -179,11 +173,6 @@ export const MapObject = () => {
                 stroke="black"
                 width={10}
                 height={10}
-                draggable
-                onDragStart={() => handleDragStart(coupon.id)}
-                onDragEnd={(e) =>
-                  handleDragEnd(coupon.id, e.target.x(), e.target.y())
-                }
                 // onDblClick={() => editBeacon(coupon)}
               />
               <Text
@@ -200,7 +189,8 @@ export const MapObject = () => {
       <BeaconModal
         open={open}
         onClose={() => dialogClosed()}
-        selectedBeacon={selectedBeacon}/>
+        selectedBeacon={selectedBeacon}
+      />
     </div>
   );
 };
