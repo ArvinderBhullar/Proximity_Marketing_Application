@@ -21,6 +21,8 @@ interface CouponData {
   start: Timestamp;
   end: Timestamp;
   userId: DocumentReference;
+  x: number;
+  y: number;
 }
 
 const CouponModal: React.FC<CouponModalProps> = ({ open, onClose, selectedCoupon }) => {
@@ -28,9 +30,11 @@ const CouponModal: React.FC<CouponModalProps> = ({ open, onClose, selectedCoupon
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
   const [promocode, setPromocode] = useState("");
-  const [start, setStart] = useState(new Date());
+  const [start, setStart] = useState(Timestamp.now().toDate());
   const [end, setEnd] = useState(Timestamp.now().toDate());
   const [userId, setUserId] = useState(doc(db, "Organizations/" + user.uid));
+  const [x, setX] = useState(0);
+  const [y, setY] = useState(0);
   const [confirmationOpen, setConfirmationOpen] = useState(false);
 
   useEffect(() => {
@@ -40,13 +44,18 @@ const CouponModal: React.FC<CouponModalProps> = ({ open, onClose, selectedCoupon
       setPromocode(selectedCoupon.promocode);
       setStart(selectedCoupon.start.toDate());
       setEnd(selectedCoupon.end.toDate());
+      setX(selectedCoupon.x);
+      setY(selectedCoupon.y);
     } else {
       setName("");
       setDescription("");
       setPromocode("");
       setStart(Timestamp.now().toDate());
       setEnd(Timestamp.now().toDate());
+      setX(0);
+      setY(0);
     }
+
   }, [open, onClose, selectedCoupon]);
 
 
@@ -58,6 +67,8 @@ const CouponModal: React.FC<CouponModalProps> = ({ open, onClose, selectedCoupon
       name: form.elements["name"].value,
       description: form.elements["description"].value,
       promocode: form.elements["promocode"].value,
+      x: parseFloat(form.elements["x"].value),
+      y: parseFloat(form.elements["y"].value),
       start: Timestamp.fromDate(new Date(form.elements["start"].value)),
       end: Timestamp.fromDate(new Date(form.elements["end"].value)),
       userId: doc(db, "Organizations/" + user.uid) // Assign userId with a valid DocumentReference
@@ -154,6 +165,23 @@ const CouponModal: React.FC<CouponModalProps> = ({ open, onClose, selectedCoupon
                           value={dayjs(end)}
                           />
             </LocalizationProvider>
+          </div>
+
+          <div>
+            <TextField
+              id='x'
+              label="X"
+              type="number"
+              value={x}
+              onChange={e => setX(parseFloat(e.target.value))}
+              sx={{ m: 1, width: "25ch" }}
+            />
+          <TextField id='y'
+                       label="y"
+                       type="number"
+                       value={y}
+                       onChange={e => setY(parseFloat(e.target.value))}
+                       sx={{ m: 1, width: "25ch" }} />
           </div>
           <Button
             type="submit"

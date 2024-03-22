@@ -1,5 +1,5 @@
 import { Box, Button, TextField } from "@mui/material";
-import React, { useContext, useEffect } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { Stage, Layer, Rect, Circle, Text } from "react-konva";
 import {
   query,
@@ -11,54 +11,50 @@ import {
 } from "firebase/firestore";
 import { db } from "../FirebaseConfig";
 import { AuthContext } from "../AuthProvider";
+import BeaconModal from "./BeaconModal";
+import BeaconService from "../services/BeaconService";
 
 export const MapObject = () => {
   const { user } = useContext(AuthContext);
-  const [beacons, setBeacons] = React.useState<
+  const [beacons, setBeacons] = useState<
     { x: number; y: number; id: string }[]
   >([]);
-  const [stageWidth, setStageWidth] = React.useState<number>(
+  const [stageWidth, setStageWidth] = useState<number>(
     window.innerWidth - 200
   );
-  const [stageHeight, setStageHeight] = React.useState<number>(
+  const [stageHeight, setStageHeight] = useState<number>(
     window.innerHeight
   );
-  const [width, setWidth] = React.useState<number>(20);
-  const [height, setHeight] = React.useState<number>(10);
+  const [open, setOpen] = useState(false);
+  const [width, setWidth] = useState<number>(20);
+  const [height, setHeight] = useState<number>(10);
+  const [selectedBeacon, setSelectedBeacon] = useState(null);
 
-  useEffect(() => {
-    const fetchBeacons = async () => {
-      const q = query(
-        collection(db, "Beacons"),
-        where("userId", "==", doc(db, "Organizations/" + user.uid))
-      );
-      const querySnapshot = await getDocs(q);
-      const beacons = querySnapshot.docs.map((doc) => {
-        const data = doc.data();
-        return {
-          id: doc.id,
-          x: (data.x / width) * stageWidth,
-          y: (data.y / height) * stageHeight,
-          uuid: data.beaconUUID,
-        }
-      });
+
+  const fetchBeacons = async () => {
+    BeaconService.fetchBeacons().then((beacons) => {
       console.log(beacons);
-      setBeacons(beacons);
-    };
-
+    })
+    // const querySnapshot = await getDocs(q);
+    // const beacons = querySnapshot.docs.map((doc) => {
+    //   const data = doc.data();
+    //   return {
+    //     id: doc.id,
+    //     x: (data.x / width) * stageWidth,
+    //     y: (data.y / height) * stageHeight,
+    //     uuid: data.beaconUUID,
+    //   }
+    // });
+    // console.log(beacons);
+    // setBeacons(beacons);
+  };
+  
+  useEffect(() => {
     fetchBeacons();
   }, []);
 
   const handleAddBeacon = () => {
-    const newBeacon = {
-      x: 0,
-      y: 0, 
-      uuid: Math.random().toString(), 
-      id: Math.random().toString(),
-      isDragging: false,
-    };
-
-    setBeacons((prevBeacons) => [...prevBeacons, newBeacon]);
+    setOpen(true);
   };
 
   const handleDragStart = (id: string) => {
@@ -89,6 +85,18 @@ export const MapObject = () => {
   const getScaledY = (y: number) => {
     return Math.round((y / stageHeight) * height * 2) / 2;
   };
+  
+
+  const dialogClosed = () => {
+    setOpen(false);
+    setSelectedBeacon(null);
+    fetchBeacons();
+  };
+
+  const editBeacon = (beacon) => {  
+    setSelectedBeacon(beacon);
+    setOpen(true);
+  }
 
   return (
     <div>
@@ -135,6 +143,7 @@ export const MapObject = () => {
                 onDragEnd={(e) =>
                   handleDragEnd(beacon.id, e.target.x(), e.target.y())
                 }
+                onDblClick={() => editBeacon(beacon)}
               />
               <Text
                 x={beacon.x + 15}
@@ -146,6 +155,11 @@ export const MapObject = () => {
           ))}
         </Layer>
       </Stage>
+
+      <BeaconModal
+        open={open}
+        onClose={() => dialogClosed()}
+        selectedBeacon={selectedBeacon}/>
     </div>
   );
 };
