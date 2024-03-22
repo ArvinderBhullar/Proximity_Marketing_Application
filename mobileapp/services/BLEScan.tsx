@@ -6,14 +6,65 @@ type PermissionCallback = (result: boolean) => void;
 
 const bleManager = new BleManager();
 
+export class BLEDevice {
+  static MEASURING_POWER: number = -65;
+  static N: number = 2;
+
+  uuid: string;
+  name: string;
+  rssi: number[];
+
+  constructor(uuid: string, name: string, initialRSSI: number) {
+    this.uuid = uuid;
+    this.name = name;
+    this.rssi = [initialRSSI];
+  }
+
+  static compareDistance(deviceA: BLEDevice, deviceB: BLEDevice) {
+    const distanceA = deviceA.getDistance(); // Calculate distance for object a
+    const distanceB = deviceB.getDistance(); // Calculate distance for object b
+
+    // Compare distances and return result for sorting
+    if (distanceA < distanceB) {
+      return -1; // a should come before b
+    } else if (distanceA > distanceB) {
+      return 1; // a should come after b
+    } else {
+      return 0; // distances are equal, maintain current order
+    }
+  }
+  appendRSSI(newRSSI: number): void {
+    if (newRSSI < 0) {
+      this.rssi.push(newRSSI);
+    }
+  }
+
+  getRSSIAvg(): number {
+    if (this.rssi.length === 0) {
+      return 0; // Return 0 if no RSSI values available to avoid division by zero
+    }
+
+    const sum = this.rssi.reduce((acc, value) => acc + value, 0);
+    return sum / this.rssi.length;
+  }
+
+  getDistance(): number {
+    return Math.pow(
+      10,
+      (BLEDevice.MEASURING_POWER - this.getRSSIAvg()) / (10 * BLEDevice.N),
+    );
+  }
+}
+
 interface BluetoothLowEnergyAPI {
   requestPermissions(callback: PermissionCallback): Promise<void>;
   scanForDevices(): void;
-  allDevices: Device[];
+  allBeacons: BLEDevice[];
+  clearDevices(): void;
 }
 
 export default function useBLE(): BluetoothLowEnergyAPI {
-  const [allDevices, setAllDevices] = useState<Device[]>([]);
+  const [allBeacons, setAllBeacons] = useState<BLEDevice[]>([]);
 
   // Checking if permission have been granted. IOS handles BLE scanning permissions internally, while Android, you have to explicitly ask
   const requestPermissions = async (callback: PermissionCallback) => {
@@ -43,17 +94,24 @@ export default function useBLE(): BluetoothLowEnergyAPI {
       }
       // Filter the scannable devices with the ones what have Closetify Beacon in its name
       if (device && device.name?.includes('Closetify Beacon')) {
+        // if (device) {
         console.log(`Device '${device['localName']}' Found`);
-        setAllDevices(prevState => {
+        setAllBeacons(prevState => {
           // Checking if its in the list already. If it is, update it, if not, add it.
           const indexToReplace = prevState.findIndex(
-            currentDevice => currentDevice['localName'] === device['localName'],
+            currentDevice => currentDevice.uuid === device.id,
           );
           if (indexToReplace == -1) {
-            return [...prevState, device];
+            const new_device: BLEDevice = new BLEDevice(
+              device.id,
+              device.name!,
+              device.rssi!,
+            );
+            return [...prevState, new_device];
           } else {
             const updatedDevices = [...prevState];
-            updatedDevices[indexToReplace] = device;
+            const updated_device = updatedDevices[indexToReplace];
+            updated_device.appendRSSI(device.rssi!);
             return updatedDevices;
           }
         });
@@ -63,9 +121,14 @@ export default function useBLE(): BluetoothLowEnergyAPI {
     console.log('Scanning Complete');
   };
 
+  const clearDevices = () => {
+    setAllBeacons([]);
+  };
+
   return {
     requestPermissions,
     scanForDevices,
-    allDevices,
+    allBeacons,
+    clearDevices,
   };
 }
