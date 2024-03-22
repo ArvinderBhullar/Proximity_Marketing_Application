@@ -37,7 +37,6 @@ export const MapObject = () => {
           userId: beacon.userId,
           name: beacon.name,
           uuid: beacon.uuid,
-          uid: beacon.id,
           id: beacon.id,
         };
       })
@@ -77,12 +76,25 @@ export const MapObject = () => {
     );
   };
 
-  const handleDragEnd = (id: string, x: number, y: number) => {
+  const handleDragEnd = (beacon: any, x: number, y: number) => {
+    console.log(beacon)
     setBeacons((prevBeacons) =>
-      prevBeacons.map((beacon) =>
-        beacon.id === id ? { ...beacon, isDragging: false, x, y } : beacon
+      prevBeacons.map((prevBeacon) =>
+        prevBeacon.id === beacon.id ? { ...prevBeacon, isDragging: false, x, y } : prevBeacon
       )
     );
+
+    beacons.find((b) => b.id === beacon.id).x = getScaledX(x);
+    beacons.find((b) => b.id === beacon.id).y = getScaledY(y);
+
+    BeaconService.updateBeacon({
+      id: beacon.id,
+      name: beacon.name,
+      userId: beacon.userId,
+      uuid: beacon.uuid,
+      x: getScaledX(x),
+      y: getScaledY(y),
+    });
   };
 
   const heightChange = (e) => {
@@ -152,7 +164,7 @@ export const MapObject = () => {
                 draggable
                 onDragStart={() => handleDragStart(beacon.id)}
                 onDragEnd={(e) =>
-                  handleDragEnd(beacon.id, e.target.x(), e.target.y())
+                  handleDragEnd(beacon, e.target.x(), e.target.y())
                 }
                 onDblClick={() => editBeacon(beacon)}
               />

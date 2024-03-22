@@ -31,9 +31,11 @@ class BeaconService {
   }
 
   // Update a beacon in the database
+  
   static async updateBeacon(beacon): Promise<void> {
+    console.log('updating', beacon)
     try {
-      const beaconRef = doc(db, "Beacons", beacon.uid);
+      const beaconRef = doc(db, "Beacons", beacon.id);
       await updateDoc(beaconRef, { ...beacon }); 
       console.log("Beacon updated successfully!");
     } catch (error) {
