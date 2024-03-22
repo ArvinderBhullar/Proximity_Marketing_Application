@@ -5,7 +5,8 @@ import { useContext } from "react";
 
 
 class BeaconService {
-  static async fetchBeacons() {
+
+  static async fetchBeacons(): Promise<any> {
     const q = query(
       collection(db, "Beacons"),
       where("userId", "==", doc(db, "Organizations/" + auth.currentUser.uid))

@@ -13,12 +13,12 @@ import { db } from "../FirebaseConfig";
 import { AuthContext } from "../AuthProvider";
 import BeaconModal from "./BeaconModal";
 import BeaconService from "../services/BeaconService";
+import CouponService from "../services/CouponService";
 
 export const MapObject = () => {
   const { user } = useContext(AuthContext);
-  const [beacons, setBeacons] = useState<
-    { x: number; y: number; id: string }[]
-  >([]);
+  const [beacons, setBeacons] = useState<any>([]);
+  const [coupons, setCoupons] = useState<any>([]);
   const [stageWidth, setStageWidth] = useState<number>(
     window.innerWidth - 200
   );
@@ -32,25 +32,41 @@ export const MapObject = () => {
 
 
   const fetchBeacons = async () => {
-    BeaconService.fetchBeacons().then((beacons) => {
-      console.log(beacons);
-    })
-    // const querySnapshot = await getDocs(q);
-    // const beacons = querySnapshot.docs.map((doc) => {
-    //   const data = doc.data();
-    //   return {
-    //     id: doc.id,
-    //     x: (data.x / width) * stageWidth,
-    //     y: (data.y / height) * stageHeight,
-    //     uuid: data.beaconUUID,
-    //   }
-    // });
-    // console.log(beacons);
-    // setBeacons(beacons);
+    const beaconObjs = await BeaconService.fetchBeacons()
+    setBeacons(beaconObjs.map((beacon) => {
+      return {
+        x: (beacon.x / width) * stageWidth,
+        y: (beacon.y / height) * stageHeight,
+        isDragging: false,
+        userId: beacon.userId,
+        name: beacon.name,
+        uuid: beacon.uuid,
+        uid: beacon.id,
+        id: beacon.id,
+      }
+    }));
   };
+
+
+  const fetchCoupons = async () => {
+    const couponObjs = await CouponService.fetchCoupons()
+    setCoupons(couponObjs.map((coupons) => {
+      return {
+        x: (coupons.x / width) * stageWidth,
+        y: (coupons.y / height) * stageHeight,
+        isDragging: false,
+        userId: coupons.userId,
+        // add additonal coupon fieldss
+      }
+    }));
+  };
+
+
+  
   
   useEffect(() => {
     fetchBeacons();
+    fetchCoupons();
   }, []);
 
   const handleAddBeacon = () => {
@@ -149,6 +165,31 @@ export const MapObject = () => {
                 x={beacon.x + 15}
                 y={beacon.y - 5}
                 text={`(${getScaledX(beacon.x)}, ${getScaledY(beacon.y)})`}
+                fontSize={12}
+              />
+            </React.Fragment>
+          ))}
+
+
+{coupons.map((coupon) => (
+            <React.Fragment key={coupon.id}>
+              <Rect
+                x={coupon.x}
+                y={coupon.y}
+                stroke="black"
+                width={10}
+                height={10}
+                draggable
+                onDragStart={() => handleDragStart(coupon.id)}
+                onDragEnd={(e) =>
+                  handleDragEnd(coupon.id, e.target.x(), e.target.y())
+                }
+                // onDblClick={() => editBeacon(coupon)}
+              />
+              <Text
+                x={coupon.x + 15}
+                y={coupon.y - 5}
+                text={`(${getScaledX(coupon.x)}, ${getScaledY(coupon.y)})`}
                 fontSize={12}
               />
             </React.Fragment>
