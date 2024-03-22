@@ -31,7 +31,6 @@ class BeaconService {
   }
 
   // Update a beacon in the database
-  
   static async updateBeacon(beacon): Promise<void> {
     console.log('updating', beacon)
     try {

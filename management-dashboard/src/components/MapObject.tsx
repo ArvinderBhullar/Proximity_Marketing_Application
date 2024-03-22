@@ -5,6 +5,7 @@ import { AuthContext } from "../AuthProvider";
 import BeaconModal from "./BeaconModal";
 import BeaconService from "../services/BeaconService";
 import CouponService from "../services/CouponService";
+import MapService from "../services/MapService";
 
 export const MapObject = () => {
   const { user } = useContext(AuthContext);
@@ -14,6 +15,7 @@ export const MapObject = () => {
   const [stageHeight, setStageHeight] = useState<number>(window.innerHeight);
   const [open, setOpen] = useState(false);
   const [width, setWidth] = useState<number>(20);
+  const [map, setMap] = useState<any>([]);
   const [height, setHeight] = useState<number>(10);
   const [selectedBeacon, setSelectedBeacon] = useState(null);
 
@@ -50,9 +52,24 @@ export const MapObject = () => {
     );
   };
 
+
+  const fetchMap = async () => {
+    const map = await MapService.fetchMap();
+    
+    if (map.length > 0) {
+      setWidth(map[0].width);
+      setHeight(map[0].height);
+    } else {
+      MapService.addMap({ width: 20, height: 10 });
+    }
+
+    setMap(map[0]);
+  };
+
   useEffect(() => {
     fetchBeacons();
     fetchCoupons();
+    fetchMap();
   }, []);
 
   const handleAddBeacon = () => {
@@ -91,7 +108,15 @@ export const MapObject = () => {
   const heightChange = (e) => {
     setHeight(Number(e.target.value));
     setStageHeight(stageWidth * (height / width));
+
+    MapService.updateMap({ width, height }, map.id);
   };
+
+  const widthChange = (e) => {
+    setWidth(Number(e.target.value));
+
+    MapService.updateMap({ width, height }, map.id);
+  }
 
   const getScaledX = (x: number) => {
     return Math.round((x / stageWidth) * width * 2) / 2;
@@ -127,7 +152,7 @@ export const MapObject = () => {
         label="Width"
         type="number"
         value={width}
-        onChange={(e) => setWidth(Number(e.target.value))}
+        onChange={(e) => widthChange(e)}
         sx={{ m: 1 }}
       />
 
