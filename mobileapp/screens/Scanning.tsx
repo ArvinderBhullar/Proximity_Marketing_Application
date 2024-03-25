@@ -94,17 +94,17 @@ const fetchBeacons = async (closetBeacons: BLEDevice[]) => {
 };
 
 const Scanning = () => {
-  const {requestPermissions, scanForDevices, allBeacons, clearDevices} =
+  const {requestPermissions, scanForDevices, allBeacons, clearDevices, deviceScan} =
     useBLE();
 
   // Functionality to scan for new devices every 10 seconds
-  useEffect(() => {
-    const fetchDevicesInterval = setInterval(() => {
-      fetchAllDevices();
-    }, 5000); // Fetch devices every 10 seconds
+  // useEffect(() => {
+  //   const fetchDevicesInterval = setInterval(() => {
+  //     fetchAllDevices();
+  //   }, 5000); // Fetch devices every 10 seconds
 
-    return () => clearInterval(fetchDevicesInterval);
-  }, []);
+  //   return () => clearInterval(fetchDevicesInterval);
+  // }, []);
 
   // Function to scan for devices if permission was granted by the user to do so
   const fetchAllDevices = () => {
@@ -119,17 +119,23 @@ const Scanning = () => {
   // DEBUG: simple code just to print the name and RSSI of the device
   const printAllDevices = async () => {
     console.log("ALL BEACONS", allBeacons);
-    allBeacons.forEach(device => {
-      console.log(
-        `Device Name: ${device.name}, ID: ${
-          device.uuid
-        }, RSSI: ${
-          device.rssi
-        }, the avg RSSI is ${device.getRSSIAvg()}.
-        \n\n\n the kalman RSSI is is ${device.getRSSIKalman()} meters.
-        \n\n\n distance is ${device.getDistance()} meters.`,
-      );
-    });
+    allBeacons.forEach(b => {
+      console.log('avg rssi', b.getRSSIAvg())
+      console.log('kalman', b.getRSSIKalman())
+      console.log('Distance', b.getDistance())
+      console.log('Distance Kalman', b.getDistanceKalman())
+    })
+    // allBeacons.forEach(device => {
+    //   console.log(
+    //     `Device Name: ${device.name}, ID: ${
+    //       device.uuid
+    //     }, RSSI: ${
+    //       device.rssi
+    //     }, the avg RSSI is ${device.getRSSIAvg()}.
+    //     \n\n\n the kalman RSSI is is ${device.getRSSIKalman()} meters.
+    //     \n\n\n distance is ${device.getDistance()} meters.`,
+    //   );
+    // });
 
     const beacons = await fetchBeacons(allBeacons);
       // allBeacons.sort(BLEDevice.compareDistance).slice(0, 3),
@@ -144,23 +150,47 @@ const Scanning = () => {
     //   clearDevices();
     //   return
     // }
-      const [deviceX, deviceY] = trilateration(beacons);
+      // const [deviceX, deviceY] = trilateration(beacons);
   
-      console.log(deviceX, deviceY);
-      // 
-      const ms = `${deviceX}, ${deviceY},
-      ${beacons[0].name+ " " + Math.round(beacons[0].r)+ ", " + Math.round(allBeacons[0].getRSSIAvg())},
-      ${beacons[1].name + " " +Math.round(beacons[1].r)+ ", " + Math.round(allBeacons[1].getRSSIAvg())},
-      ${beacons[2].name +" " + Math.round(beacons[2].r)+ ", " + Math.round(allBeacons[2].getRSSIAvg())}`
-      Alert.alert("TEst",ms)
+      // console.log(deviceX, deviceY);
+      // // 
+      // const ms = `${deviceX}, ${deviceY},
+      // ${beacons[0].name+ " " + Math.round(beacons[0].r)+ ", " + Math.round(allBeacons[0].getRSSIAvg())},
+      // ${beacons[1].name + " " +Math.round(beacons[1].r)+ ", " + Math.round(allBeacons[1].getRSSIAvg())},
+      // ${beacons[2].name +" " + Math.round(beacons[2].r)+ ", " + Math.round(allBeacons[2].getRSSIAvg())}`
+      // Alert.alert("TEst",ms)
 
     clearDevices();
   };
+
+  const delay = (ms: number | undefined) => new Promise(res => setTimeout(res, ms));
+  
+  const performScan = async () => {
+    // clearDevices();
+    // let i = 0;
+
+    // while (i < 10) {
+    //   scanForDevices();
+    //   i++;
+    //   await delay(2500)
+    // }
+
+    
+    // allBeacons.forEach(b => {
+    //   console.log('rssi values', b.rssi)
+    //   console.log('rssi avg values', b.getRSSIAvg())
+    // })
+
+    deviceScan().then(rssi => {
+      console.log('rssi', rssi)
+    })
+  }
 
   return (
     <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
       <Text>Scanning Testing</Text>
       <Button onPress={printAllDevices}>Print Devices</Button>
+      <Button onPress={performScan}>Sacn Devices</Button>
     </View>
   );
 };

@@ -1,14 +1,14 @@
 import { useState } from 'react';
 import { PermissionsAndroid, Platform } from 'react-native';
 import { BleManager, Device } from 'react-native-ble-plx';
-import { KalmanFilter }  from 'kalmanjs';
+var KalmanFilter = require('kalmanjs')
 
 type PermissionCallback = (result: boolean) => void;
 
 const bleManager = new BleManager();
 
 export class BLEDevice {
-  static MEASURING_POWER: number = -65;
+  static MEASURING_POWER: number = -69;
   static N: number = 2;
 
   uuid: string;
@@ -50,8 +50,11 @@ export class BLEDevice {
   }
 
   getRSSIKalman(): number {
+    console.log('This is kalman 1')
     const kf = new KalmanFilter({R: 0.01, Q: 3});
+    console.log('This is kalman 2')
     const kalmans = this.rssi.map(rssi => kf.filter(rssi));
+    console.log('This is kalman 3', kalmans)
     return kalmans[kalmans.length - 1];
   }
 
@@ -61,6 +64,13 @@ export class BLEDevice {
       (BLEDevice.MEASURING_POWER - this.getRSSIAvg()) / (10 * BLEDevice.N),
     );
   }
+
+  getDistanceKalman(): number {
+    return Math.pow(
+      10,
+      (BLEDevice.MEASURING_POWER - this.getRSSIKalman()) / (10 * BLEDevice.N),
+    );
+  }
 }
 
 interface BluetoothLowEnergyAPI {
@@ -68,6 +78,7 @@ interface BluetoothLowEnergyAPI {
   scanForDevices(): void;
   allBeacons: BLEDevice[];
   clearDevices(): void;
+  deviceScan(): Promise<void>;
 }
 
 export default function useBLE(): BluetoothLowEnergyAPI {
@@ -122,11 +133,29 @@ export default function useBLE(): BluetoothLowEnergyAPI {
             return updatedDevices;
           }
         });
+        // Debug
+        console.log('device found stopping scan')
+        bleManager.stopDeviceScan()
       }
     });
 
     console.log('Scanning Complete');
   };
+
+
+  const deviceScan = async () => {
+    await bleManager.startDeviceScan(null, null, (error, device) => {
+      if (error) {
+        console.warn('Error scanning')
+      }
+      else if (device!.id === "00:00:00:00:00:05") {
+        bleManager.stopDeviceScan()
+        console.log('found', device!.id)
+        console.log('rssi found', device!.rssi)
+        return device!.rssi
+      }
+    })
+  }
 
   const clearDevices = () => {
     setAllBeacons([]);
@@ -138,5 +167,6 @@ export default function useBLE(): BluetoothLowEnergyAPI {
     scanForDevices,
     allBeacons,
     clearDevices,
+    deviceScan
   };
 }
