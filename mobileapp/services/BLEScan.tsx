@@ -1,6 +1,6 @@
-import {useState} from 'react';
-import {PermissionsAndroid, Platform} from 'react-native';
-import {BleManager, Device} from 'react-native-ble-plx';
+import { useState } from 'react';
+import { PermissionsAndroid, Platform } from 'react-native';
+import { BleManager, Device } from 'react-native-ble-plx';
 
 type PermissionCallback = (result: boolean) => void;
 
@@ -95,9 +95,9 @@ export default function useBLE(): BluetoothLowEnergyAPI {
       // Filter the scannable devices with the ones what have Closetify Beacon in its name
       if (device && device.name?.includes('Closetify Beacon')) {
         // if (device) {
-        console.log(`Device '${device['localName']}' Found`);
         setAllBeacons(prevState => {
           // Checking if its in the list already. If it is, update it, if not, add it.
+          console.log(device.name)
           const indexToReplace = prevState.findIndex(
             currentDevice => currentDevice.uuid === device.id,
           );
@@ -123,6 +123,7 @@ export default function useBLE(): BluetoothLowEnergyAPI {
 
   const clearDevices = () => {
     setAllBeacons([]);
+    console.log("Beacons Cleared");
   };
 
   return {

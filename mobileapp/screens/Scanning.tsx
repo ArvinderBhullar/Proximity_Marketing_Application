@@ -1,5 +1,5 @@
 import React, {useEffect} from 'react';
-import {View, Text} from 'react-native';
+import {View, Text, Alert} from 'react-native';
 import {Button} from 'react-native-paper';
 import useBLE, {BLEDevice} from './../services/BLEScan';
 import {auth, db} from '../services/Config';
@@ -43,15 +43,17 @@ function trilateration(beacons: Beacon[]): [number, number] {
   const dr21 = Math.pow(beacon2.r, 2) - Math.pow(beacon1.r, 2);
 
   const dx13 = beacon1.x - beacon3.x;
-  const dy13 = beacon2.y - beacon3.y;
+  const dy13 = beacon1.y - beacon3.y;
   const dx31 = Math.pow(beacon3.x, 2) - Math.pow(beacon1.x, 2);
   const dy31 = Math.pow(beacon3.y, 2) - Math.pow(beacon1.y, 2);
   const dr31 = Math.pow(beacon3.r, 2) - Math.pow(beacon1.r, 2);
+
 
   const factorA = (dr21 * dx13) / dx12;
   const factorB = (dx21 * dx13) / dx12;
   const factorC = (dy21 * dx13) / dx12;
   const factorD = (dy12 * dx13) / dx12;
+
   const y =
     (dr31 - dy31 - dx31 - factorA + factorB + factorC) / (2 * (dy13 - factorD));
   const x = (dr21 - dx21 - dy21 - 2 * y * dy12) / (2 * dx12);
@@ -59,7 +61,7 @@ function trilateration(beacons: Beacon[]): [number, number] {
 }
 
 // Fetches the beacon information from Firebase of the 3 closest beacons. Also creates an array of Beacon objects to be used for trilateration function
-const fetchBeacons = async (closetBeacons: BLEDevice[]): Promise<Beacon[]> => {
+const fetchBeacons = async (closetBeacons: BLEDevice[]) => {
   let beacons: Beacon[] = [];
   console.log('Fetching beacons...');
   await Promise.all(
@@ -68,7 +70,7 @@ const fetchBeacons = async (closetBeacons: BLEDevice[]): Promise<Beacon[]> => {
       const beaconQuerySnapshot = await getDocs(
         query(
           collection(db, 'Beacons'),
-          where('beaconUUID', '==', beacon.uuid),
+          where('uuid', '==', beacon.uuid),
         ),
       );
 
@@ -76,8 +78,8 @@ const fetchBeacons = async (closetBeacons: BLEDevice[]): Promise<Beacon[]> => {
         const data = doc.data();
         beacons.push(
           new Beacon(
-            data.beaconUUID,
-            beacon.name, //TODO: Change to data.name after adding the field into firebase;
+            data.uuid,
+            data.name,
             data.x,
             data.y,
             beacon.getDistance(),
@@ -87,6 +89,7 @@ const fetchBeacons = async (closetBeacons: BLEDevice[]): Promise<Beacon[]> => {
       console.log(`Data fetched for beacon with ID: ${beacon.uuid}`);
     }),
   );
+
   return beacons;
 };
 
@@ -98,8 +101,7 @@ const Scanning = () => {
   useEffect(() => {
     const fetchDevicesInterval = setInterval(() => {
       fetchAllDevices();
-      printAllDevices();
-    }, 10000); // Fetch devices every 10 seconds
+    }, 5000); // Fetch devices every 10 seconds
 
     return () => clearInterval(fetchDevicesInterval);
   }, []);
@@ -116,23 +118,40 @@ const Scanning = () => {
 
   // DEBUG: simple code just to print the name and RSSI of the device
   const printAllDevices = async () => {
+    console.log("ALL BEACONS", allBeacons);
     allBeacons.forEach(device => {
       console.log(
-        `Device Name: ${device.name}, RSSI: ${
+        `Device Name: ${device.name}, ID: ${
+          device.uuid
+        }, RSSI: ${
           device.rssi
         }, the avg RSSI is ${device.getRSSIAvg()}.\n\n\n distance is ${device.getDistance()} meters.`,
       );
     });
 
-    const beacons = await fetchBeacons(
-      allBeacons.sort(BLEDevice.compareDistance).slice(0, 3),
-    );
+    const beacons = await fetchBeacons(allBeacons);
+      // allBeacons.sort(BLEDevice.compareDistance).slice(0, 3),
+      console.log(beacons.length)
+    //   if (beacons.length < 3) {
+    //     let s = "";
+    //     beacons.forEach(device => {
+    //       s+= device.name;
+    //     })
+    //   const ms = `Not enough Beacons. + ${s}`
+    //   Alert.alert("Beacon Err/or", "Not enough beacons");
+    //   clearDevices();
+    //   return
+    // }
+      const [deviceX, deviceY] = trilateration(beacons);
+  
+      console.log(deviceX, deviceY);
+      // 
+      const ms = `${deviceX}, ${deviceY},
+      ${beacons[0].name+ " " + Math.round(beacons[0].r)+ ", " + Math.round(allBeacons[0].getRSSIAvg())},
+      ${beacons[1].name + " " +Math.round(beacons[1].r)+ ", " + Math.round(allBeacons[1].getRSSIAvg())},
+      ${beacons[2].name +" " + Math.round(beacons[2].r)+ ", " + Math.round(allBeacons[2].getRSSIAvg())}`
+      Alert.alert("TEst",ms)
 
-    console.log('Testing' + beacons);
-
-    const [deviceX, deviceY] = trilateration(beacons);
-
-    console.log(deviceX, deviceY);
     clearDevices();
   };
 
