@@ -125,7 +125,9 @@ const Scanning = () => {
           device.uuid
         }, RSSI: ${
           device.rssi
-        }, the avg RSSI is ${device.getRSSIAvg()}.\n\n\n distance is ${device.getDistance()} meters.`,
+        }, the avg RSSI is ${device.getRSSIAvg()}.
+        \n\n\n the kalman RSSI is is ${device.getRSSIKalman()} meters.
+        \n\n\n distance is ${device.getDistance()} meters.`,
       );
     });
 

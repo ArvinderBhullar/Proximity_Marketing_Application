@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { PermissionsAndroid, Platform } from 'react-native';
 import { BleManager, Device } from 'react-native-ble-plx';
+import { KalmanFilter }  from 'kalmanjs';
 
 type PermissionCallback = (result: boolean) => void;
 
@@ -46,6 +47,12 @@ export class BLEDevice {
 
     const sum = this.rssi.reduce((acc, value) => acc + value, 0);
     return sum / this.rssi.length;
+  }
+
+  getRSSIKalman(): number {
+    const kf = new KalmanFilter({R: 0.01, Q: 3});
+    const kalmans = this.rssi.map(rssi => kf.filter(rssi));
+    return kalmans[kalmans.length - 1];
   }
 
   getDistance(): number {
