@@ -35,6 +35,7 @@ class BeaconService {
     console.log('updating', beacon)
     try {
       const beaconRef = doc(db, "Beacons", beacon.id);
+      delete beacon.id;
       await updateDoc(beaconRef, { ...beacon }); 
       console.log("Beacon updated successfully!");
     } catch (error) {

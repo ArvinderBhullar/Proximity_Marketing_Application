@@ -14,9 +14,9 @@ export const MapObject = () => {
   const [stageWidth, setStageWidth] = useState<number>(window.innerWidth - 200);
   const [stageHeight, setStageHeight] = useState<number>(window.innerHeight);
   const [open, setOpen] = useState(false);
-  const [width, setWidth] = useState<number>(20);
+  const [width, setWidth] = useState<number>(13);
   const [map, setMap] = useState<any>([]);
-  const [height, setHeight] = useState<number>(10);
+  const [height, setHeight] = useState<number>(13);
   const [selectedBeacon, setSelectedBeacon] = useState(null);
 
   const fetchBeacons = async () => {
@@ -52,24 +52,23 @@ export const MapObject = () => {
     );
   };
 
-
   const fetchMap = async () => {
     const map = await MapService.fetchMap();
-    
+
     if (map.length > 0) {
       setWidth(map[0].width);
       setHeight(map[0].height);
     } else {
-      MapService.addMap({ width: 20, height: 10 });
+      MapService.addMap({ width: 13, height: 13 });
     }
 
     setMap(map[0]);
   };
 
   useEffect(() => {
+    fetchMap();
     fetchBeacons();
     fetchCoupons();
-    fetchMap();
   }, []);
 
   const handleAddBeacon = () => {
@@ -85,10 +84,12 @@ export const MapObject = () => {
   };
 
   const handleDragEnd = (beacon: any, x: number, y: number) => {
-    console.log(beacon)
+    console.log(beacon);
     setBeacons((prevBeacons) =>
       prevBeacons.map((prevBeacon) =>
-        prevBeacon.id === beacon.id ? { ...prevBeacon, isDragging: false, x, y } : prevBeacon
+        prevBeacon.id === beacon.id
+          ? { ...prevBeacon, isDragging: false, x, y }
+          : prevBeacon
       )
     );
 
@@ -105,18 +106,18 @@ export const MapObject = () => {
     });
   };
 
-  const heightChange = (e) => {
-    setHeight(Number(e.target.value));
-    setStageHeight(stageWidth * (height / width));
+  // const heightChange = (e) => {
+  //   setHeight(Number(e.target.value));
+  //   setStageHeight(stageWidth * (height / width));
 
-    MapService.updateMap({ width, height }, map.id);
-  };
+  //   MapService.updateMap({ width, height }, map.id);
+  // };
 
-  const widthChange = (e) => {
-    setWidth(Number(e.target.value));
+  // const widthChange = (e) => {
+  //   setWidth(Number(e.target.value));
 
-    MapService.updateMap({ width, height }, map.id);
-  }
+  //   MapService.updateMap({ width, height }, map.id);
+  // };
 
   const getScaledX = (x: number) => {
     return Math.round((x / stageWidth) * width * 2) / 2;
@@ -133,8 +134,15 @@ export const MapObject = () => {
   };
 
   const editBeacon = (beacon) => {
+    beacon.x = getScaledX(beacon.x);
+    beacon.y = getScaledY(beacon.y);
     setSelectedBeacon(beacon);
     setOpen(true);
+  };
+
+  const saveMap = () => {
+    MapService.updateMap({ width, height }, map.id);
+    setStageHeight(stageWidth * (height / width));
   };
 
   return (
@@ -152,7 +160,7 @@ export const MapObject = () => {
         label="Width"
         type="number"
         value={width}
-        onChange={(e) => widthChange(e)}
+        onChange={(e) => setWidth(Number(e.target.value))}
         sx={{ m: 1 }}
       />
 
@@ -160,13 +168,22 @@ export const MapObject = () => {
         label="Height"
         type="number"
         value={height}
-        onChange={(e) => heightChange(e)}
+        onChange={(e) => setHeight(Number(e.target.value))}
         sx={{ m: 1 }}
       />
 
+      <Button
+        sx={{ m: 1 }}
+        variant="contained"
+        color="primary"
+        onClick={saveMap}
+      >
+        Save
+      </Button>
+
       <Stage
-        width={stageWidth}
-        height={stageHeight}
+        width={stageWidth + 10}
+        height={stageHeight + 10}
         style={{ border: "1px solid black", width: stageWidth }}
       >
         <Layer>
