@@ -143,19 +143,21 @@ export default function useBLE(): BluetoothLowEnergyAPI {
   };
 
 
-  const deviceScan = async () => {
-    await bleManager.startDeviceScan(null, null, (error, device) => {
-      if (error) {
-        console.warn('Error scanning')
-      }
-      else if (device!.id === "00:00:00:00:00:05") {
-        bleManager.stopDeviceScan()
-        console.log('found', device!.id)
-        console.log('rssi found', device!.rssi)
-        return device!.rssi
-      }
-    })
-  }
+  const deviceScan = (): Promise<number> => {
+    return new Promise((resolve, reject) => {
+      bleManager.startDeviceScan(null, null, (error, device) => {
+        if (error) {
+          console.warn('Error scanning');
+          resolve(1);
+        } else if (device && device.id === "00:00:00:00:00:05") {
+          bleManager.stopDeviceScan();
+          console.log('found', device.id);
+          console.log('rssi found', device.rssi);
+          resolve(device.rssi);
+        }
+      });
+    });
+  };
 
   const clearDevices = () => {
     setAllBeacons([]);

@@ -165,7 +165,7 @@ const Scanning = () => {
 
   const delay = (ms: number | undefined) => new Promise(res => setTimeout(res, ms));
   
-  const performScan = async () => {
+
     // clearDevices();
     // let i = 0;
 
@@ -181,16 +181,36 @@ const Scanning = () => {
     //   console.log('rssi avg values', b.getRSSIAvg())
     // })
 
-    deviceScan().then(rssi => {
-      console.log('rssi', rssi)
-    })
+
+
+
+  const performScan = async () => {
+    const results: number[] = [];
+
+    for (let i = 0; i < 10; i++) {
+      await delay(1000);
+      const rssi = await deviceScan();
+      results.push(rssi);
+    }
+
+    setScanResults(results);
+
+    console.log('Scan results:', scanResults);
   }
+
+
+  const [scanResults, setScanResults] = useState<number[]>([]);
+
+  useEffect(() => {
+    console.log('Scan results:', scanResults);
+  }, [scanResults]);
 
   return (
     <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
       <Text>Scanning Testing</Text>
       <Button onPress={printAllDevices}>Print Devices</Button>
-      <Button onPress={performScan}>Sacn Devices</Button>
+      <Button onPress={performScan}>Scan Devices</Button>
+      <Text>Scan Results: {scanResults.join(', ')}</Text>
     </View>
   );
 };
