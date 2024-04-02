@@ -60,9 +60,9 @@ const BeaconModal: React.FC<BeaconModalProps> = ({
     };
 
     if (selectedBeacon) {
-      BeaconService.updateBeacon({ ...beaconData, id: selectedBeacon.id });
+      await BeaconService.updateBeacon({ ...beaconData, id: selectedBeacon.id });
     } else {
-      BeaconService.addBeacon(beaconData);
+      await BeaconService.addBeacon(beaconData);
     }
     onClose();
   };

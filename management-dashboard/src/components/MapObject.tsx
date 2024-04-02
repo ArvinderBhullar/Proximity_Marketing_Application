@@ -6,6 +6,7 @@ import BeaconModal from "./BeaconModal";
 import BeaconService from "../services/BeaconService";
 import CouponService from "../services/CouponService";
 import MapService from "../services/MapService";
+import { KonvaEventObject } from "konva/lib/Node";
 
 export const MapObject = () => {
   const { user } = useContext(AuthContext);
@@ -145,6 +146,21 @@ export const MapObject = () => {
     setStageHeight(stageWidth * (height / width));
   };
 
+  const boundaries = (e, beacon: any) => {
+    if (e.target.x() > stageWidth) {
+      e.target.x(stageWidth);
+    } else if (e.target.x() < 0) {
+      e.target.x(0);
+    }
+
+    if (e.target.y() > stageHeight) {
+      e.target.y(stageHeight);
+    } else if (e.target.y() < 0) {
+      e.target.y(0);
+    }
+
+  };
+
   return (
     <div>
       <Button
@@ -182,9 +198,10 @@ export const MapObject = () => {
       </Button>
 
       <Stage
-        width={stageWidth + 10}
-        height={stageHeight + 10}
+        width={stageWidth + 100}
+        height={stageHeight}
         style={{ border: "1px solid black", width: stageWidth }}
+
       >
         <Layer>
           {beacons.map((beacon) => (
@@ -195,6 +212,7 @@ export const MapObject = () => {
                 stroke="black"
                 radius={5}
                 draggable
+                onDragMove={(e) => {boundaries(e, beacon)}}
                 onDragStart={() => handleDragStart(beacon.id)}
                 onDragEnd={(e) =>
                   handleDragEnd(beacon, e.target.x(), e.target.y())
