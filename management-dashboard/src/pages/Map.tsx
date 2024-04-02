@@ -46,12 +46,6 @@ const Map: React.FC = () => {
         />
       </Button>
 
-      {file && (
-        <div>
-          <h2>Selected File:</h2>
-          <p>{file.name}</p>
-        </div>
-      )}
     </Box>
   );
 };
