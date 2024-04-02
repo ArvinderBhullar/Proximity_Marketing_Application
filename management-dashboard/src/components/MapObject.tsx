@@ -16,6 +16,8 @@ export const MapObject = () => {
   const [stageHeight, setStageHeight] = useState<number>(window.innerHeight);
   const [open, setOpen] = useState(false);
   const [width, setWidth] = useState<number>(13);
+  const [inputWidth, setInputWidth] = useState<number>(13);
+  const [inputHeight, setInputHeight] = useState<number>(13);
   const [map, setMap] = useState<any>([]);
   const [height, setHeight] = useState<number>(13);
   const [selectedBeacon, setSelectedBeacon] = useState(null);
@@ -59,11 +61,15 @@ export const MapObject = () => {
     if (map.length > 0) {
       setWidth(map[0].width);
       setHeight(map[0].height);
+      setInputWidth(map[0].width);
+      setInputHeight(map[0].height);  
     } else {
       MapService.addMap({ width: 13, height: 13 });
     }
 
     setMap(map[0]);
+
+    setStageHeight(stageWidth * (map[0].height / map[0].width));
   };
 
   useEffect(() => {
@@ -107,18 +113,7 @@ export const MapObject = () => {
     });
   };
 
-  // const heightChange = (e) => {
-  //   setHeight(Number(e.target.value));
-  //   setStageHeight(stageWidth * (height / width));
 
-  //   MapService.updateMap({ width, height }, map.id);
-  // };
-
-  // const widthChange = (e) => {
-  //   setWidth(Number(e.target.value));
-
-  //   MapService.updateMap({ width, height }, map.id);
-  // };
 
   const getScaledX = (x: number) => {
     return Math.round((x / stageWidth) * width * 2) / 2;
@@ -141,9 +136,15 @@ export const MapObject = () => {
     setOpen(true);
   };
 
-  const saveMap = () => {
-    MapService.updateMap({ width, height }, map.id);
-    setStageHeight(stageWidth * (height / width));
+  const saveMap = async () => {
+    setBeacons([]);
+    setCoupons([]);
+    setHeight(inputHeight);
+    setWidth(inputWidth);
+    await MapService.updateMap({ 'height' : inputHeight, "width": inputWidth }, map.id);
+    await fetchMap();
+    fetchBeacons();
+    fetchCoupons();
   };
 
   const boundaries = (e, beacon: any) => {
@@ -175,16 +176,16 @@ export const MapObject = () => {
       <TextField
         label="Width"
         type="number"
-        value={width}
-        onChange={(e) => setWidth(Number(e.target.value))}
+        value={inputWidth}
+        onChange={(e) => setInputWidth(Number(e.target.value))}
         sx={{ m: 1 }}
       />
 
       <TextField
         label="Height"
         type="number"
-        value={height}
-        onChange={(e) => setHeight(Number(e.target.value))}
+        value={inputHeight}
+        onChange={(e) => setInputHeight(Number(e.target.value))}
         sx={{ m: 1 }}
       />
 
