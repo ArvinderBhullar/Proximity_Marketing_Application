@@ -1,7 +1,7 @@
 import {ScrollView, View} from 'react-native';
 import styles from '../cssStyles/styles';
 import React, {useState} from 'react';
-import {Coupon} from './NotifyScreen';
+import {SimCoupon} from '../services/Simulation';
 import {RouteProp} from '@react-navigation/native';
 import {ParamListBase} from '@react-navigation/routers';
 import {auth, db} from '../services/Config';
@@ -16,46 +16,12 @@ import {
   Portal,
 } from 'react-native-paper';
 import {collection, getDocs} from 'firebase/firestore';
-import {handleRedeemChipPress} from '../services/couponService';
+import {handleSaveChipPress} from '../services/couponService';
 type NearestScreenRouteProp = RouteProp<ParamListBase, 'NearestScreen'>;
 
 export interface NearestScreenProps {
   route: NearestScreenRouteProp;
 }
-
-const compareDB = async (coupons: Coupon[]) => {
-  const user = auth.currentUser;
-  const redemptionsQuerySnapshot = await getDocs(collection(db, 'Redemptions'));
-
-  class Redemption {
-    userId: string;
-    couponId: string;
-    redeemedAt: string;
-
-    constructor(userId: string, couponId: string, redeemedAt: string) {
-      this.userId = userId;
-      this.couponId = couponId;
-      this.redeemedAt = redeemedAt;
-    }
-  }
-  const tempRedemption: Redemption[] = [];
-  redemptionsQuerySnapshot.forEach(doc => {
-    const data = doc.data();
-    tempRedemption.push(
-      new Redemption(data.userId, data.couponId, data.redeemedAt),
-    );
-  });
-
-  coupons = coupons.filter(coupon => {
-    const isRedeemed = tempRedemption.some(
-      redemption =>
-        redemption.couponId === coupon.id && redemption.userId === user!.uid,
-    );
-    return !isRedeemed;
-  });
-
-  return coupons;
-};
 
 const NearestScreen = ({route}: NearestScreenProps) => {
   const [promocode, setPromocode] = useState('');
@@ -63,20 +29,22 @@ const NearestScreen = ({route}: NearestScreenProps) => {
   const [popupVisible, setPopupVisible] = useState(false);
 
   if (route.params) {
-    let coupons: Coupon[] = route.params['nearestCoupons'].map(
-      (coupon: Coupon) => ({
+    let coupons: SimCoupon[] = route.params['nearestCoupons'].map(
+      (coupon: SimCoupon) => ({
         ...coupon,
         end: new Date(coupon.end), // convert timestamp back to Date
       }),
     );
 
-    // coupons = compareDB(coupons);
-    console.log(coupons);
-    if (coupons.length != 0) {
+    console.log("COUPONS",coupons);
+    const uniqueCoupons = Array.from(new Set(coupons.map(coupon => coupon.id))).map(id => {
+      return coupons.find(coupon => coupon.id === id);
+    });
+    if (uniqueCoupons.length != 0) {
       return (
         <View style={{flex: 1}}>
           <ScrollView style={{flex: 1}}>
-            {coupons.map(coupon => (
+            {uniqueCoupons.map(coupon => (
               <Card key={coupon.id} style={{margin: 10}}>
                 <Card.Content>
                   <Title>{coupon.name}</Title>
@@ -94,16 +62,11 @@ const NearestScreen = ({route}: NearestScreenProps) => {
                       icon="gift"
                       mode="outlined"
                       onPress={async () => {
-                        await handleRedeemChipPress(
+                        await handleSaveChipPress(
                           coupon.id,
-                          coupon.name,
-                          coupon.promocode,
-                          setPromocode,
-                          setPromoname,
-                          setPopupVisible,
                         );
                       }}>
-                      Redeem
+                      Save
                     </Chip>
                   </View>
                 </Card.Content>

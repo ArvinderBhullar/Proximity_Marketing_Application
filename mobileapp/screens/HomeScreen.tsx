@@ -8,9 +8,10 @@ import {createMaterialBottomTabNavigator} from 'react-native-paper/react-navigat
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import Profile from './Profile';
 import Coupons from './Coupons';
-import NotifyScreen from './NotifyScreen';
 import SavedCoupons from './SavedCoupons';
 import NearestScreen, {NearestScreenProps} from './NearestScreen';
+import { demo1,demo2,demo3 } from '../services/Simulation';
+import { Button } from 'react-native-paper';
 const Tab = createMaterialBottomTabNavigator();
 const HomeScreen = () => {
   // const navigation = useNavigation();
@@ -51,13 +52,6 @@ const HomeScreen = () => {
     ),
   };
 
-  const NotifyTabOptions = {
-    tabBarLabel: 'Notify',
-    tabBarIcon: ({color}: {color: string}) => (
-      <MaterialCommunityIcons name="bluetooth" color={color} size={20} />
-    ),
-  };
-
   const NearestTabOptions = {
     tabBarLabel: 'Nearby',
     tabBarIcon: ({color}: {color: string}) => (
@@ -84,16 +78,12 @@ const HomeScreen = () => {
           options={profileTabOptions}
         />
         <Tab.Screen
-          name="Notify"
-          component={NotifyScreen}
-          options={NotifyTabOptions}
-        />
-        <Tab.Screen
           name="Nearest"
           component={NearestScreen}
           options={NearestTabOptions}
         />
       </Tab.Navigator>
+      
     </View>
   );
 };

@@ -1,11 +1,18 @@
-#  return Math.pow(
-#       10,
-#       (BLEDevice.MEASURING_POWER - this.getRSSIAvg()) / (10 * BLEDevice.N),
-#     );
+import math
 
-N = 2
-RSSI_MEASURED = -69
-RSSI_AT_ONE = -69
+N = 2.75
+RSSI_AT_ONE = -47
 
-D = 10 ** ((RSSI_AT_ONE - RSSI_MEASURED) / (10 * N))
-print(D)
+def dtoRSSI(d):
+    return RSSI_AT_ONE - math.log(d, 10) * 10 *N
+
+def RSSItod(rssi):
+    D = 10 ** ((RSSI_AT_ONE - rssi) / (10 * N))
+    return D
+
+
+
+
+for i in range(1,7):
+    rssi =dtoRSSI(i)
+    print("rssi", rssi, "distance", RSSItod(rssi))

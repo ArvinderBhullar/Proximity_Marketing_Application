@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useState} from 'react';
 import {View} from 'react-native';
 import {Text, Button} from 'react-native-paper';
 import useBLE, {BLEDevice} from './../services/BLEScan';
@@ -7,7 +7,7 @@ import PushNotification from 'react-native-push-notification';
 import {useNavigation} from '@react-navigation/native';
 import {collection, getDocs} from 'firebase/firestore';
 
-export class Coupon {
+export class SimCoupon {
   id: string;
   name: string;
   end: Date;
@@ -58,7 +58,7 @@ class Beacon {
   distance: number;
 
   static MEASURING_POWER: number = -47;
-  static N: number = 2;
+  static N: number = 2.75;
 
   constructor(id: string, name: string, rssi: number, x: number, y: number) {
     this.id = id;
@@ -70,10 +70,7 @@ class Beacon {
   }
 
   calculateDistance(): number {
-    return Math.pow(
-      10,
-      (BLEDevice.MEASURING_POWER - this.rssi) / (10 * BLEDevice.N),
-    );
+    return Math.pow(10, ((Beacon.MEASURING_POWER - this.rssi) / (10 * Beacon.N)))
   }
 }
 
@@ -82,6 +79,7 @@ function trilateration(closestBeacons: Beacon[]): [number, number] {
     console.log('Not enough beacons to trilaterate');
     return [0, 0];
   }
+  console.log("HERE")
   const beacon1 = closestBeacons[0];
   const beacon2 = closestBeacons[1];
   const beacon3 = closestBeacons[2];
@@ -102,102 +100,32 @@ function trilateration(closestBeacons: Beacon[]): [number, number] {
   const factorB = (dx21 * dx13) / dx12;
   const factorC = (dy21 * dx13) / dx12;
   const factorD = (dy12 * dx13) / dx12;
-
+  
   const y =
     (dr31 - dy31 - dx31 - factorA + factorB + factorC) / (2 * (dy13 - factorD));
   const x = (dr21 - dx21 - dy21 - 2 * y * dy12) / (2 * dx12);
   return [x, y];
 }
-const NotifyScreen = () => {
+
   let beacons: Beacon[] = [];
   const firebaseBeacons: fireBaseBeacon[] = [];
-  const allCoupons: Coupon[] = [];
-  let nearestCoupons: Coupon[] = [];
-  const CHANNEL_ID = 'com.mobileapp.NotifyUserCoupons';
+  const allCoupons: SimCoupon[] = [];
+  let nearestCoupons: SimCoupon[] = [];
+  export const CHANNEL_ID = 'com.mobileapp.NotifyUserCoupons';
 
   let userMoved = false;
   const navigation = useNavigation();
 
-  // useEffect(() => {
-  //   const interval = setInterval(() => {
-  //     if (userMoved) {
-  //       console.log('User has moved');
-  //       userMoved = false;
-  //       const [x, y] = user_moving();
-  //       pushNotification(x, y);
-  //     } else {
-  //       console.log('User has not moved');
-  //     }
-  //   }, 2000);
 
-  //   return () => clearInterval(interval);
-  // }, []);
+  const findCouponsInRadius = (x: Number, y: Number) => {
+    const couponsInRadius = allCoupons.filter(coupon => {
+      const distance = Math.sqrt(
+        Math.pow(Number(x) - coupon.x, 2) + Math.pow(Number(y) - coupon.y, 2),
+      );
+      return distance <= 1;
+    });
 
-  PushNotification.createChannel(
-    {
-      channelId: CHANNEL_ID, // (required)
-      channelName: 'Notify Coupons', // (required)
-      channelDescription: 'A channel to notify the user for nearby coupons', // (optional) default: undefined.
-      playSound: false, // (optional) default: true
-      soundName: 'default', // (optional) See `soundName` parameter of `localNotification` function
-      importance: 4, // (optional) default: 4. Int value of the Android notification importance
-      vibrate: true, // (optional) default: true. Creates the default vibration pattern if true.
-    },
-    created => console.log(`createChannel returned '${created}'`), // (optional) callback returns whether the channel was created, false means it already existed.
-  );
-
-  PushNotification.configure({
-    onNotification: function (notification) {
-      let coupons = nearestCoupons.map(coupon => ({
-        ...coupon,
-        end: coupon.end.getTime(), // convert Date to timestamp
-      }));
-      navigation.navigate('Nearest', {nearestCoupons: coupons}); // Navigate to NearestCouponScreen
-    },
-
-    popInitialNotification: true,
-    requestPermissions: true,
-  });
-
-  const pushNotification = async (x: Number, y: Number) => {
-    console.log(`User is at x: ${x}, y: ${y}`);
-
-    const findCouponsInRadius = () => {
-      const couponsInRadius = allCoupons.filter(coupon => {
-        const distance = Math.sqrt(
-          Math.pow(Number(x) - coupon.x, 2) + Math.pow(Number(y) - coupon.y, 2),
-        );
-        return distance <= 1;
-      });
-
-      nearestCoupons = couponsInRadius;
-    };
-
-    findCouponsInRadius();
-
-    if (nearestCoupons.length != 0) {
-      PushNotification.localNotification({
-        /* Android Only Properties */
-        channelId: CHANNEL_ID, // (required) channelId, if the channel doesn't exist, notification will not trigger.
-        ticker: 'THERE IS A COUPON NEAR YOU', // (optional)
-        showWhen: true, // (optional) default: true
-        autoCancel: true, // (optional) default: true
-        bigText: 'Expand to see the message', // (optional) default: "message" prop
-        subText: new Date().toLocaleTimeString(), // (optional) default: none
-        color: 'red', // (optional) default: system default
-        vibrate: true, // (optional) default: true
-        vibration: 300, // vibration length in milliseconds, (optional) default: 1000
-
-        /* iOS and Android properties */
-        title: 'There are coupons near you', // (optional)
-        message: 'Click to view the coupons', // (required)
-        playSound: false, // (optional) default: true
-        soundName: 'default', // (optional) See `soundName` parameter of `localNotification` function
-        number: 10, // (optional) Valid 32 bit integer specified as string. default: none (Cannot be zero)
-      });
-    } else {
-      console.log('No coupons nearby');
-    }
+    return couponsInRadius;
   };
 
   const fetchDatabase = async () => {
@@ -248,158 +176,102 @@ const NotifyScreen = () => {
       if (isRedeemed) {
         return;
       }
-
-      allCoupons.push(
-        new Coupon(
-          doc.id,
-          data.name,
-          data.end.toDate(),
-          data.description,
-          data.promocode,
-          data.x,
-          data.y,
-        ),
-      );
+      if (data.x && data.y) {
+        allCoupons.push(
+          new SimCoupon(
+            doc.id,
+            data.name,
+            data.end.toDate(),
+            data.description,
+            data.promocode,
+            data.x,
+            data.y,
+          ),
+        );
+      }
     });
   };
-
-  const demo1 = () => {
-    fetchDatabase();
-    const beacon1 = new Beacon(
-      '00:00:00:00:00:01',
-      'Closetify Beacon 1',
-      -50,
-      1,
-      1,
-    );
-    const beacon2 = new Beacon(
-      '00:00:00:00:00:02',
-      'Closetify Beacon 2',
-      -60,
-      3,
-      0,
-    );
-    const beacon3 = new Beacon(
-      '00:00:00:00:00:03',
-      'Closetify Beacon 3',
-      -20,
-      2,
-      5,
-    );
-    const beacon4 = new Beacon(
-      '00:00:00:00:00:04',
-      'Closetify Beacon 4',
-      -40,
-      6,
-      2,
-    );
-    beacons = [beacon1, beacon2, beacon3, beacon4];
-    beacons.sort((a, b) => a.distance - b.distance);
-    beacons.pop();
-    userMoved = true;
-    const [x, y] = user_moving();
-    pushNotification(x, y);
-  };
-  const demo2 = () => {
+  const beaconx = 15;
+  const beacony = 10;
+  export const demo1 = () => {
     fetchDatabase();
     const beacon1 = new Beacon(
       '00:00:00:00:00:01',
       'Closetify Beacon 1',
       -30,
-      1,
-      1,
+      0,
+      0,
     );
     const beacon2 = new Beacon(
       '00:00:00:00:00:02',
       'Closetify Beacon 2',
       -60,
-      3,
       0,
+      beacony,
     );
     const beacon3 = new Beacon(
       '00:00:00:00:00:03',
       'Closetify Beacon 3',
       -70,
-      2,
-      5,
+      beaconx,
+      beacony,
     );
     const beacon4 = new Beacon(
       '00:00:00:00:00:04',
       'Closetify Beacon 4',
-      -40,
-      6,
-      2,
+      -55,
+      beaconx,
+      0,
     );
     beacons = [beacon1, beacon2, beacon3, beacon4];
     beacons.sort((a, b) => a.distance - b.distance);
     beacons.pop();
     userMoved = true;
     const [x, y] = user_moving();
-    pushNotification(x, y);
+    const temp = findCouponsInRadius(x, y);
+    return temp;
   };
-
-  const demo3 = () => {
+  export const demo2 = () => {
     fetchDatabase();
     const beacon1 = new Beacon(
       '00:00:00:00:00:01',
       'Closetify Beacon 1',
-      -50,
-      1,
-      1,
+      -90,
+      0,
+      0,
     );
     const beacon2 = new Beacon(
       '00:00:00:00:00:02',
       'Closetify Beacon 2',
       -60,
-      3,
       0,
+      beacony,
     );
     const beacon3 = new Beacon(
       '00:00:00:00:00:03',
       'Closetify Beacon 3',
       -70,
-      2,
-      5,
+      beaconx,
+      beacony,
     );
     const beacon4 = new Beacon(
       '00:00:00:00:00:04',
       'Closetify Beacon 4',
       -40,
-      6,
-      2,
+      beaconx,
+      0,
     );
     beacons = [beacon1, beacon2, beacon3, beacon4];
     beacons.sort((a, b) => a.distance - b.distance);
     beacons.pop();
     userMoved = true;
     const [x, y] = user_moving();
-    pushNotification(x, y);
-  };
-
-  const printDatabase = () => {
-    console.log('Beacons:');
-    firebaseBeacons.forEach(beacon => {
-      console.log(beacon);
-    });
-
-    console.log('Coupons:');
-    allCoupons.forEach(coupon => {
-      console.log(coupon);
-    });
-  };
+    const temp = findCouponsInRadius(x, y);
+    return temp;
+    };
 
   const user_moving = () => {
     const [x, y] = trilateration(beacons);
+    console.log('User moved to:', x, y);
     return [x, y];
   };
-  return (
-    <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
-      <Text>Scanning Testing</Text>
-      <Button onPress={demo1}>Demo #1</Button>
-      <Button onPress={demo2}>Demo #2</Button>
-      <Button onPress={demo3}>Demo #3</Button>
-    </View>
-  );
-};
-
-export default NotifyScreen;
