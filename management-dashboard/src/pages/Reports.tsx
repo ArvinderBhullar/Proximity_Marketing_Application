@@ -10,11 +10,13 @@ import {
 } from "firebase/firestore";
 import { db } from "../FirebaseConfig";
 import { LineChart } from "@mui/x-charts/LineChart";
+import { BarChart } from "@mui/x-charts/BarChart";
 
 const Reports: React.FC = () => {
   const [startDate, setStartDate] = useState("2024-04-01");
   const [endDate, setEndDate] = useState("2024-04-30");
   const [redeemData, setRedeemData] = useState([]);
+  const [couponCountDict, setCouponCountDict] = useState({});
   const [topSellingCoupon, setTopSellingCoupon] = useState("");
 
   useEffect(() => {
@@ -38,6 +40,7 @@ const Reports: React.FC = () => {
             userId: redeemDoc.userId,
             couponId: redeemDoc.couponId,
             redeemedAt: new Date(redeemDoc.redeemedAt).toLocaleDateString(),
+            name: redeemDoc.couponName,
           });
         });
 
@@ -47,9 +50,12 @@ const Reports: React.FC = () => {
         }, {});
 
         const couponCounts = redeemedCoupons.reduce((acc, curr) => {
-          acc[curr.couponId] = (acc[curr.couponId] || 0) + 1;
+          acc[curr.name] = (acc[curr.name] || 0) + 1;
           return acc;
         }, {});
+
+        console.log("coupon Counts", couponCounts);
+        setCouponCountDict(couponCounts);
 
         const sortedCouponCounts = Object.entries(couponCounts).sort(
           ([, a], [, b]) => (b as number) - (a as number)
@@ -129,10 +135,12 @@ const Reports: React.FC = () => {
         <h2>Coupons Redeemed Per Day</h2>
 
         <LineChart
-          xAxis={[{ 
-            data: redeemData.map((data) => Date.parse(data.date)),
-            valueFormatter: (value) => new Date(value).toLocaleDateString(),
-          }]}
+          xAxis={[
+            {
+              data: redeemData.map((data) => Date.parse(data.date)),
+              valueFormatter: (value) => new Date(value).toLocaleDateString(),
+            },
+          ]}
           series={[
             {
               data: redeemData.map((data) => data.count),
@@ -151,8 +159,16 @@ const Reports: React.FC = () => {
         </ul> */}
       </div>
       <div>
-        <h2>Top Selling Coupon</h2>
-        <p>{topSellingCoupon}</p>
+        <h2>Coupon Performance</h2>
+
+        <BarChart
+          xAxis={[{ scaleType: "band", data: Object.keys(couponCountDict) }]}
+          series={[{ data: Object.values(couponCountDict) }]}
+          width={window.innerWidth - 100}
+          height={window.innerHeight - 200}
+        />
+
+        {/* <p>{topSellingCoupon}</p> */}
       </div>
     </Box>
   );
