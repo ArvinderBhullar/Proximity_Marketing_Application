@@ -8,9 +8,9 @@ import {createMaterialBottomTabNavigator} from 'react-native-paper/react-navigat
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import Profile from './Profile';
 import Coupons from './Coupons';
-import Scanning from './Scanning';
+import NotifyScreen from './NotifyScreen';
 import SavedCoupons from './SavedCoupons';
-
+import NearestScreen, {NearestScreenProps} from './NearestScreen';
 const Tab = createMaterialBottomTabNavigator();
 const HomeScreen = () => {
   // const navigation = useNavigation();
@@ -51,10 +51,17 @@ const HomeScreen = () => {
     ),
   };
 
-  const scanningTabOptions = {
-    tabBarLabel: 'Scanning',
+  const NotifyTabOptions = {
+    tabBarLabel: 'Notify',
     tabBarIcon: ({color}: {color: string}) => (
       <MaterialCommunityIcons name="bluetooth" color={color} size={20} />
+    ),
+  };
+
+  const NearestTabOptions = {
+    tabBarLabel: 'Nearby',
+    tabBarIcon: ({color}: {color: string}) => (
+      <MaterialCommunityIcons name="bell" color={color} size={20} />
     ),
   };
 
@@ -77,9 +84,14 @@ const HomeScreen = () => {
           options={profileTabOptions}
         />
         <Tab.Screen
-          name="Scanning"
-          component={Scanning}
-          options={scanningTabOptions}
+          name="Notify"
+          component={NotifyScreen}
+          options={NotifyTabOptions}
+        />
+        <Tab.Screen
+          name="Nearest"
+          component={NearestScreen}
+          options={NearestTabOptions}
         />
       </Tab.Navigator>
     </View>
