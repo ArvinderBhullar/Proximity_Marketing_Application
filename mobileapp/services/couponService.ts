@@ -38,6 +38,7 @@ export const handleRedeemChipPress = async (
       await addDoc(collection(db, 'Redemptions'), {
         userId: userId,
         couponId: couponId,
+        couponName: name,
         redeemedAt: new Date().toISOString(), // Store the redemption timestamp
       });
 

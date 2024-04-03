@@ -15,10 +15,13 @@ export const MapObject = () => {
   const [stageWidth, setStageWidth] = useState<number>(window.innerWidth - 200);
   const [stageHeight, setStageHeight] = useState<number>(window.innerHeight);
   const [open, setOpen] = useState(false);
-  const [width, setWidth] = useState<number>(13);
+  const [width, setWidth] = useState<number>(14);
+  const [inputWidth, setInputWidth] = useState<number>(14);
+  const [inputHeight, setInputHeight] = useState<number>(7);
   const [map, setMap] = useState<any>([]);
-  const [height, setHeight] = useState<number>(13);
+  const [height, setHeight] = useState<number>(7);
   const [selectedBeacon, setSelectedBeacon] = useState(null);
+  const [hoverdId, setHoverId] = useState(null);
 
   const fetchBeacons = async () => {
     const beaconObjs = await BeaconService.fetchBeacons();
@@ -47,6 +50,7 @@ export const MapObject = () => {
           isDragging: false,
           userId: coupons.userId,
           id: coupons.id,
+          name: coupons.name,
           // TODO add additonal coupon fieldss
         };
       })
@@ -54,23 +58,36 @@ export const MapObject = () => {
   };
 
   const fetchMap = async () => {
+    console.log('fetching map')
     const map = await MapService.fetchMap();
 
     if (map.length > 0) {
       setWidth(map[0].width);
-      setHeight(map[0].height);
+      setHeight(map[0].height * 1.0);
+      setInputWidth(map[0].width);
+      setInputHeight(map[0].height);  
     } else {
       MapService.addMap({ width: 13, height: 13 });
     }
 
-    setMap(map[0]);
+    let sh = stageWidth * (map[0].height / map[0].width)
+    await setStageHeight(sh);
   };
 
   useEffect(() => {
-    fetchMap();
-    fetchBeacons();
-    fetchCoupons();
-  }, []);
+    init();
+  }, [stageHeight]);
+
+  
+
+  const init = async () => {
+    fetchMap().then(() => { 
+      console.log('map fetched')
+      console.log(width, height, stageWidth, stageHeight)
+      fetchBeacons();
+      fetchCoupons();
+    });
+  }
 
   const handleAddBeacon = () => {
     setOpen(true);
@@ -94,6 +111,8 @@ export const MapObject = () => {
       )
     );
 
+
+
     beacons.find((b) => b.id === beacon.id).x = getScaledX(x);
     beacons.find((b) => b.id === beacon.id).y = getScaledY(y);
 
@@ -107,18 +126,6 @@ export const MapObject = () => {
     });
   };
 
-  // const heightChange = (e) => {
-  //   setHeight(Number(e.target.value));
-  //   setStageHeight(stageWidth * (height / width));
-
-  //   MapService.updateMap({ width, height }, map.id);
-  // };
-
-  // const widthChange = (e) => {
-  //   setWidth(Number(e.target.value));
-
-  //   MapService.updateMap({ width, height }, map.id);
-  // };
 
   const getScaledX = (x: number) => {
     return Math.round((x / stageWidth) * width * 2) / 2;
@@ -141,9 +148,13 @@ export const MapObject = () => {
     setOpen(true);
   };
 
-  const saveMap = () => {
-    MapService.updateMap({ width, height }, map.id);
-    setStageHeight(stageWidth * (height / width));
+  const saveMap = async () => {
+    setBeacons([]);
+    setCoupons([]);
+    setHeight(inputHeight);
+    setWidth(inputWidth);
+    await MapService.updateMap({ 'height' : inputHeight, "width": inputWidth }, map.id);
+    init();
   };
 
   const boundaries = (e, beacon: any) => {
@@ -175,16 +186,16 @@ export const MapObject = () => {
       <TextField
         label="Width"
         type="number"
-        value={width}
-        onChange={(e) => setWidth(Number(e.target.value))}
+        value={inputWidth}
+        onChange={(e) => setInputWidth(Number(e.target.value))}
         sx={{ m: 1 }}
       />
 
       <TextField
         label="Height"
         type="number"
-        value={height}
-        onChange={(e) => setHeight(Number(e.target.value))}
+        value={inputHeight}
+        onChange={(e) => setInputHeight(Number(e.target.value))}
         sx={{ m: 1 }}
       />
 
@@ -236,6 +247,8 @@ export const MapObject = () => {
                 stroke="black"
                 width={10}
                 height={10}
+                onMouseOver={() => setHoverId(coupon.id)}
+                onMouseLeave={() => setHoverId(null)}
                 // onDblClick={() => editBeacon(coupon)}
               />
               <Text
@@ -244,8 +257,22 @@ export const MapObject = () => {
                 text={`(${getScaledX(coupon.x)}, ${getScaledY(coupon.y)})`}
                 fontSize={12}
               />
+            
+            {coupon.id === hoverdId && (
+                <Text
+                  x={coupon.x - 5}
+                  y={coupon.y + 15}
+                  text={`${coupon.name}`}
+                  fontSize={12}
+                />
+                )}
+
+              
+              
             </React.Fragment>
           ))}
+
+          
         </Layer>
       </Stage>
 
