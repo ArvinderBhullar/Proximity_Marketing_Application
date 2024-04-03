@@ -9,11 +9,13 @@ import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityI
 import Profile from './Profile';
 import Coupons from './Coupons';
 import SavedCoupons from './SavedCoupons';
-
+import NearestScreen, {NearestScreenProps} from './NearestScreen';
+import { demo1,demo2,demo3 } from '../services/Simulation';
+import { Button } from 'react-native-paper';
 const Tab = createMaterialBottomTabNavigator();
 const HomeScreen = () => {
   // const navigation = useNavigation();
-  // // const auth = getAuth();
+  // const auth = getAuth();
   // var displayName = '';
   // var uid = '';
 
@@ -50,11 +52,16 @@ const HomeScreen = () => {
     ),
   };
 
+  const NearestTabOptions = {
+    tabBarLabel: 'Nearby',
+    tabBarIcon: ({color}: {color: string}) => (
+      <MaterialCommunityIcons name="bell" color={color} size={20} />
+    ),
+  };
+
   return (
     <View style={{flex: 1}}>
-      <Tab.Navigator
-        initialRouteName="Coupons"
-        barStyle={{height: 70}}>
+      <Tab.Navigator initialRouteName="Coupons" barStyle={{height: 70}}>
         <Tab.Screen
           name="Coupons"
           component={Coupons}
@@ -70,7 +77,13 @@ const HomeScreen = () => {
           component={Profile}
           options={profileTabOptions}
         />
+        <Tab.Screen
+          name="Nearest"
+          component={NearestScreen}
+          options={NearestTabOptions}
+        />
       </Tab.Navigator>
+      
     </View>
   );
 };
