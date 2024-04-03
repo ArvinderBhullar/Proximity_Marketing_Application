@@ -7,9 +7,9 @@ const Login: React.FC  = () => {
   const navigate = useNavigate();
   const { loginUser, loading, user } = useContext(AuthContext);
 
-  // If the user is already authenticated, redirect to the home page
+  // If the user is already authenticated, redirect to the coupon page
   if (user) {
-    navigate("/");
+    navigate("/coupons");
   }
 
   const handleFormSubmit = (e) => {
@@ -18,7 +18,7 @@ const Login: React.FC  = () => {
     const password = e.target.password.value;
     console.log(email, password);
     loginUser(email, password).then(() => {
-      navigate("/");
+      navigate("/coupons");
     }).catch((error) => {
       console.error('Error logging in user', error);
     });
