@@ -14,21 +14,21 @@ const Register: React.FC  = () => {
     navigate("/");
   }
 
-  const handleFormSubmit = async (e) => { 
+  const handleFormSubmit = async (e) => {
     e.preventDefault();
     const email = e.target.email.value;
     const password = e.target.password.value;
     const organizationName = e.target.organizationName.value;
     const address = e.target.address.value;
-    console.log(email, password); 
+    console.log(email, password);
     createUser(email, password).then(async (result) => {
       await setDoc(doc(db, "Organizations", result.user.uid), {
         email: email,
         address:  address,
         organizationName: organizationName
       });
-      
-    }).catch((error) => { 
+
+    }).catch((error) => {
       console.error('Error logging in user', error);
     });
   }
@@ -69,6 +69,7 @@ const Register: React.FC  = () => {
               id="password"
               label="Password"
               variant="standard"
+              type="password"
               sx={{ m: 1, width: "50ch" }}
             />
           </div>
@@ -78,7 +79,7 @@ const Register: React.FC  = () => {
             </Button>
           </div>
         </form>
-        <div style={{ marginTop: "20px" }}> 
+        <div style={{ marginTop: "20px" }}>
         <Link href="/login">Already have an account - Login here</Link>
         </div>
       </div>

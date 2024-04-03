@@ -45,6 +45,7 @@ const Login: React.FC  = () => {
               id="password"
               label="Password"
               variant="standard"
+              type="password"
               sx={{ m: 1, width: "50ch" }}
             />
           </div>
@@ -54,7 +55,7 @@ const Login: React.FC  = () => {
             </Button>
           </div>
         </form>
-        <div style={{ marginTop: "20px" }}> 
+        <div style={{ marginTop: "20px" }}>
         <Link href="/register">Don't have an account - Register here</Link>
         </div>
       </div>
