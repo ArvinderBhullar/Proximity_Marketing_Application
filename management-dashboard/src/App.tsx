@@ -9,6 +9,7 @@ import Register from "./pages/Register";
 import Home from "./pages/Home";
 import Map from "./pages/Map";
 import Coupons from "./pages/Coupons";
+import Reports from "./pages/Reports";
 import PrivateRoute from "./PrivateRoute";
 
 function App() {
@@ -22,7 +23,7 @@ function App() {
           <Route
             path="/map"
             element={
-              <PrivateRoute>            
+              <PrivateRoute>
                 <Map />
               </PrivateRoute>
             }
@@ -30,7 +31,7 @@ function App() {
           <Route
             path="/"
             element={
-              <PrivateRoute>            
+              <PrivateRoute>
                 <Home />
               </PrivateRoute>
             }
@@ -38,12 +39,20 @@ function App() {
            <Route
             path="/coupons"
             element={
-              <PrivateRoute>            
+              <PrivateRoute>
                 <Coupons />
               </PrivateRoute>
             }
           />
-         
+            <Route
+                path="/reports"
+                element={
+                    <PrivateRoute>
+                        <Reports />
+                    </PrivateRoute>
+                }
+            />
+
         </Routes>
       </Router>
     </div>

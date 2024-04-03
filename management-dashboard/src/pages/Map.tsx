@@ -3,6 +3,7 @@ import CloudUploadIcon from "@mui/icons-material/CloudUpload";
 import { styled } from "@mui/material/styles";
 import React from "react";
 import { Box } from "@mui/material";
+import MapObject from "../components/MapObject";
 
 // https://mui.com/material-ui/react-button/#file-upload
 const VisuallyHiddenInput = styled("input")({
@@ -28,7 +29,8 @@ const Map: React.FC = () => {
   return (
     <Box sx={{ m: 3 }}>
       <h1>Welcome to the Map Page</h1>
-      <p>This is the content of the home page.</p>
+
+      <MapObject />
 
       <Button
         component="label"
@@ -44,12 +46,6 @@ const Map: React.FC = () => {
         />
       </Button>
 
-      {file && (
-        <div>
-          <h2>Selected File:</h2>
-          <p>{file.name}</p>
-        </div>
-      )}
     </Box>
   );
 };
