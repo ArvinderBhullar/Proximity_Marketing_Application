@@ -254,7 +254,7 @@ export const MapObject = () => {
               <Text
                 x={coupon.x + 15}
                 y={coupon.y - 5}
-                text={`(${(coupon.x)}, ${(coupon.y)})`}
+                text={`(${getScaledX(coupon.x)}, ${getScaledY(coupon.y)})`}
                 fontSize={12}
               />
             
