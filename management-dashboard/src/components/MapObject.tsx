@@ -73,9 +73,10 @@ export const MapObject = () => {
   };
 
   useEffect(() => {
-    fetchMap();
-    fetchBeacons();
-    fetchCoupons();
+    fetchMap().then(() => { 
+      fetchBeacons();
+      fetchCoupons();
+    });
   }, []);
 
   const handleAddBeacon = () => {
