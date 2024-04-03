@@ -228,6 +228,7 @@ function trilateration(closestBeacons: Beacon[]): [number, number] {
     beacons.pop();
     userMoved = true;
     const [x, y] = user_moving();
+    console.log("Near", nearestCoupons);
     const temp = findCouponsInRadius(x, y);
     return temp;
   };

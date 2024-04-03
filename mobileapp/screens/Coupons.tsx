@@ -166,17 +166,11 @@ const Coupons = () => {
   useEffect(() => {
     const timer = setTimeout(() => {
       if (counter === 0) {
-        console.log("DEMO 1");
         const temp = demo1();
-        setNearestCoupons(temp);
-        pushNotification();
-        setCounter(1);
-      }
-      else if (counter === 1) {
-        console.log("DEMO 2");
-        const temp = demo2();
-        setNearestCoupons(temp);
-        pushNotification();
+      setNearestCoupons(temp);
+      pushNotification();
+      setCounter(1);
+      } else {
         setCounter(0);
       }
     }, 5000);
