@@ -21,6 +21,7 @@ export const MapObject = () => {
   const [map, setMap] = useState<any>([]);
   const [height, setHeight] = useState<number>(13);
   const [selectedBeacon, setSelectedBeacon] = useState(null);
+  const [hoverdId, setHoverId] = useState(null);
 
   const fetchBeacons = async () => {
     const beaconObjs = await BeaconService.fetchBeacons();
@@ -49,6 +50,7 @@ export const MapObject = () => {
           isDragging: false,
           userId: coupons.userId,
           id: coupons.id,
+          name: coupons.name,
           // TODO add additonal coupon fieldss
         };
       })
@@ -101,6 +103,8 @@ export const MapObject = () => {
       )
     );
 
+
+
     beacons.find((b) => b.id === beacon.id).x = getScaledX(x);
     beacons.find((b) => b.id === beacon.id).y = getScaledY(y);
 
@@ -113,7 +117,6 @@ export const MapObject = () => {
       y: getScaledY(y),
     });
   };
-
 
 
   const getScaledX = (x: number) => {
@@ -238,6 +241,8 @@ export const MapObject = () => {
                 stroke="black"
                 width={10}
                 height={10}
+                onMouseOver={() => setHoverId(coupon.id)}
+                onMouseLeave={() => setHoverId(null)}
                 // onDblClick={() => editBeacon(coupon)}
               />
               <Text
@@ -246,8 +251,22 @@ export const MapObject = () => {
                 text={`(${getScaledX(coupon.x)}, ${getScaledY(coupon.y)})`}
                 fontSize={12}
               />
+            
+            {coupon.id === hoverdId && (
+                <Text
+                  x={coupon.x - 5}
+                  y={coupon.y + 15}
+                  text={`${coupon.name}`}
+                  fontSize={12}
+                />
+                )}
+
+              
+              
             </React.Fragment>
           ))}
+
+          
         </Layer>
       </Stage>
 
