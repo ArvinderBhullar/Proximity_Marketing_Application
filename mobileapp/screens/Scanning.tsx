@@ -1,3 +1,5 @@
+// DEPRECATED FILE
+// This file was used for testing purposes to scan for BLE devices and print their RSSI values.
 import React, {useEffect} from 'react';
 import {View, Text, Alert} from 'react-native';
 import {Button} from 'react-native-paper';
@@ -48,7 +50,6 @@ function trilateration(beacons: Beacon[]): [number, number] {
   const dy31 = Math.pow(beacon3.y, 2) - Math.pow(beacon1.y, 2);
   const dr31 = Math.pow(beacon3.r, 2) - Math.pow(beacon1.r, 2);
 
-
   const factorA = (dr21 * dx13) / dx12;
   const factorB = (dx21 * dx13) / dx12;
   const factorC = (dy21 * dx13) / dx12;
@@ -68,10 +69,7 @@ const fetchBeacons = async (closetBeacons: BLEDevice[]) => {
     closetBeacons.map(async beacon => {
       console.log(`Fetching data for beacon with ID: ${beacon.uuid}`);
       const beaconQuerySnapshot = await getDocs(
-        query(
-          collection(db, 'Beacons'),
-          where('uuid', '==', beacon.uuid),
-        ),
+        query(collection(db, 'Beacons'), where('uuid', '==', beacon.uuid)),
       );
 
       beaconQuerySnapshot.forEach(doc => {
@@ -94,8 +92,13 @@ const fetchBeacons = async (closetBeacons: BLEDevice[]) => {
 };
 
 const Scanning = () => {
-  const {requestPermissions, scanForDevices, allBeacons, clearDevices, deviceScan} =
-    useBLE();
+  const {
+    requestPermissions,
+    scanForDevices,
+    allBeacons,
+    clearDevices,
+    deviceScan,
+  } = useBLE();
 
   // Functionality to scan for new devices every 10 seconds
   // useEffect(() => {
@@ -118,13 +121,13 @@ const Scanning = () => {
 
   // DEBUG: simple code just to print the name and RSSI of the device
   const printAllDevices = async () => {
-    console.log("ALL BEACONS", allBeacons);
+    console.log('ALL BEACONS', allBeacons);
     allBeacons.forEach(b => {
-      console.log('avg rssi', b.getRSSIAvg())
-      console.log('kalman', b.getRSSIKalman())
-      console.log('Distance', b.getDistance())
-      console.log('Distance Kalman', b.getDistanceKalman())
-    })
+      console.log('avg rssi', b.getRSSIAvg());
+      console.log('kalman', b.getRSSIKalman());
+      console.log('Distance', b.getDistance());
+      console.log('Distance Kalman', b.getDistanceKalman());
+    });
     // allBeacons.forEach(device => {
     //   console.log(
     //     `Device Name: ${device.name}, ID: ${
@@ -138,8 +141,8 @@ const Scanning = () => {
     // });
 
     const beacons = await fetchBeacons(allBeacons);
-      // allBeacons.sort(BLEDevice.compareDistance).slice(0, 3),
-      console.log(beacons.length)
+    // allBeacons.sort(BLEDevice.compareDistance).slice(0, 3),
+    console.log(beacons.length);
     //   if (beacons.length < 3) {
     //     let s = "";
     //     beacons.forEach(device => {
@@ -150,39 +153,35 @@ const Scanning = () => {
     //   clearDevices();
     //   return
     // }
-      // const [deviceX, deviceY] = trilateration(beacons);
-  
-      // console.log(deviceX, deviceY);
-      // // 
-      // const ms = `${deviceX}, ${deviceY},
-      // ${beacons[0].name+ " " + Math.round(beacons[0].r)+ ", " + Math.round(allBeacons[0].getRSSIAvg())},
-      // ${beacons[1].name + " " +Math.round(beacons[1].r)+ ", " + Math.round(allBeacons[1].getRSSIAvg())},
-      // ${beacons[2].name +" " + Math.round(beacons[2].r)+ ", " + Math.round(allBeacons[2].getRSSIAvg())}`
-      // Alert.alert("TEst",ms)
+    // const [deviceX, deviceY] = trilateration(beacons);
+
+    // console.log(deviceX, deviceY);
+    // //
+    // const ms = `${deviceX}, ${deviceY},
+    // ${beacons[0].name+ " " + Math.round(beacons[0].r)+ ", " + Math.round(allBeacons[0].getRSSIAvg())},
+    // ${beacons[1].name + " " +Math.round(beacons[1].r)+ ", " + Math.round(allBeacons[1].getRSSIAvg())},
+    // ${beacons[2].name +" " + Math.round(beacons[2].r)+ ", " + Math.round(allBeacons[2].getRSSIAvg())}`
+    // Alert.alert("TEst",ms)
 
     clearDevices();
   };
 
-  const delay = (ms: number | undefined) => new Promise(res => setTimeout(res, ms));
-  
+  const delay = (ms: number | undefined) =>
+    new Promise(res => setTimeout(res, ms));
 
-    // clearDevices();
-    // let i = 0;
+  // clearDevices();
+  // let i = 0;
 
-    // while (i < 10) {
-    //   scanForDevices();
-    //   i++;
-    //   await delay(2500)
-    // }
+  // while (i < 10) {
+  //   scanForDevices();
+  //   i++;
+  //   await delay(2500)
+  // }
 
-    
-    // allBeacons.forEach(b => {
-    //   console.log('rssi values', b.rssi)
-    //   console.log('rssi avg values', b.getRSSIAvg())
-    // })
-
-
-
+  // allBeacons.forEach(b => {
+  //   console.log('rssi values', b.rssi)
+  //   console.log('rssi avg values', b.getRSSIAvg())
+  // })
 
   const performScan = async () => {
     const results: number[] = [];
@@ -196,8 +195,7 @@ const Scanning = () => {
     setScanResults(results);
 
     console.log('Scan results:', scanResults);
-  }
-
+  };
 
   const [scanResults, setScanResults] = useState<number[]>([]);
 
