@@ -25,11 +25,12 @@ export const MapObject = () => {
 
   const fetchBeacons = async () => {
     const beaconObjs = await BeaconService.fetchBeacons();
+    console.log('beacons fetched', beaconObjs)
     setBeacons(
       beaconObjs.map((beacon) => {
         return {
-          x: (beacon.x / width) * stageWidth,
-          y: (beacon.y / height) * stageHeight,
+          x: beacon.x === 0 ? 5 :(beacon.x / width) * stageWidth,
+          y: beacon.y === 0 ? 5 :(beacon.y / height) * stageHeight,
           isDragging: false,
           userId: beacon.userId,
           name: beacon.name,
@@ -45,8 +46,8 @@ export const MapObject = () => {
     setCoupons(
       couponObjs.map((coupons) => {
         return {
-          x: (coupons.x / width) * stageWidth,
-          y: (coupons.y / height) * stageHeight,
+          x: coupons.x === 0 ? 5 : (coupons.x / width) * stageWidth,
+          y: coupons.y === 0 ? 5 : (coupons.y / height) * stageHeight,
           isDragging: false,
           userId: coupons.userId,
           id: coupons.id,
@@ -161,14 +162,16 @@ export const MapObject = () => {
     if (e.target.x() > stageWidth) {
       e.target.x(stageWidth);
     } else if (e.target.x() < 0) {
-      e.target.x(0);
+      e.target.x(5);
     }
 
     if (e.target.y() > stageHeight) {
       e.target.y(stageHeight);
     } else if (e.target.y() < 0) {
-      e.target.y(0);
+      e.target.y(5);
     }
+
+    
 
   };
 
@@ -210,7 +213,7 @@ export const MapObject = () => {
 
       <Stage
         width={stageWidth + 100}
-        height={stageHeight}
+        height={stageHeight +10}
         style={{ border: "1px solid black", width: stageWidth }}
 
       >

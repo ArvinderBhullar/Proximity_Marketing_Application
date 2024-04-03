@@ -41,9 +41,6 @@ export default function ButtonAppBar() {
               <Button sx={{m: 1}} color="inherit" href="coupons">
                 Coupons
               </Button>
-              <Button sx={{m: 1}} color="inherit" href="beacons">
-                Beacons
-              </Button>
               <Button sx={{m: 1}} color="inherit" href="reports">
                 Reports
               </Button>
