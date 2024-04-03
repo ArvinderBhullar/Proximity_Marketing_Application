@@ -15,11 +15,11 @@ export const MapObject = () => {
   const [stageWidth, setStageWidth] = useState<number>(window.innerWidth - 200);
   const [stageHeight, setStageHeight] = useState<number>(window.innerHeight);
   const [open, setOpen] = useState(false);
-  const [width, setWidth] = useState<number>(13);
-  const [inputWidth, setInputWidth] = useState<number>(13);
-  const [inputHeight, setInputHeight] = useState<number>(13);
+  const [width, setWidth] = useState<number>(14);
+  const [inputWidth, setInputWidth] = useState<number>(14);
+  const [inputHeight, setInputHeight] = useState<number>(7);
   const [map, setMap] = useState<any>([]);
-  const [height, setHeight] = useState<number>(13);
+  const [height, setHeight] = useState<number>(7);
   const [selectedBeacon, setSelectedBeacon] = useState(null);
   const [hoverdId, setHoverId] = useState(null);
 
@@ -58,28 +58,36 @@ export const MapObject = () => {
   };
 
   const fetchMap = async () => {
+    console.log('fetching map')
     const map = await MapService.fetchMap();
 
     if (map.length > 0) {
       setWidth(map[0].width);
-      setHeight(map[0].height);
+      setHeight(map[0].height * 1.0);
       setInputWidth(map[0].width);
       setInputHeight(map[0].height);  
     } else {
       MapService.addMap({ width: 13, height: 13 });
     }
 
-    setMap(map[0]);
-
-    setStageHeight(stageWidth * (map[0].height / map[0].width));
+    let sh = stageWidth * (map[0].height / map[0].width)
+    await setStageHeight(sh);
   };
 
   useEffect(() => {
+    init();
+  }, [stageHeight]);
+
+  
+
+  const init = async () => {
     fetchMap().then(() => { 
+      console.log('map fetched')
+      console.log(width, height, stageWidth, stageHeight)
       fetchBeacons();
       fetchCoupons();
     });
-  }, []);
+  }
 
   const handleAddBeacon = () => {
     setOpen(true);
@@ -146,9 +154,7 @@ export const MapObject = () => {
     setHeight(inputHeight);
     setWidth(inputWidth);
     await MapService.updateMap({ 'height' : inputHeight, "width": inputWidth }, map.id);
-    await fetchMap();
-    fetchBeacons();
-    fetchCoupons();
+    init();
   };
 
   const boundaries = (e, beacon: any) => {
@@ -248,7 +254,7 @@ export const MapObject = () => {
               <Text
                 x={coupon.x + 15}
                 y={coupon.y - 5}
-                text={`(${getScaledX(coupon.x)}, ${getScaledY(coupon.y)})`}
+                text={`(${(coupon.x)}, ${(coupon.y)})`}
                 fontSize={12}
               />
             
