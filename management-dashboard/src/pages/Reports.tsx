@@ -17,7 +17,6 @@ const Reports: React.FC = () => {
   const [endDate, setEndDate] = useState("2024-04-30");
   const [redeemData, setRedeemData] = useState([]);
   const [couponCountDict, setCouponCountDict] = useState({});
-  const [topSellingCoupon, setTopSellingCoupon] = useState("");
 
   useEffect(() => {
     const fetchRedeemData = async () => {
@@ -54,24 +53,7 @@ const Reports: React.FC = () => {
           return acc;
         }, {});
 
-        console.log("coupon Counts", couponCounts);
         setCouponCountDict(couponCounts);
-
-        const sortedCouponCounts = Object.entries(couponCounts).sort(
-          ([, a], [, b]) => (b as number) - (a as number)
-        );
-
-        if (sortedCouponCounts.length > 0) {
-          const [topCouponId, count] = sortedCouponCounts[0];
-          const couponDocRef = doc(db, "Coupons", topCouponId);
-          const couponDocSnapshot = await getDoc(couponDocRef);
-          const topCouponName = couponDocSnapshot.exists()
-            ? couponDocSnapshot.data().name
-            : "Unknown Coupon";
-          setTopSellingCoupon(`${topCouponName} (${count} redeemed)`);
-        } else {
-          setTopSellingCoupon("No coupons redeemed in this period");
-        }
 
         const startDateObj = new Date(startDate);
         const endDateObj = new Date(endDate);
@@ -149,26 +131,17 @@ const Reports: React.FC = () => {
           width={window.innerWidth - 100}
           height={window.innerHeight - 200}
         />
-
-        {/* <ul>
-          {redeemData.map((data) => (
-            <li key={data.date}>
-              {data.date}: {data.count}
-            </li>
-          ))}
-        </ul> */}
       </div>
       <div>
         <h2>Coupon Performance</h2>
-
-        <BarChart
-          xAxis={[{ scaleType: "band", data: Object.keys(couponCountDict) }]}
-          series={[{ data: Object.values(couponCountDict) }]}
-          width={window.innerWidth - 100}
-          height={window.innerHeight - 200}
-        />
-
-        {/* <p>{topSellingCoupon}</p> */}
+        {Object.keys(couponCountDict).length > 0 && (
+          <BarChart
+            xAxis={[{ scaleType: "band", data: Object.keys(couponCountDict) }]}
+            series={[{ data: Object.values(couponCountDict) }]}
+            width={window.innerWidth - 100}
+            height={window.innerHeight - 200}
+          />
+        )}
       </div>
     </Box>
   );
