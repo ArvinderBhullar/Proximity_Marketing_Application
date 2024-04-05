@@ -8,15 +8,15 @@ buildscript {
         kotlinVersion = "1.8.0"
     }
     repositories {
-        google()
         mavenCentral()
+        google()
     }
     allprojects {
         repositories {
-                maven {
-                    url("$rootDir/../node_modules/detox/Detox-android")
-                }
+            maven {
+                url("$rootDir/../node_modules/detox/Detox-android")
             }
+        }
     }
     dependencies {
         classpath("com.android.tools.build:gradle")

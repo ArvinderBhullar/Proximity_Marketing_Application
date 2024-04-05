@@ -5,6 +5,7 @@ import {
   TouchableOpacity,
   View,
   Alert,
+  Button,
 } from 'react-native';
 import React, {useState} from 'react';
 import {getAuth, signInWithEmailAndPassword} from 'firebase/auth';
@@ -40,11 +41,12 @@ const LoginScreen = () => {
   };
 
   return (
-    <ScrollView>
+    <ScrollView testID="loginScreen">
       <View style={styles.container}>
         <View>
           <Text style={styles.title}>Closetify!</Text>
           <TextInput
+            testID="loginEmail"
             style={styles.input}
             placeholder="Email"
             keyboardType="email-address"
@@ -53,6 +55,7 @@ const LoginScreen = () => {
             onChangeText={setEmail}
           />
           <TextInput
+            testID="loginPassword"
             style={styles.input}
             placeholder="Password"
             secureTextEntry
@@ -60,7 +63,10 @@ const LoginScreen = () => {
             value={password}
             onChangeText={setPassword}
           />
-          <TouchableOpacity style={styles.button} onPress={handleSignin}>
+          <TouchableOpacity
+            testID="loginButton"
+            style={styles.button}
+            onPress={handleSignin}>
             <Text style={styles.button}> Login </Text>
           </TouchableOpacity>
           <TouchableOpacity style={styles.button} onPress={handleSignup}>

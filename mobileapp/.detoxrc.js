@@ -13,12 +13,12 @@ module.exports = {
     'ios.debug': {
       type: 'ios.app',
       binaryPath: 'ios/build/Build/Products/Debug-iphonesimulator/mobileapp.app',
-      build: 'xcodebuild -workspace ios/YOUR_APP.xcworkspace -scheme mobileapp -configuration Debug -sdk iphonesimulator -derivedDataPath ios/build'
+      build: 'xcodebuild -workspace ios/mobileapp.xcworkspace -scheme mobileapp -configuration Debug -sdk iphonesimulator -derivedDataPath ios/build'
     },
     'ios.release': {
       type: 'ios.app',
       binaryPath: 'ios/build/Build/Products/Release-iphonesimulator/mobileapp.app',
-      build: 'xcodebuild -workspace ios/YOUR_APP.xcworkspace -scheme mobileapp -configuration Release -sdk iphonesimulator -derivedDataPath ios/build'
+      build: 'xcodebuild -workspace ios/mobileapp.xcworkspace -scheme mobileapp -configuration Release -sdk iphonesimulator -derivedDataPath ios/build'
     },
     'android.debug': {
       type: 'android.apk',
@@ -50,7 +50,7 @@ module.exports = {
     emulator: {
       type: 'android.emulator',
       device: {
-        avdName: 'Pixel_7_API_33'
+        avdName: 'Pixel_API_28_AOSP'
       }
     }
   },
