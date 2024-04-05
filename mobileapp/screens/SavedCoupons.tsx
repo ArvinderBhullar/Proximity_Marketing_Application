@@ -46,7 +46,7 @@ const SavedCoupons = () => {
         savedCouponIds.push(
           ...savedCouponQuerySnapshot.docs.map(doc1 => doc1.data().couponId),
         );
-        console.log(savedCouponIds);
+        // console.log(savedCouponIds);
         const couponsRef = collection(db, 'Coupons');
         const queryRef = query(
           couponsRef,

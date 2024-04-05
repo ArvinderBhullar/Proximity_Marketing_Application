@@ -9,7 +9,7 @@ import React, {useState} from 'react';
 import {getAuth, createUserWithEmailAndPassword} from 'firebase/auth';
 import styles from '../cssStyles/styles';
 import {useNavigation} from '@react-navigation/native';
-import { Alert } from 'react-native';
+import {Alert} from 'react-native';
 // import {saveUserData} from '../services/firebaseDatabase';
 
 const RegisterScreen = () => {
@@ -27,14 +27,9 @@ const RegisterScreen = () => {
           // Signed up
           const user = userCredential.user;
           if (user) {
-            const id = user.uid;
-            const name = user.displayName;
-            // navigation.navigate('Home');
           }
         })
         .catch(error => {
-          const errorCode = error.code;
-          const errorMessage = error.message;
           if (error.code === 'auth/email-already-in-use') {
             Alert.alert(
               'Email already in use! Please choose a different email.',
@@ -42,7 +37,6 @@ const RegisterScreen = () => {
           } else {
             Alert.alert('Signup error: ' + error.message);
           }
-          // ..
         });
     } catch (error) {
       throw error;

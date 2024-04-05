@@ -1,6 +1,5 @@
 import {
   ScrollView,
-  Image,
   Text,
   TextInput,
   TouchableOpacity,
@@ -11,7 +10,6 @@ import React, {useState} from 'react';
 import {getAuth, signInWithEmailAndPassword} from 'firebase/auth';
 import styles from '../cssStyles/styles';
 import {useNavigation} from '@react-navigation/native';
-// import {saveUserData} from '../services/firebaseDatabase';
 
 const LoginScreen = () => {
   const [email, setEmail] = useState('');
@@ -26,14 +24,9 @@ const LoginScreen = () => {
           // Signed up
           const user = userCredential.user;
           if (user) {
-            const id = user.uid;
-            const name = user.displayName;
-            // navigation.navigate('Home');
           }
         })
         .catch(error => {
-          const errorCode = error.code;
-          const errorMessage = error.message;
           Alert.alert('Login error: ' + error.message);
         });
     } catch (error) {

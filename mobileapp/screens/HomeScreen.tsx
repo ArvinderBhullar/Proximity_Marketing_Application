@@ -23,7 +23,7 @@ const HomeScreen = () => {
     if (user) {
       // User is signed in, see docs for a list of available properties
       // https://firebase.google.com/docs/reference/js/auth.user
-      console.log('User email: ', user.email);
+      // console.log('User email: ', user.email);
       // uid = user.uid;
       // displayName = user.displayName;
     } else {
@@ -83,7 +83,7 @@ const HomeScreen = () => {
           options={NearestTabOptions}
         />
       </Tab.Navigator>
-      
+
     </View>
   );
 };
