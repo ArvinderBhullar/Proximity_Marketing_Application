@@ -82,10 +82,9 @@ const HomeScreen = () => {
         <Tab.Screen
           name="Nearest"
           component={NearestScreen}
-          options={NearestTabOptions}
+          options={{tabBarButtonTestID: 'nearestTab', ...NearestTabOptions}}
         />
       </Tab.Navigator>
-
     </View>
   );
 };

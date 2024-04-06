@@ -106,6 +106,7 @@ const SavedCoupons = () => {
                   marginTop: 10,
                 }}>
                 <Chip
+                  testID={'unsave' + coupon.id}
                   icon="heart"
                   mode="outlined"
                   onPress={async () => {
@@ -135,12 +136,12 @@ const SavedCoupons = () => {
           </Card>
         ))}
       </ScrollView>
-      <Searchbar
-        placeholder="Search"
-        onChangeText={search => setSearchQuery(search)}
-        value={searchQuery}
-        style={{margin: 10}}
-      />
+      {/*<Searchbar*/}
+      {/*  placeholder="Search"*/}
+      {/*  onChangeText={search => setSearchQuery(search)}*/}
+      {/*  value={searchQuery}*/}
+      {/*  style={{margin: 10}}*/}
+      {/*/>*/}
       <Portal>
         <Modal
           visible={popupVisible}
