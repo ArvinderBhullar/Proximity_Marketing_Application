@@ -34,7 +34,7 @@ describe('Register Screen', () => {
       .withTimeout(5000);
 
     const signupButton = element(by.id('signupButton1'));
-    await signupButton.tap({x: 4, y: 4});
+    await signupButton.tap();
     await waitFor(element(by.id('registerScreen')))
       .toBeVisible()
       .withTimeout(10000);
@@ -51,9 +51,10 @@ describe('Register Screen', () => {
     await element(by.id('lastName')).typeText('account');
     await element(by.id('registerEmail')).typeText(registerEmail);
     await element(by.id('registerPassword')).typeText(randomString);
+    await element(by.id('registerPassword')).tapReturnKey();
 
     const registerButton = element(by.id('registerButton'));
-    await registerButton.tap({x: 10, y: 10});
+    await registerButton.tap();
     await waitFor(element(by.id('couponList')))
       .toBeVisible()
       .withTimeout(10000);
