@@ -1,17 +1,16 @@
 import {
   ScrollView,
-  Image,
   Text,
   TextInput,
   TouchableOpacity,
   View,
   Alert,
+  Button,
 } from 'react-native';
 import React, {useState} from 'react';
 import {getAuth, signInWithEmailAndPassword} from 'firebase/auth';
 import styles from '../cssStyles/styles';
 import {useNavigation} from '@react-navigation/native';
-// import {saveUserData} from '../services/firebaseDatabase';
 
 const LoginScreen = () => {
   const [email, setEmail] = useState('');
@@ -26,14 +25,9 @@ const LoginScreen = () => {
           // Signed up
           const user = userCredential.user;
           if (user) {
-            const id = user.uid;
-            const name = user.displayName;
-            // navigation.navigate('Home');
           }
         })
         .catch(error => {
-          const errorCode = error.code;
-          const errorMessage = error.message;
           Alert.alert('Login error: ' + error.message);
         });
     } catch (error) {
@@ -47,11 +41,12 @@ const LoginScreen = () => {
   };
 
   return (
-    <ScrollView>
+    <ScrollView testID="loginScreen">
       <View style={styles.container}>
         <View>
           <Text style={styles.title}>Closetify!</Text>
           <TextInput
+            testID="loginEmail"
             style={styles.input}
             placeholder="Email"
             keyboardType="email-address"
@@ -60,17 +55,25 @@ const LoginScreen = () => {
             onChangeText={setEmail}
           />
           <TextInput
+            testID="loginPassword"
             style={styles.input}
             placeholder="Password"
+            textContentType="oneTimeCode"
             secureTextEntry
             autoCapitalize="none"
             value={password}
             onChangeText={setPassword}
           />
-          <TouchableOpacity style={styles.button} onPress={handleSignin}>
+          <TouchableOpacity
+            testID="loginButton"
+            style={styles.button}
+            onPress={handleSignin}>
             <Text style={styles.button}> Login </Text>
           </TouchableOpacity>
-          <TouchableOpacity style={styles.button} onPress={handleSignup}>
+          <TouchableOpacity
+            testID="signupButton1"
+            style={styles.button}
+            onPress={handleSignup}>
             <Text style={styles.button}>
               Don't have an account? Sign-up here.
             </Text>

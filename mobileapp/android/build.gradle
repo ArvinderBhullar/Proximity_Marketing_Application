@@ -3,18 +3,25 @@ buildscript {
         buildToolsVersion = "34.0.0"
         minSdkVersion = 21
         compileSdkVersion = 34
-        targetSdkVersion = 34
+        targetSdkVersion = 30
         ndkVersion = "25.1.8937393"
         kotlinVersion = "1.8.0"
     }
     repositories {
-        google()
         mavenCentral()
+        google()
+    }
+    allprojects {
+        repositories {
+            maven {
+                url("$rootDir/../node_modules/detox/Detox-android")
+            }
+        }
     }
     dependencies {
         classpath("com.android.tools.build:gradle")
         classpath("com.facebook.react:react-native-gradle-plugin")
-        classpath("org.jetbrains.kotlin:kotlin-gradle-plugin")
+        classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion")
         classpath 'com.google.gms:google-services:4.4.1'
     }
 }

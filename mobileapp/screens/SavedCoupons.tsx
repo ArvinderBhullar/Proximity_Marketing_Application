@@ -46,7 +46,7 @@ const SavedCoupons = () => {
         savedCouponIds.push(
           ...savedCouponQuerySnapshot.docs.map(doc1 => doc1.data().couponId),
         );
-        console.log(savedCouponIds);
+        // console.log(savedCouponIds);
         const couponsRef = collection(db, 'Coupons');
         const queryRef = query(
           couponsRef,
@@ -89,7 +89,7 @@ const SavedCoupons = () => {
 
   return (
     <View style={{flex: 1}}>
-      <ScrollView style={{flex: 1}}>
+      <ScrollView style={{flex: 1}} testID="savedCouponList">
         {savedCoupons.map(coupon => (
           <Card key={coupon.id} style={{margin: 10}}>
             <Card.Content>
@@ -106,6 +106,7 @@ const SavedCoupons = () => {
                   marginTop: 10,
                 }}>
                 <Chip
+                  testID={'unsave' + coupon.id}
                   icon="heart"
                   mode="outlined"
                   onPress={async () => {
@@ -135,12 +136,12 @@ const SavedCoupons = () => {
           </Card>
         ))}
       </ScrollView>
-      <Searchbar
-        placeholder="Search"
-        onChangeText={search => setSearchQuery(search)}
-        value={searchQuery}
-        style={{margin: 10}}
-      />
+      {/*<Searchbar*/}
+      {/*  placeholder="Search"*/}
+      {/*  onChangeText={search => setSearchQuery(search)}*/}
+      {/*  value={searchQuery}*/}
+      {/*  style={{margin: 10}}*/}
+      {/*/>*/}
       <Portal>
         <Modal
           visible={popupVisible}

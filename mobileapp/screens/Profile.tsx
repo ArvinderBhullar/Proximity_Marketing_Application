@@ -21,7 +21,7 @@ const Profile = () => {
   return (
     <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
       <Text>Profile Screen</Text>
-      <Button onPress={handleLogout}>Logout</Button>
+      <Button testID="logoutButton" onPress={handleLogout}>Logout</Button>
     </View>
   );
 };

@@ -43,7 +43,7 @@ const NearestScreen = ({route}: NearestScreenProps) => {
     if (uniqueCoupons.length != 0) {
       return (
         <View style={{flex: 1}}>
-          <ScrollView style={{flex: 1}}>
+          <ScrollView testID="nearbyCouponList" style={{flex: 1}}>
             {uniqueCoupons.map(coupon => (
               <Card key={coupon.id} style={{margin: 10}}>
                 <Card.Content>
@@ -62,9 +62,7 @@ const NearestScreen = ({route}: NearestScreenProps) => {
                       icon="gift"
                       mode="outlined"
                       onPress={async () => {
-                        await handleSaveChipPress(
-                          coupon.id,
-                        );
+                        await handleSaveChipPress(coupon.id);
                       }}>
                       Save
                     </Chip>
@@ -96,14 +94,14 @@ const NearestScreen = ({route}: NearestScreenProps) => {
       );
     } else {
       return (
-        <View style={styles.container}>
+        <View testID="nearbyCouponList" style={styles.container}>
           <Text style={styles.title}>No coupons available</Text>
         </View>
       );
     }
   } else {
     return (
-      <View style={styles.container}>
+      <View testID="nearbyCouponList" style={styles.container}>
         <Text style={styles.title}>Nearest Coupons</Text>
       </View>
     );

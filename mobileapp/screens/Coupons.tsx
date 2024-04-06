@@ -38,58 +38,58 @@ const Coupons = () => {
   const navigation = useNavigation();
   const [counter, setCounter] = useState(0);
 
-    PushNotification.createChannel(
-      {
-        channelId: CHANNEL_ID, // (required)
-        channelName: 'Notify Coupons', // (required)
-        channelDescription: 'A channel to notify the user for nearby coupons', // (optional) default: undefined.
-        playSound: false, // (optional) default: true
-        soundName: 'default', // (optional) See `soundName` parameter of `localNotification` function
-        importance: 4, // (optional) default: 4. Int value of the Android notification importance
-        vibrate: true, // (optional) default: true. Creates the default vibration pattern if true.
-      },
-      created => console.log(`createChannel returned '${created}'`), // (optional) callback returns whether the channel was created, false means it already existed.
-    );
-
-    PushNotification.configure({
-      onNotification: function (notification) {
-        let my_coupons = nearestCoupons.map(coupon => ({
-          ...coupon,
-          end: coupon.end.getTime(), // convert Date to timestamp
-        }));
-        navigation.navigate('Nearest', {nearestCoupons: my_coupons}); // Navigate to NearestCouponScreen
-      },
-  
-      popInitialNotification: true,
-      requestPermissions: true,
-    });
-
-    const pushNotification = async () => {
-      if (nearestCoupons.length > 0) {
-        console.log("There are coupons nearby")
-        PushNotification.localNotification({
-          /* Android Only Properties */
-          channelId: CHANNEL_ID, // (required) channelId, if the channel doesn't exist, notification will not trigger.
-          ticker: 'THERE IS A COUPON NEAR YOU', // (optional)
-          showWhen: true, // (optional) default: true
-          autoCancel: true, // (optional) default: true
-          bigText: 'Expand to see the message', // (optional) default: "message" prop
-          subText: new Date().toLocaleTimeString(), // (optional) default: none
-          color: 'red', // (optional) default: system default
-          vibrate: true, // (optional) default: true
-          vibration: 300, // vibration length in milliseconds, (optional) default: 1000
-  
-          /* iOS and Android properties */
-          title: 'There are coupons near you', // (optional)
-          message: 'Click to view the coupons', // (required)
-          playSound: false, // (optional) default: true
-          soundName: 'default', // (optional) See `soundName` parameter of `localNotification` function
-          number: 10, // (optional) Valid 32 bit integer specified as string. default: none (Cannot be zero)
-        });
-      } else {
-        console.log('No coupons nearby');
-      }
-    };
+    // PushNotification.createChannel(
+    //   {
+    //     channelId: CHANNEL_ID, // (required)
+    //     channelName: 'Notify Coupons', // (required)
+    //     channelDescription: 'A channel to notify the user for nearby coupons', // (optional) default: undefined.
+    //     playSound: false, // (optional) default: true
+    //     soundName: 'default', // (optional) See `soundName` parameter of `localNotification` function
+    //     importance: 4, // (optional) default: 4. Int value of the Android notification importance
+    //     vibrate: true, // (optional) default: true. Creates the default vibration pattern if true.
+    //   },
+    //   created => console.log(`createChannel returned '${created}'`), // (optional) callback returns whether the channel was created, false means it already existed.
+    // );
+    //
+    // PushNotification.configure({
+    //   onNotification: function (notification) {
+    //     let my_coupons = nearestCoupons.map(coupon => ({
+    //       ...coupon,
+    //       end: coupon.end.getTime(), // convert Date to timestamp
+    //     }));
+    //     navigation.navigate('Nearest', {nearestCoupons: my_coupons}); // Navigate to NearestCouponScreen
+    //   },
+    //
+    //   popInitialNotification: true,
+    //   requestPermissions: true,
+    // });
+    //
+    // const pushNotification = async () => {
+    //   if (nearestCoupons.length > 0) {
+    //     console.log("There are coupons nearby")
+    //     PushNotification.localNotification({
+    //       /* Android Only Properties */
+    //       channelId: CHANNEL_ID, // (required) channelId, if the channel doesn't exist, notification will not trigger.
+    //       ticker: 'THERE IS A COUPON NEAR YOU', // (optional)
+    //       showWhen: true, // (optional) default: true
+    //       autoCancel: true, // (optional) default: true
+    //       bigText: 'Expand to see the message', // (optional) default: "message" prop
+    //       subText: new Date().toLocaleTimeString(), // (optional) default: none
+    //       color: 'red', // (optional) default: system default
+    //       vibrate: true, // (optional) default: true
+    //       vibration: 300, // vibration length in milliseconds, (optional) default: 1000
+    //
+    //       /* iOS and Android properties */
+    //       title: 'There are coupons near you', // (optional)
+    //       message: 'Click to view the coupons', // (required)
+    //       playSound: false, // (optional) default: true
+    //       soundName: 'default', // (optional) See `soundName` parameter of `localNotification` function
+    //       number: 10, // (optional) Valid 32 bit integer specified as string. default: none (Cannot be zero)
+    //     });
+    //   } else {
+    //     console.log('No coupons nearby');
+    //   }
+    // };
 
   const fetchCoupons = async () => {
     try {
@@ -163,25 +163,25 @@ const Coupons = () => {
     fetchCoupons();
   }, []);
 
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      if (counter === 0) {
-        const temp = demo1();
-      setNearestCoupons(temp);
-      pushNotification();
-      setCounter(1);
-      } else {
-        setCounter(0);
-      }
-    }, 5000);
-
-    // Cleanup function to clear the timer when the component unmounts or counter changes
-    return () => clearTimeout(timer);
-  }, [counter]);
+  // useEffect(() => {
+  //   const timer = setTimeout(() => {
+  //     if (counter === 0) {
+  //       const temp = demo1();
+  //       setNearestCoupons(temp);
+  //       // pushNotification();
+  //       setCounter(1);
+  //     } else {
+  //       setCounter(0);
+  //     }
+  //   }, 5000);
+  //
+  //   // Cleanup function to clear the timer when the component unmounts or counter changes
+  //   return () => clearTimeout(timer);
+  // }, [counter]);
 
   return (
     <View style={{flex: 1}}>
-      <ScrollView style={{flex: 1}}>
+      <ScrollView style={{flex: 1}} testID="couponList">
         {coupons.map(coupon => (
           <Card key={coupon.id} style={{margin: 10}}>
             <Card.Content>
@@ -198,6 +198,7 @@ const Coupons = () => {
                   marginTop: 10,
                 }}>
                 <Chip
+                  testID={'save' + coupon.id}
                   icon="heart"
                   mode="outlined"
                   onPress={async () => {
@@ -207,6 +208,7 @@ const Coupons = () => {
                   Save
                 </Chip>
                 <Chip
+                  testID={'redeem' + coupon.id}
                   icon="gift"
                   mode="outlined"
                   onPress={async () => {
@@ -227,12 +229,12 @@ const Coupons = () => {
           </Card>
         ))}
       </ScrollView>
-      <Searchbar
-        placeholder="Search"
-        onChangeText={search => setSearchQuery(search)}
-        value={searchQuery}
-        style={{margin: 10}}
-      />
+      {/*<Searchbar*/}
+      {/*  placeholder="Search"*/}
+      {/*  onChangeText={search => setSearchQuery(search)}*/}
+      {/*  value={searchQuery}*/}
+      {/*  style={{margin: 10}}*/}
+      {/*/>*/}
       <Portal>
         <Modal
           visible={popupVisible}
@@ -243,8 +245,12 @@ const Coupons = () => {
             borderRadius: 10,
           }}>
           <Text>Promotion: {promoname}</Text>
-          <Text>Promo code: {promocode}</Text>
-          <Button onPress={() => setPopupVisible(false)}>Close</Button>
+          <Text testID={promocode}>Promo code: {promocode}</Text>
+          <Button
+            testID="closePopupButton"
+            onPress={() => setPopupVisible(false)}>
+            Close
+          </Button>
         </Modal>
       </Portal>
     </View>
