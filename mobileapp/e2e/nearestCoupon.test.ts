@@ -1,4 +1,7 @@
 import {expect} from 'detox';
+//to still test: displaying stubbed nearby coupons
+//notification stub for nearby coupon and click on coupon to show nearby coupon
+//unit testing for trilateration
 
 describe('Nearest Coupons', () => {
   beforeAll(async () => {
