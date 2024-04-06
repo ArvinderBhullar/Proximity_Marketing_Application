@@ -198,6 +198,7 @@ const Coupons = () => {
                   marginTop: 10,
                 }}>
                 <Chip
+                  testID={'save' + coupon.id}
                   icon="heart"
                   mode="outlined"
                   onPress={async () => {
@@ -207,6 +208,7 @@ const Coupons = () => {
                   Save
                 </Chip>
                 <Chip
+                  testID={'redeem' + coupon.id}
                   icon="gift"
                   mode="outlined"
                   onPress={async () => {
@@ -227,12 +229,12 @@ const Coupons = () => {
           </Card>
         ))}
       </ScrollView>
-      <Searchbar
-        placeholder="Search"
-        onChangeText={search => setSearchQuery(search)}
-        value={searchQuery}
-        style={{margin: 10}}
-      />
+      {/*<Searchbar*/}
+      {/*  placeholder="Search"*/}
+      {/*  onChangeText={search => setSearchQuery(search)}*/}
+      {/*  value={searchQuery}*/}
+      {/*  style={{margin: 10}}*/}
+      {/*/>*/}
       <Portal>
         <Modal
           visible={popupVisible}
@@ -243,8 +245,12 @@ const Coupons = () => {
             borderRadius: 10,
           }}>
           <Text>Promotion: {promoname}</Text>
-          <Text>Promo code: {promocode}</Text>
-          <Button onPress={() => setPopupVisible(false)}>Close</Button>
+          <Text testID={promocode}>Promo code: {promocode}</Text>
+          <Button
+            testID="closePopupButton"
+            onPress={() => setPopupVisible(false)}>
+            Close
+          </Button>
         </Modal>
       </Portal>
     </View>

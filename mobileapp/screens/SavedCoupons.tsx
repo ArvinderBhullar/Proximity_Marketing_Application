@@ -89,7 +89,7 @@ const SavedCoupons = () => {
 
   return (
     <View style={{flex: 1}}>
-      <ScrollView style={{flex: 1}}>
+      <ScrollView style={{flex: 1}} testID="savedCouponList">
         {savedCoupons.map(coupon => (
           <Card key={coupon.id} style={{margin: 10}}>
             <Card.Content>

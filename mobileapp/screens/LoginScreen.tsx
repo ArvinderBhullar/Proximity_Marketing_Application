@@ -58,6 +58,7 @@ const LoginScreen = () => {
             testID="loginPassword"
             style={styles.input}
             placeholder="Password"
+            textContentType="oneTimeCode"
             secureTextEntry
             autoCapitalize="none"
             value={password}
@@ -69,7 +70,10 @@ const LoginScreen = () => {
             onPress={handleSignin}>
             <Text style={styles.button}> Login </Text>
           </TouchableOpacity>
-          <TouchableOpacity style={styles.button} onPress={handleSignup}>
+          <TouchableOpacity
+            testID="signupButton1"
+            style={styles.button}
+            onPress={handleSignup}>
             <Text style={styles.button}>
               Don't have an account? Sign-up here.
             </Text>

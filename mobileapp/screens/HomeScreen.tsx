@@ -13,6 +13,7 @@ import NearestScreen, {NearestScreenProps} from './NearestScreen';
 import { demo1,demo2,demo3 } from '../services/Simulation';
 import { Button } from 'react-native-paper';
 const Tab = createMaterialBottomTabNavigator();
+
 const HomeScreen = () => {
   // const navigation = useNavigation();
   // const auth = getAuth();
@@ -43,6 +44,7 @@ const HomeScreen = () => {
     tabBarIcon: ({color}: {color: string}) => (
       <MaterialCommunityIcons name="heart" color={color} size={20} />
     ),
+    tabBarTestIDs: 'saveTab',
   };
 
   const profileTabOptions = {
@@ -65,17 +67,17 @@ const HomeScreen = () => {
         <Tab.Screen
           name="Coupons"
           component={Coupons}
-          options={couponsTabOptions}
+          options={{tabBarButtonTestID: 'couponTab', ...couponsTabOptions}}
         />
         <Tab.Screen
           name="Saved Coupons"
           component={SavedCoupons}
-          options={favoritesTabOptions}
+          options={{tabBarButtonTestID: 'saveTab', ...favoritesTabOptions}}
         />
         <Tab.Screen
           name="Profile"
           component={Profile}
-          options={profileTabOptions}
+          options={{tabBarButtonTestID: 'profileTab', ...profileTabOptions}}
         />
         <Tab.Screen
           name="Nearest"

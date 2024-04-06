@@ -49,11 +49,12 @@ const RegisterScreen = () => {
   };
 
   return (
-    <ScrollView>
+    <ScrollView testID="registerScreen">
       <View style={styles.container}>
         <View>
           <Text style={styles.title}>Welcome</Text>
           <TextInput
+            testID="firstName"
             style={styles.input}
             placeholder="First Name"
             autoCapitalize="none"
@@ -61,6 +62,7 @@ const RegisterScreen = () => {
             onChangeText={setFirstname}
           />
           <TextInput
+            testID="lastName"
             style={styles.input}
             placeholder="Last Name"
             autoCapitalize="none"
@@ -68,6 +70,7 @@ const RegisterScreen = () => {
             onChangeText={setLastname}
           />
           <TextInput
+            testID="registerEmail"
             style={styles.input}
             placeholder="Email"
             keyboardType="email-address"
@@ -76,14 +79,19 @@ const RegisterScreen = () => {
             onChangeText={setEmail}
           />
           <TextInput
+            testID="registerPassword"
             style={styles.input}
             placeholder="Password"
+            textContentType="oneTimeCode"
             secureTextEntry
             autoCapitalize="none"
             value={password}
             onChangeText={setPassword}
           />
-          <TouchableOpacity style={styles.button} onPress={handleSignup}>
+          <TouchableOpacity
+            testID="registerButton"
+            style={styles.button}
+            onPress={handleSignup}>
             <Text style={styles.button}> Register </Text>
           </TouchableOpacity>
           <TouchableOpacity style={styles.button} onPress={handleLogin}>

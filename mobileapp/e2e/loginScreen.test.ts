@@ -2,11 +2,18 @@ import {expect} from 'detox';
 
 describe('Login Screen', () => {
   beforeAll(async () => {
-    await device.launchApp({newInstance: true});
+    await device.launchApp({
+      newInstance: true,
+      launchArgs: {
+        detoxPrintBusyIdleResources: 'YES',
+        // Notifications
+        detoxURLBlacklistRegex: '.*firestore.*',
+      },
+    });
   });
 
   beforeEach(async () => {
-    await device.reloadReactNative();
+    // await device.reloadReactNative();
   });
 
   it('should login successfully', async () => {
@@ -33,5 +40,37 @@ describe('Login Screen', () => {
       .withTimeout(10000);
 
     await expect(element(by.id('couponList'))).toBeVisible();
+  });
+
+  it('should save coupons successfully', async () => {
+    await waitFor(element(by.id('couponList')))
+      .toBeVisible()
+      .withTimeout(10000);
+    await waitFor(element(by.id('saveklX8H65CdoCFOxLehbUh')))
+      .toBeVisible()
+      .withTimeout(10000);
+
+    const saveButton1 = element(by.id('saveklX8H65CdoCFOxLehbUh'));
+    await saveButton1.tap();
+    await waitFor(element(by.id('saveklX8H65CdoCFOxLehbUh')))
+      .not.toExist()
+      .withTimeout(10000);
+    await expect(element(by.id('saveklX8H65CdoCFOxLehbUh'))).not.toExist();
+  });
+
+  it('should navigate to saved coupons successfully', async () => {
+    await waitFor(element(by.id('couponList')))
+      .toBeVisible()
+      .withTimeout(10000);
+    await waitFor(element(by.id('saveTab')))
+      .toExist()
+      .withTimeout(10000);
+
+    const savedCouponTab = element(by.id('saveTab'));
+    await savedCouponTab.tap();
+    await waitFor(element(by.id('savedCouponList')))
+      .toExist()
+      .withTimeout(10000);
+    await expect(element(by.id('savedCouponList'))).toBeVisible();
   });
 });
