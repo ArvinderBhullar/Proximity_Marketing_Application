@@ -185,6 +185,7 @@ const CouponModal: React.FC<CouponModalProps> = ({ open, onClose, selectedCoupon
           </div>
           <Button
             type="submit"
+            id="submit-coupon-form"
             variant="contained"
             color="primary"
             sx={{ m: 1 }}
