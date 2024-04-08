@@ -16,7 +16,7 @@ import {
   Portal,
 } from 'react-native-paper';
 import {collection, getDocs} from 'firebase/firestore';
-import {handleSaveChipPress} from '../services/couponService';
+import {handleSaveChipPress, Coupon} from '../services/couponService';
 type NearestScreenRouteProp = RouteProp<ParamListBase, 'NearestScreen'>;
 
 export interface NearestScreenProps {
@@ -36,10 +36,14 @@ const NearestScreen = ({route}: NearestScreenProps) => {
       }),
     );
 
-    console.log("COUPONS",coupons);
-    const uniqueCoupons = Array.from(new Set(coupons.map(coupon => coupon.id))).map(id => {
-      return coupons.find(coupon => coupon.id === id);
-    });
+    const uniqueCoupons: SimCoupon[] = Array.from(
+      new Set(coupons.map(coupon => coupon.id)),
+    )
+      .map(id => {
+        return coupons.find(coupon => coupon.id === id);
+      })
+      .filter(coupon => coupon !== undefined) as SimCoupon[];
+
     if (uniqueCoupons.length != 0) {
       return (
         <View style={{flex: 1}}>
