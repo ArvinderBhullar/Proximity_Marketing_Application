@@ -1,25 +1,20 @@
 import math
 
-mp = -37
-N = -5
+mp = -47
+N = 2.4
 
 
 def DistanceToRSSI(distance):
-    return (10 * N * math.log(distance, 10)) + mp
+    return mp - math.log10(distance) * 10 * N
 
 
 def RSSIToDistance(rssi):
-    factor1 = (rssi - mp) / (10 * N)
+    factor1 = (mp - rssi) / (10 * N)
     return 10**factor1
 
 
-def findN(rssi, distance):
-    return (rssi - mp) / (10 * math.log(distance, 10))
-
-
+print("Measured Power = ", mp, ",     N = ", N)
 for i in range(1, 7):
     rssi = DistanceToRSSI(i)
     new_d = RSSIToDistance(rssi)
-    if new_d > 1:
-        print("N = ", findN(rssi, new_d))
     print(f"Distance: {i}, RSSI: {rssi}, Distance: {new_d}")

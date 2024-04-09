@@ -1,4 +1,4 @@
-import React, {useCallback, useEffect, useState} from 'react';
+import React, {useCallback, useEffect, useState, useRef} from 'react';
 import {View, ScrollView} from 'react-native';
 import {
   Card,
@@ -25,7 +25,7 @@ import {
   Coupon,
   handleSaveChipPress,
 } from '../services/couponService';
-import { demo1,demo2,demo3,CHANNEL_ID, SimCoupon} from '../services/Simulation';
+import {sim, CHANNEL_ID, SimCoupon} from '../services/Simulation';
 import PushNotification from 'react-native-push-notification';
 
 const Coupons = () => {
@@ -36,60 +36,57 @@ const Coupons = () => {
   const [promocode, setPromocode] = useState('');
   const [promoname, setPromoname] = useState('');
   const navigation = useNavigation();
-  const [counter, setCounter] = useState(0);
 
-    // PushNotification.createChannel(
-    //   {
-    //     channelId: CHANNEL_ID, // (required)
-    //     channelName: 'Notify Coupons', // (required)
-    //     channelDescription: 'A channel to notify the user for nearby coupons', // (optional) default: undefined.
-    //     playSound: false, // (optional) default: true
-    //     soundName: 'default', // (optional) See `soundName` parameter of `localNotification` function
-    //     importance: 4, // (optional) default: 4. Int value of the Android notification importance
-    //     vibrate: true, // (optional) default: true. Creates the default vibration pattern if true.
-    //   },
-    //   created => console.log(`createChannel returned '${created}'`), // (optional) callback returns whether the channel was created, false means it already existed.
-    // );
-    //
-    // PushNotification.configure({
-    //   onNotification: function (notification) {
-    //     let my_coupons = nearestCoupons.map(coupon => ({
-    //       ...coupon,
-    //       end: coupon.end.getTime(), // convert Date to timestamp
-    //     }));
-    //     navigation.navigate('Nearest', {nearestCoupons: my_coupons}); // Navigate to NearestCouponScreen
-    //   },
-    //
-    //   popInitialNotification: true,
-    //   requestPermissions: true,
-    // });
-    //
-    // const pushNotification = async () => {
-    //   if (nearestCoupons.length > 0) {
-    //     console.log("There are coupons nearby")
-    //     PushNotification.localNotification({
-    //       /* Android Only Properties */
-    //       channelId: CHANNEL_ID, // (required) channelId, if the channel doesn't exist, notification will not trigger.
-    //       ticker: 'THERE IS A COUPON NEAR YOU', // (optional)
-    //       showWhen: true, // (optional) default: true
-    //       autoCancel: true, // (optional) default: true
-    //       bigText: 'Expand to see the message', // (optional) default: "message" prop
-    //       subText: new Date().toLocaleTimeString(), // (optional) default: none
-    //       color: 'red', // (optional) default: system default
-    //       vibrate: true, // (optional) default: true
-    //       vibration: 300, // vibration length in milliseconds, (optional) default: 1000
-    //
-    //       /* iOS and Android properties */
-    //       title: 'There are coupons near you', // (optional)
-    //       message: 'Click to view the coupons', // (required)
-    //       playSound: false, // (optional) default: true
-    //       soundName: 'default', // (optional) See `soundName` parameter of `localNotification` function
-    //       number: 10, // (optional) Valid 32 bit integer specified as string. default: none (Cannot be zero)
-    //     });
-    //   } else {
-    //     console.log('No coupons nearby');
-    //   }
-    // };
+  PushNotification.createChannel(
+    {
+      channelId: CHANNEL_ID, // (required)
+      channelName: 'Notify Coupons', // (required)
+      channelDescription: 'A channel to notify the user for nearby coupons', // (optional) default: undefined.
+      playSound: false, // (optional) default: true
+      soundName: 'default', // (optional) See `soundName` parameter of `localNotification` function
+      importance: 4, // (optional) default: 4. Int value of the Android notification importance
+      vibrate: true, // (optional) default: true. Creates the default vibration pattern if true.
+    },
+    created => {}, // (optional) callback returns whether the channel was created, false means it already existed.
+  );
+
+  PushNotification.configure({
+    onNotification: function (notification) {
+      let my_coupons = nearestCoupons.map(coupon => ({
+        ...coupon,
+        end: coupon.end.getTime(), // convert Date to timestamp
+      }));
+      navigation.navigate('Nearest', {my_coupons}); // Navigate to NearestCouponScreen
+    },
+
+    popInitialNotification: true,
+    requestPermissions: true,
+  });
+
+  const pushNotification = async () => {
+    if (nearestCoupons.length > 0) {
+      PushNotification.localNotification({
+        /* Android Only Properties */
+        channelId: CHANNEL_ID, // (required) channelId, if the channel doesn't exist, notification will not trigger.
+        ticker: 'THERE IS A COUPON NEAR YOU', // (optional)
+        showWhen: true, // (optional) default: true
+        autoCancel: true, // (optional) default: true
+        bigText: 'Expand to see the message', // (optional) default: "message" prop
+        subText: new Date().toLocaleTimeString(), // (optional) default: none
+        color: 'red', // (optional) default: system default
+        vibrate: true, // (optional) default: true
+        vibration: 300, // vibration length in milliseconds, (optional) default: 1000
+
+        /* iOS and Android properties */
+        title: 'There are coupons near you', // (optional)
+        message: 'Click to view the coupons', // (required)
+        playSound: false, // (optional) default: true
+        soundName: 'default', // (optional) See `soundName` parameter of `localNotification` function
+        number: 10, // (optional) Valid 32 bit integer specified as string. default: none (Cannot be zero)
+      });
+    } else {
+    }
+  };
 
   const fetchCoupons = async () => {
     try {
@@ -163,21 +160,90 @@ const Coupons = () => {
     fetchCoupons();
   }, []);
 
-  // useEffect(() => {
-  //   const timer = setTimeout(() => {
-  //     if (counter === 0) {
-  //       const temp = demo1();
-  //       setNearestCoupons(temp);
-  //       // pushNotification();
-  //       setCounter(1);
-  //     } else {
-  //       setCounter(0);
-  //     }
-  //   }, 5000);
-  //
-  //   // Cleanup function to clear the timer when the component unmounts or counter changes
-  //   return () => clearTimeout(timer);
-  // }, [counter]);
+  // -------------------------------------------------------This is the main logic for the simulation-------------------------------------------------------
+  const [counter, setCounter] = useState(0);
+  const counterRef = useRef(counter);
+  /**
+   * Represents the moves made by a user for Simulation 1.
+   */
+  const sim1_moves: {x: number; y: number}[] = [
+    {x: 1, y: 1},
+    {x: 3, y: 1},
+    {x: 6, y: 1},
+    {x: 8, y: 1},
+    {x: 10, y: 1},
+    {x: 10, y: 3},
+    {x: 10, y: 5},
+    {x: 8, y: 5},
+    {x: 3, y: 5},
+    {x: 1, y: 5},
+    {x: 1, y: 8},
+    {x: 1, y: 9},
+    {x: 3, y: 9},
+    {x: 6, y: 9},
+    {x: 10, y: 9},
+    {x: 8, y: 8},
+    {x: 3, y: 3},
+  ];
+
+  /**
+   * Represents the moves made by a user for Simulation 2.
+   */
+  const sim2_moves: {x: number; y: number}[] = [
+    {x: 1, y: 1},
+    {x: 1, y: 2},
+    {x: 1, y: 3},
+    {x: 1, y: 4},
+    {x: 4, y: 4},
+    {x: 4, y: 3},
+    {x: 4, y: 2},
+  ];
+
+  const [simMoves, setSimMoves] = useState(sim2_moves);
+
+  useEffect(() => {
+    counterRef.current = counter; // Update the ref whenever counter changes
+    if (counterRef.current >= userMovesRef.current.length) {
+      setSimMoves(
+        userMovesRef.current.length == sim1_moves.length
+          ? sim2_moves
+          : sim1_moves,
+      );
+      console.log('Sim moves updated');
+    }
+  }, [counter]);
+
+  const userMovesRef = useRef(simMoves);
+
+  useEffect(() => {
+    userMovesRef.current = simMoves;
+    console.log('Sim Moves:', userMovesRef.current);
+    setCounter(0);
+  }, [simMoves]);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      if (counterRef.current >= userMovesRef.current.length) {
+        // Do nothing
+      } else {
+        const {x, y} = userMovesRef.current[counterRef.current];
+        sim(x, y, counterRef.current == 0).then(result => {
+          setNearestCoupons(result);
+          setCounter(prevCounter => prevCounter + 1);
+        });
+      }
+    }, 3000);
+
+    return () => {
+      clearInterval(interval);
+    };
+  }, []);
+
+  useEffect(() => {
+    console.log('Nearest Coupons:', nearestCoupons);
+    pushNotification();
+  }, [nearestCoupons]);
+  // -------------------------------------------------------This is the main logic for the simulation-------------------------------------------------------
 
   return (
     <View style={{flex: 1}}>
