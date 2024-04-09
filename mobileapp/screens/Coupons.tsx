@@ -1,4 +1,4 @@
-import React, {useCallback, useEffect, useState} from 'react';
+import React, {useCallback, useEffect, useState, useRef} from 'react';
 import {View, ScrollView} from 'react-native';
 import {
   Card,
@@ -25,7 +25,7 @@ import {
   Coupon,
   handleSaveChipPress,
 } from '../services/couponService';
-import {demo1, CHANNEL_ID, SimCoupon} from '../services/Simulation';
+import {sim, CHANNEL_ID, SimCoupon} from '../services/Simulation';
 import PushNotification from 'react-native-push-notification';
 
 const Coupons = () => {
@@ -36,37 +36,6 @@ const Coupons = () => {
   const [promocode, setPromocode] = useState('');
   const [promoname, setPromoname] = useState('');
   const navigation = useNavigation();
-  let counter = 0;
-  const user1_moves: {x: number; y: number}[] = [
-    {x: 1, y: 1},
-    {x: 3, y: 1},
-    {x: 6, y: 1},
-    {x: 8, y: 1},
-    {x: 10, y: 1},
-    {x: 10, y: 3},
-    {x: 10, y: 5},
-    {x: 8, y: 5},
-    {x: 3, y: 5},
-    {x: 1, y: 5},
-    {x: 1, y: 8},
-    {x: 1, y: 9},
-    {x: 3, y: 9},
-    {x: 6, y: 9},
-    {x: 10, y: 9},
-    {x: 8, y: 8},
-    {x: 3, y: 3},
-  ];
-
-  const user2_moves: {x: number; y: number}[] = [
-    {x: 1, y: 1},
-    {x: 1, y: 2},
-    {x: 1, y: 3},
-    {x: 1, y: 4},
-    {x: 4, y: 4},
-    {x: 4, y: 3},
-    {x: 4, y: 2},
-  ];
-  const [userMoves, setUserMoves] = useState(user1_moves);
 
   PushNotification.createChannel(
     {
@@ -96,7 +65,6 @@ const Coupons = () => {
 
   const pushNotification = async () => {
     if (nearestCoupons.length > 0) {
-      console.log('There are coupons nearby');
       PushNotification.localNotification({
         /* Android Only Properties */
         channelId: CHANNEL_ID, // (required) channelId, if the channel doesn't exist, notification will not trigger.
@@ -117,7 +85,6 @@ const Coupons = () => {
         number: 10, // (optional) Valid 32 bit integer specified as string. default: none (Cannot be zero)
       });
     } else {
-      console.log('No coupons nearby');
     }
   };
 
@@ -193,30 +160,94 @@ const Coupons = () => {
     fetchCoupons();
   }, []);
 
+  // -------------------------------------------------------This is the main logic for the simulation-------------------------------------------------------
+  const [counter, setCounter] = useState(0);
+  const counterRef = useRef(counter);
+  /**
+   * Represents the moves made by a user for Simulation 1.
+   */
+  const sim1_moves: {x: number; y: number}[] = [
+    {x: 1, y: 1},
+    {x: 3, y: 1},
+    {x: 6, y: 1},
+    {x: 8, y: 1},
+    {x: 10, y: 1},
+    {x: 10, y: 3},
+    {x: 10, y: 5},
+    {x: 8, y: 5},
+    {x: 3, y: 5},
+    {x: 1, y: 5},
+    {x: 1, y: 8},
+    {x: 1, y: 9},
+    {x: 3, y: 9},
+    {x: 6, y: 9},
+    {x: 10, y: 9},
+    {x: 8, y: 8},
+    {x: 3, y: 3},
+  ];
+
+  /**
+   * Represents the moves made by a user for Simulation 2.
+   */
+  const sim2_moves: {x: number; y: number}[] = [
+    {x: 1, y: 1},
+    {x: 1, y: 2},
+    {x: 1, y: 3},
+    {x: 1, y: 4},
+    {x: 4, y: 4},
+    {x: 4, y: 3},
+    {x: 4, y: 2},
+  ];
+
+  const [simMoves, setSimMoves] = useState(sim1_moves);
+
+  useEffect(() => {
+    counterRef.current = counter; // Update the ref whenever counter changes
+    if (counterRef.current >= userMovesRef.current.length) {
+      setSimMoves(
+        userMovesRef.current.length == sim1_moves.length
+          ? sim2_moves
+          : sim1_moves,
+      );
+      console.log('User moves updated');
+    }
+  }, [counter]);
+
+  const userMovesRef = useRef(simMoves);
+
+  useEffect(() => {
+    userMovesRef.current = simMoves;
+    console.log('User Moves:', userMovesRef.current);
+    setCounter(0);
+  }, [simMoves]);
+
   useEffect(() => {
     const interval = setInterval(() => {
-      console.log(userMoves.length);
-      if (counter >= userMoves.length) {
-        console.log('Counter:', counter);
+      console.log('User Length', userMovesRef.current.length);
+      if (counterRef.current >= userMovesRef.current.length) {
+        // Use the ref here
+        console.log('Counter Will stay at:', counterRef.current); // And here
         // Do nothing
       } else {
-        const {x, y} = userMoves[counter];
-        counter = counter + 1;
-        console.log('Counter:');
-        const temp = demo1(x, y);
-        temp.then(result => {
+        const {x, y} = userMovesRef.current[counterRef.current]; // And here
+        console.log('Counter:', counterRef.current); // And here
+        sim(x, y, counterRef.current == 0).then(result => {
           setNearestCoupons(result);
-          console.log('Nearest Coupons results:', result);
-          console.log('Nearest Coupons:', nearestCoupons);
-          pushNotification();
+          setCounter(prevCounter => prevCounter + 1);
         });
       }
-    }, 2000);
+    }, 5000);
 
     return () => {
       clearInterval(interval);
     };
   }, []);
+
+  useEffect(() => {
+    console.log('Nearest Coupons:', nearestCoupons);
+    pushNotification();
+  }, [nearestCoupons]);
+  // -------------------------------------------------------This is the main logic for the simulation-------------------------------------------------------
 
   return (
     <View style={{flex: 1}}>

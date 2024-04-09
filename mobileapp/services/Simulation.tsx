@@ -133,7 +133,6 @@ const findCouponsInRadius = (x: Number, y: Number) => {
 };
 
 const fetchDatabase = async () => {
-  console.log('Fetching database');
   const user = auth.currentUser;
   firebaseBeacons.length = 0;
   nearestCoupons.length = 0;
@@ -201,27 +200,10 @@ const get_distance = (beacon: fireBaseBeacon, x: Number, y: Number) => {
   );
 };
 
-export const demo1 = async (userx: Number, usery: Number) => {
-  await fetchDatabase();
-  // const user1_moves: Coords[] = [];
-  // user1_moves.push(new Coords(1, 1));
-  // user1_moves.push(new Coords(3, 1));
-  // user1_moves.push(new Coords(6, 1));
-  // user1_moves.push(new Coords(8, 1));
-  // user1_moves.push(new Coords(10, 1));
-  // user1_moves.push(new Coords(10, 3));
-  // user1_moves.push(new Coords(10, 5));
-  // user1_moves.push(new Coords(8, 5));
-  // user1_moves.push(new Coords(3, 5));
-  // user1_moves.push(new Coords(1, 5));
-  // user1_moves.push(new Coords(1, 8));
-  // user1_moves.push(new Coords(1, 9));
-  // user1_moves.push(new Coords(3, 9));
-  // user1_moves.push(new Coords(6, 9));
-  // user1_moves.push(new Coords(10, 9));
-  // user1_moves.push(new Coords(8, 8));
-  // user1_moves.push(new Coords(3, 3));
-  // console.log(user1_moves);
+export const sim = async (userx: Number, usery: Number, fetch = false) => {
+  if (fetch) {
+    await fetchDatabase();
+  }
 
   const beacons: Beacon[] = [];
 
@@ -247,7 +229,6 @@ export const demo1 = async (userx: Number, usery: Number) => {
     ),
   );
 
-  console.log('Closest beacons:', beacons);
   const [x, y] = user_moving(beacons);
   const temp = findCouponsInRadius(x, y);
   return temp;
@@ -255,6 +236,6 @@ export const demo1 = async (userx: Number, usery: Number) => {
 
 const user_moving = (beacons: Beacon[]) => {
   const [x, y] = trilateration(beacons);
-  console.log('User moved to:', x, y);
+  console.log('User moved to:', Math.round(x), Math.round(y));
   return [x, y];
 };

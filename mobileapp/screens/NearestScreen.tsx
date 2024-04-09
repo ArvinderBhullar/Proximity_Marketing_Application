@@ -29,7 +29,8 @@ const NearestScreen = ({route}: NearestScreenProps) => {
   const [popupVisible, setPopupVisible] = useState(false);
 
   if (route.params) {
-    let coupons: SimCoupon[] = route.params['nearestCoupons'].map(
+    console.log('routes', route.params['my_coupons']);
+    let coupons: SimCoupon[] = route.params['my_coupons'].map(
       (coupon: SimCoupon) => ({
         ...coupon,
         end: new Date(coupon.end), // convert timestamp back to Date
