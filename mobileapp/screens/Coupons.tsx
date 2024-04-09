@@ -199,7 +199,7 @@ const Coupons = () => {
     {x: 4, y: 2},
   ];
 
-  const [simMoves, setSimMoves] = useState(sim1_moves);
+  const [simMoves, setSimMoves] = useState(sim2_moves);
 
   useEffect(() => {
     counterRef.current = counter; // Update the ref whenever counter changes
@@ -209,7 +209,7 @@ const Coupons = () => {
           ? sim2_moves
           : sim1_moves,
       );
-      console.log('User moves updated');
+      console.log('Sim moves updated');
     }
   }, [counter]);
 
@@ -217,26 +217,22 @@ const Coupons = () => {
 
   useEffect(() => {
     userMovesRef.current = simMoves;
-    console.log('User Moves:', userMovesRef.current);
+    console.log('Sim Moves:', userMovesRef.current);
     setCounter(0);
   }, [simMoves]);
 
   useEffect(() => {
     const interval = setInterval(() => {
-      console.log('User Length', userMovesRef.current.length);
       if (counterRef.current >= userMovesRef.current.length) {
-        // Use the ref here
-        console.log('Counter Will stay at:', counterRef.current); // And here
         // Do nothing
       } else {
-        const {x, y} = userMovesRef.current[counterRef.current]; // And here
-        console.log('Counter:', counterRef.current); // And here
+        const {x, y} = userMovesRef.current[counterRef.current];
         sim(x, y, counterRef.current == 0).then(result => {
           setNearestCoupons(result);
           setCounter(prevCounter => prevCounter + 1);
         });
       }
-    }, 5000);
+    }, 3000);
 
     return () => {
       clearInterval(interval);
