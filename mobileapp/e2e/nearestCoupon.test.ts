@@ -7,6 +7,7 @@ describe('Nearest Coupons', () => {
   beforeAll(async () => {
     await device.launchApp({
       newInstance: true,
+      permissions: {notifications: 'YES'},
       launchArgs: {
         detoxPrintBusyIdleResources: 'YES',
         // Notifications
