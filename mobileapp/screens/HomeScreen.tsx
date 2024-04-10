@@ -9,9 +9,7 @@ import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityI
 import Profile from './Profile';
 import Coupons from './Coupons';
 import SavedCoupons from './SavedCoupons';
-import NearestScreen, {NearestScreenProps} from './NearestScreen';
-import { demo1,demo2,demo3 } from '../services/Simulation';
-import { Button } from 'react-native-paper';
+import NearestScreen from './NearestScreen';
 const Tab = createMaterialBottomTabNavigator();
 
 const HomeScreen = () => {
