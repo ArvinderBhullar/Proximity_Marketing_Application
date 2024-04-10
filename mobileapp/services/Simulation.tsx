@@ -1,12 +1,5 @@
-import React, {useState} from 'react';
-import {View} from 'react-native';
-import {Text, Button} from 'react-native-paper';
-import useBLE, {BLEDevice} from './../services/BLEScan';
 import {auth, db} from '../services/Config';
-import PushNotification from 'react-native-push-notification';
-import {useNavigation} from '@react-navigation/native';
 import {collection, getDocs} from 'firebase/firestore';
-import {close} from 'fs';
 
 export class SimCoupon {
   id: string;
