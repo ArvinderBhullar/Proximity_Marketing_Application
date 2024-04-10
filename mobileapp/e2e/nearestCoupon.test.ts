@@ -31,6 +31,7 @@ describe('Nearest Coupons', () => {
       .withTimeout(5000);
     await element(by.id('loginEmail')).typeText('testmcgrest@gmail.com');
     await element(by.id('loginPassword')).typeText('Ind433ia');
+    await element(by.id('loginPassword')).tapReturnKey();
 
     await waitFor(element(by.id('loginButton')))
       .toBeVisible()
