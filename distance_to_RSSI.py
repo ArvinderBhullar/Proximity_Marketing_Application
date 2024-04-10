@@ -1,7 +1,7 @@
 import math
 
 mp = -47
-N = 2.4
+N = 2.75
 
 
 def DistanceToRSSI(distance):
@@ -14,7 +14,12 @@ def RSSIToDistance(rssi):
 
 
 print("Measured Power = ", mp, ",     N = ", N)
-for i in range(1, 7):
-    rssi = DistanceToRSSI(i)
-    new_d = RSSIToDistance(rssi)
-    print(f"Distance: {i}, RSSI: {rssi}, Distance: {new_d}")
+# for i in range(1, 11):
+#     rssi = DistanceToRSSI(i)
+#     new_d = RSSIToDistance(rssi)distance_to_RSSI.py
+#     print(f"Distance: {i}, RSSI: {rssi}, Distance: {new_d}")
+
+print(RSSIToDistance(-47))
+print(RSSIToDistance(-55))
+print(RSSIToDistance(-68))
+print(RSSIToDistance(-74))
