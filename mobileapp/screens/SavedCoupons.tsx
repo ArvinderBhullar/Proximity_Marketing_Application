@@ -7,7 +7,6 @@ import {
   Modal,
   Paragraph,
   Portal,
-  Searchbar,
   Title,
 } from 'react-native-paper';
 import {auth, db} from '../services/Config';
@@ -19,14 +18,15 @@ import {
   handleUnSaveChipPress,
 } from '../services/couponService';
 
+// FR - 14: Save Coupons
 const SavedCoupons = () => {
   const [savedCoupons, setSavedCoupons] = useState<Coupon[]>([]);
-  const [searchQuery, setSearchQuery] = useState('');
   const [popupVisible, setPopupVisible] = useState(false);
   const [promocode, setPromocode] = useState('');
   const [promoname, setPromoname] = useState('');
   const navigation = useNavigation();
 
+  // FR - 14: 14.1 Coupon display
   const fetchSavedCoupons = async () => {
     try {
       const user = auth.currentUser;
@@ -136,12 +136,6 @@ const SavedCoupons = () => {
           </Card>
         ))}
       </ScrollView>
-      {/*<Searchbar*/}
-      {/*  placeholder="Search"*/}
-      {/*  onChangeText={search => setSearchQuery(search)}*/}
-      {/*  value={searchQuery}*/}
-      {/*  style={{margin: 10}}*/}
-      {/*/>*/}
       <Portal>
         <Modal
           visible={popupVisible}

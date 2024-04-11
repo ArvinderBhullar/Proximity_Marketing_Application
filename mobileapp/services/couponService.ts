@@ -17,6 +17,7 @@ export interface Coupon {
   promocode: string;
 }
 
+// FR - 15: 15.3 Publish redemption to database
 export const handleRedeemChipPress = async (
   couponId: string,
   name: string,
@@ -65,6 +66,7 @@ export const handleRedeemChipPress = async (
   }
 };
 
+// FR - 14: 14.3 Save coupon to database
 export const handleSaveChipPress = async (couponId: string) => {
   // Implementation of handleSaveChipPress function
   try {
@@ -87,6 +89,7 @@ export const handleSaveChipPress = async (couponId: string) => {
   }
 };
 
+// FR - 14: 14.3 Save coupon to database
 export const handleUnSaveChipPress = async (couponId: string) => {
   // Implement logic to unsave the coupon
   try {
@@ -94,7 +97,6 @@ export const handleUnSaveChipPress = async (couponId: string) => {
     if (user) {
       const userId = user.uid;
 
-      // Delete the coupon from the "Saved Coupons" collection
       // Delete the coupon from the "Saved Coupons" collection
       const querySnapshot = await getDocs(
         query(

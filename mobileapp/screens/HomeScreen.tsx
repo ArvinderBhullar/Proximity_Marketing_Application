@@ -12,19 +12,12 @@ import SavedCoupons from './SavedCoupons';
 import NearestScreen from './NearestScreen';
 const Tab = createMaterialBottomTabNavigator();
 
+// FR - 12: 12.1 Landing page
 const HomeScreen = () => {
-  // const navigation = useNavigation();
-  // const auth = getAuth();
-  // var displayName = '';
-  // var uid = '';
 
   onAuthStateChanged(auth, user => {
     if (user) {
-      // User is signed in, see docs for a list of available properties
-      // https://firebase.google.com/docs/reference/js/auth.user
-      // console.log('User email: ', user.email);
-      // uid = user.uid;
-      // displayName = user.displayName;
+      // User is signed in
     } else {
       // User is signed out
     }
