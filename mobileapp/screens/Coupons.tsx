@@ -226,7 +226,6 @@ const Coupons = () => {
   useEffect(() => {
     if (start_Sim) {
       userMovesRef.current = simMoves;
-      console.log('Sim Moves:', userMovesRef.current);
       setCounter(0);
     }
   }, [simMoves]);
