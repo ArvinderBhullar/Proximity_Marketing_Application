@@ -8,6 +8,10 @@ import CouponService from "../services/CouponService";
 import MapService from "../services/MapService";
 import { KonvaEventObject } from "konva/lib/Node";
 
+/**
+ * Represents the MapObject component.
+ * This component displays a map with beacons and coupons.
+ */
 export const MapObject = () => {
   const { user } = useContext(AuthContext);
   const [beacons, setBeacons] = useState<any>([]);
@@ -23,6 +27,9 @@ export const MapObject = () => {
   const [selectedBeacon, setSelectedBeacon] = useState(null);
   const [hoverdId, setHoverId] = useState(null);
 
+  /**
+   * Fetches the list of beacons from the server.
+   */
   const fetchBeacons = async () => {
     const beaconObjs = await BeaconService.fetchBeacons();
     console.log('beacons fetched', beaconObjs)
@@ -41,6 +48,9 @@ export const MapObject = () => {
     );
   };
 
+  /**
+   * Fetches the list of coupons from the server.
+   */
   const fetchCoupons = async () => {
     const couponObjs = await CouponService.fetchCoupons();
     setCoupons(
@@ -52,12 +62,15 @@ export const MapObject = () => {
           userId: coupons.userId,
           id: coupons.id,
           name: coupons.name,
-          // TODO add additonal coupon fieldss
+          // TODO add additional coupon fields
         };
       })
     );
   };
 
+  /**
+   * Fetches the map from the server.
+   */
   const fetchMap = async () => {
     console.log('fetching map')
     const map = await MapService.fetchMap();
@@ -79,8 +92,9 @@ export const MapObject = () => {
     init();
   }, [stageHeight]);
 
-  
-
+  /**
+   * Initializes the component by fetching the map, beacons, and coupons.
+   */
   const init = async () => {
     fetchMap().then(() => { 
       console.log('map fetched')
@@ -90,10 +104,17 @@ export const MapObject = () => {
     });
   }
 
+  /**
+   * Handles the event when the "Add Beacon" button is clicked.
+   */
   const handleAddBeacon = () => {
     setOpen(true);
   };
 
+  /**
+   * Handles the event when a beacon is being dragged.
+   * @param id - The ID of the beacon being dragged.
+   */
   const handleDragStart = (id: string) => {
     setBeacons((prevBeacons) =>
       prevBeacons.map((beacon) =>
@@ -102,6 +123,12 @@ export const MapObject = () => {
     );
   };
 
+  /**
+   * Handles the event when a beacon is dropped after being dragged.
+   * @param beacon - The beacon object being dragged.
+   * @param x - The new X coordinate of the beacon.
+   * @param y - The new Y coordinate of the beacon.
+   */
   const handleDragEnd = (beacon: any, x: number, y: number) => {
     console.log(beacon);
     setBeacons((prevBeacons) =>
@@ -111,8 +138,6 @@ export const MapObject = () => {
           : prevBeacon
       )
     );
-
-
 
     beacons.find((b) => b.id === beacon.id).x = getScaledX(x);
     beacons.find((b) => b.id === beacon.id).y = getScaledY(y);
@@ -127,21 +152,37 @@ export const MapObject = () => {
     });
   };
 
-
+  /**
+   * Scales the X coordinate of a point based on the stage width and map width.
+   * @param x - The X coordinate to scale.
+   * @returns The scaled X coordinate.
+   */
   const getScaledX = (x: number) => {
     return Math.round((x / stageWidth) * width * 2) / 2;
   };
 
+  /**
+   * Scales the Y coordinate of a point based on the stage height and map height.
+   * @param y - The Y coordinate to scale.
+   * @returns The scaled Y coordinate.
+   */
   const getScaledY = (y: number) => {
     return Math.round((y / stageHeight) * height * 2) / 2;
   };
 
+  /**
+   * Handles the event when the dialog is closed.
+   */
   const dialogClosed = () => {
     setOpen(false);
     setSelectedBeacon(null);
     fetchBeacons();
   };
 
+  /**
+   * Handles the event when a beacon is being edited.
+   * @param beacon - The beacon object being edited.
+   */
   const editBeacon = (beacon) => {
     beacon.x = getScaledX(beacon.x);
     beacon.y = getScaledY(beacon.y);
@@ -149,6 +190,9 @@ export const MapObject = () => {
     setOpen(true);
   };
 
+  /**
+   * Saves the map with the updated width and height.
+   */
   const saveMap = async () => {
     setBeacons([]);
     setCoupons([]);
@@ -158,6 +202,11 @@ export const MapObject = () => {
     init();
   };
 
+  /**
+   * Ensures that a beacon stays within the boundaries of the stage.
+   * @param e - The event object.
+   * @param beacon - The beacon object.
+   */
   const boundaries = (e, beacon: any) => {
     if (e.target.x() > stageWidth) {
       e.target.x(stageWidth);
@@ -170,9 +219,6 @@ export const MapObject = () => {
     } else if (e.target.y() < 0) {
       e.target.y(5);
     }
-
-    
-
   };
 
   return (
@@ -215,7 +261,6 @@ export const MapObject = () => {
         width={stageWidth + 100}
         height={stageHeight +10}
         style={{ border: "1px solid black", width: stageWidth }}
-
       >
         <Layer>
           {beacons.map((beacon) => (
@@ -269,13 +314,8 @@ export const MapObject = () => {
                   fontSize={12}
                 />
                 )}
-
-              
-              
             </React.Fragment>
           ))}
-
-          
         </Layer>
       </Stage>
 

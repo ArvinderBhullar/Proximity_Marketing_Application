@@ -9,6 +9,10 @@ import HomeIcon from "@mui/icons-material/Home";
 import { useContext } from "react";
 import { AuthContext } from "../AuthProvider";
 
+/**
+ * Renders the ButtonAppBar component.
+ * @returns The rendered ButtonAppBar component.
+ */
 export default function ButtonAppBar() {
   const { user, logOut } = useContext(AuthContext);
 

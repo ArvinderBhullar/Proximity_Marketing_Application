@@ -3,6 +3,11 @@ import { Box, Button, Link, TextField } from "@mui/material";
 import { AuthContext } from "../AuthProvider";
 import { useNavigate } from "react-router-dom";
 
+
+/**
+ * Represents the login page of the application.
+ * Allows users to log in with their email and password.
+ */
 const Login: React.FC  = () => {
   const navigate = useNavigate();
   const { loginUser, loading, user } = useContext(AuthContext);

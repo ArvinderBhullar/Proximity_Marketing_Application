@@ -25,6 +25,13 @@ interface CouponData {
   y: number;
 }
 
+
+/**
+ * CouponModal component displays a modal for adding or editing a coupon.
+ * @param open - Indicates whether the modal is open or not.
+ * @param onClose - Callback function to close the modal.
+ * @param selectedCoupon - The selected coupon to edit, if any.
+ */
 const CouponModal: React.FC<CouponModalProps> = ({ open, onClose, selectedCoupon }) => {
   const { user } = useContext(AuthContext);
   const [name, setName] = useState("");
@@ -58,7 +65,10 @@ const CouponModal: React.FC<CouponModalProps> = ({ open, onClose, selectedCoupon
 
   }, [open, onClose, selectedCoupon]);
 
-
+  /**
+   * Handles the form submission.
+   * @param event - The form submission event.
+   */
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const form = event.target as HTMLFormElement;
@@ -95,10 +105,16 @@ const CouponModal: React.FC<CouponModalProps> = ({ open, onClose, selectedCoupon
     onClose();
   };
 
+  /**
+   * Handles the delete button click.
+   */
   const handleDelete = async () => {
     setConfirmationOpen(true);
   };
 
+  /**
+   * Confirms the deletion of the selected coupon.
+   */
   const confirmDelete = async () => {
     if (selectedCoupon) {
       try {
@@ -113,6 +129,9 @@ const CouponModal: React.FC<CouponModalProps> = ({ open, onClose, selectedCoupon
     setConfirmationOpen(false);
   };
 
+  /**
+   * Cancels the deletion of the selected coupon.
+   */
   const cancelDelete = () => {
     setConfirmationOpen(false);
   };
