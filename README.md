@@ -19,6 +19,8 @@ To run the mobile application(User facing app):
 1.Once you have installed an emulator, start it
 2. cd into 'mobileapp' folder
 3. Run 'npm install' from the terminal window
-4. Run 'npm start'
-5. Once the service is running, press 'i' to launch app on an iOS emulator or 'a' to launch app on an android emulator.
-6. The app should successfully launch on the specified emulator.
+4. cd into 'ios' folder. Then run 'pod install'.
+5. 'cd ..' into 'mobileapp'
+6. Run 'npm start'
+7. Once the service is running, press 'i' to launch app on an iOS emulator or 'a' to launch app on an android emulator.
+8. The app should successfully launch on the specified emulator.
