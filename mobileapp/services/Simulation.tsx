@@ -77,6 +77,16 @@ class Beacon {
   }
 }
 
+const firebaseBeacons: fireBaseBeacon[] = [];
+const allCoupons: SimCoupon[] = [];
+let nearestCoupons: SimCoupon[] = [];
+export const CHANNEL_ID = 'com.mobileapp.NotifyUserCoupons';
+
+/**
+ * Performs trilateration based on the coordinates and distances of the closest beacons.
+ * @param closestBeacons - An array of Beacon objects representing the closest beacons.
+ * @returns An array containing the x and y coordinates of the trilaterated position.
+ */
 function trilateration(closestBeacons: Beacon[]): [number, number] {
   if (closestBeacons.length < 3) {
     console.log('Not enough beacons to trilaterate');
@@ -109,11 +119,6 @@ function trilateration(closestBeacons: Beacon[]): [number, number] {
   return [x, y];
 }
 
-const firebaseBeacons: fireBaseBeacon[] = [];
-const allCoupons: SimCoupon[] = [];
-let nearestCoupons: SimCoupon[] = [];
-export const CHANNEL_ID = 'com.mobileapp.NotifyUserCoupons';
-
 const findCouponsInRadius = (x: Number, y: Number) => {
   const couponsInRadius = allCoupons.filter(coupon => {
     const distance = Math.sqrt(
@@ -125,10 +130,15 @@ const findCouponsInRadius = (x: Number, y: Number) => {
   return couponsInRadius;
 };
 
+/**
+ * Fetches data from the database and populates the necessary arrays.
+ */
 const fetchDatabase = async () => {
   const user = auth.currentUser;
   firebaseBeacons.length = 0;
   nearestCoupons.length = 0;
+
+  // Fetch beacon data from the 'Beacons' collection
   const beaconQuerySnapshot = await getDocs(collection(db, 'Beacons'));
 
   beaconQuerySnapshot.forEach(doc => {
@@ -139,10 +149,13 @@ const fetchDatabase = async () => {
       );
     }
   });
+
   allCoupons.length = 0;
 
+  // Fetch coupon data from the 'Coupons' collection
   const couponQuerySnapshot = await getDocs(collection(db, 'Coupons'));
   const redemptionsQuerySnapshot = await getDocs(collection(db, 'Redemptions'));
+
   class Redemption {
     userId: string;
     couponId: string;
@@ -154,7 +167,9 @@ const fetchDatabase = async () => {
       this.redeemedAt = redeemedAt;
     }
   }
+
   const tempRedemption: Redemption[] = [];
+
   redemptionsQuerySnapshot.forEach(doc => {
     const data = doc.data();
     tempRedemption.push(
@@ -193,6 +208,13 @@ const get_distance = (beacon: fireBaseBeacon, x: Number, y: Number) => {
   );
 };
 
+/**
+ * Simulates a user's movement and returns coupons found in the vicinity.
+ * @param userx - The x-coordinate of the user's position.
+ * @param usery - The y-coordinate of the user's position.
+ * @param fetch - Indicates whether to fetch data from the database.
+ * @returns An array of coupons found in the vicinity of the user's position.
+ */
 export const sim = async (userx: Number, usery: Number, fetch = false) => {
   if (fetch) {
     await fetchDatabase();
