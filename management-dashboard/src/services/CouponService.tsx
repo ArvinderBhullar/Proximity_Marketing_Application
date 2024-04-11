@@ -1,7 +1,5 @@
 import { db, auth } from "../FirebaseConfig";
 import { collection, addDoc, doc, updateDoc, deleteDoc, query, where, getDocs} from "firebase/firestore";
-import { DocumentReference } from 'firebase/firestore';
-import { useContext } from "react";
 
 
 /**

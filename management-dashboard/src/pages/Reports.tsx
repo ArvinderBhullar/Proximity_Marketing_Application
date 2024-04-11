@@ -1,16 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { Box, TextField } from "@mui/material";
-import {
-  collection,
-  getDocs,
-  query,
-  where,
-  doc,
-  getDoc,
-} from "firebase/firestore";
-import { db } from "../FirebaseConfig";
 import { LineChart } from "@mui/x-charts/LineChart";
 import { BarChart } from "@mui/x-charts/BarChart";
+import  ReportService from "../services/ReportService";
 
 
 /**
@@ -31,25 +23,7 @@ const Reports: React.FC = () => {
       try {
         const endDatePlusOne = new Date(endDate);
         endDatePlusOne.setDate(endDatePlusOne.getDate() + 1);
-
-        const redeemCollectionRef = collection(db, "Redemptions");
-        const q = query(
-          redeemCollectionRef,
-          where("redeemedAt", ">=", startDate),
-          where("redeemedAt", "<=", endDatePlusOne.toISOString())
-        );
-        const querySnapshot = await getDocs(q);
-        const redeemedCoupons = [];
-        querySnapshot.forEach((doc) => {
-          const redeemDoc = doc.data();
-          redeemedCoupons.push({
-            id: doc.id,
-            userId: redeemDoc.userId,
-            couponId: redeemDoc.couponId,
-            redeemedAt: new Date(redeemDoc.redeemedAt).toLocaleDateString(),
-            name: redeemDoc.couponName,
-          });
-        });
+        const redeemedCoupons = await ReportService.fetchRedeemed(startDate, endDatePlusOne.toISOString());
 
         const redeemedCouponsPerDay = redeemedCoupons.reduce((acc, curr) => {
           acc[curr.redeemedAt] = (acc[curr.redeemedAt] || 0) + 1;
