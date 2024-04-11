@@ -28,6 +28,7 @@ interface BeaconData {
 
 /**
  * Represents a modal component for adding or editing a beacon.
+ * Contributes to FR-3, FR-4, FR-5
  * @param open - Indicates whether the modal is open or not.
  * @param onClose - Callback function to handle the close event of the modal.
  * @param selectedBeacon - The selected beacon object to edit, if any.

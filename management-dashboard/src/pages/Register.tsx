@@ -9,6 +9,7 @@ import { db} from "../FirebaseConfig";
  * Register component for user registration.
  * Renders a form for users to register with their organization name, address, email, and password.
  * If the user is already authenticated, redirects to the home page.
+ * Contributes to FR-1
  */
 const Register: React.FC = () => {
   const navigate = useNavigate();

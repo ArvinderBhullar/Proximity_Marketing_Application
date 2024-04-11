@@ -4,8 +4,16 @@ import { DocumentReference } from 'firebase/firestore';
 import { useContext } from "react";
 
 
+/**
+ * Service class for managing coupons.
+ * Contributes to FR-6, FR-7 and FR-8
+ */
 class CouponService {
 
+  /**
+   * Fetches all coupons from the database.
+   * @returns A Promise that resolves to an array of coupons.
+   */
   static async fetchCoupons(): Promise<any> {
     const q = query(
       collection(db, "Coupons"),
@@ -20,7 +28,11 @@ class CouponService {
     });
   };
   
-  // Add a new coupon to the database
+  /**
+   * Adds a new coupon to the database.
+   * @param couponData - The data of the coupon to be added.
+   * @returns A Promise that resolves when the coupon is added successfully.
+   */
   static async addCoupon(couponData: any): Promise<void> {
     try {
       await addDoc(collection(db, "Coupons"),  { ...couponData }); 
@@ -30,7 +42,11 @@ class CouponService {
     }
   }
 
-  // Update a coupon in the database
+  /**
+   * Updates a coupon in the database.
+   * @param coupon - The updated data of the coupon.
+   * @returns A Promise that resolves when the coupon is updated successfully.
+   */
   static async updateCoupon(coupon): Promise<void> {
     try {
       const couponRef = doc(db, "Coupons", coupon.uid);
@@ -41,7 +57,11 @@ class CouponService {
     } 
   }
 
-  // Delete a coupon from the database
+  /**
+   * Deletes a coupon from the database.
+   * @param couponId - The ID of the coupon to be deleted.
+   * @returns A Promise that resolves when the coupon is deleted successfully.
+   */
   static async deleteCoupon(couponId: string): Promise<void> {
     try {
       const couponRef = doc(db, "Coupons", couponId);

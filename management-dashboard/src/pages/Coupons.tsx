@@ -18,33 +18,45 @@ import {
 import CouponModal from "../components/CouponModal";
 import '../App.css';
 
+/**
+ * Coupons component.
+ * Displays a list of coupons and allows users to search, sort, and add coupons.
+ * Contributes to FR-6, FR-7, FR-8
+ */
 const Coupons: React.FC = () => {
   const { user } = useContext(AuthContext);
   const [coupons, setCoupons] = useState([]);
   const [open, setOpen] = React.useState(false);
   const [selectedCoupon, setSelectedCoupon] = useState(null);
   const [searchQuery, setSearchQuery] = useState("");
-  const [sortBy, setSortBy] = useState( "start");
+  const [sortBy, setSortBy] = useState("start");
 
+  /**
+   * Opens the coupon editor dialog with the selected coupon.
+   * @param coupon - The coupon to edit.
+   */
   const editCoupon = (coupon) => {
     console.log("editing", coupon);
-    setSelectedCoupon({ ...coupon});
+    setSelectedCoupon({ ...coupon });
     setOpen(true);
   };
 
+  /**
+   * Fetches the list of coupons from the database.
+   */
   const fetchCoupons = async () => {
     let q = query(
       collection(db, "Coupons"),
       where("userId", "==", doc(db, "Organizations/" + user.uid)),
-        orderBy(sortBy)
+      orderBy(sortBy)
     );
 
     if (searchQuery) {
       q = query(
-          collection(db, "Coupons"),
-          where("userId", "==", doc(db, "Organizations/" + user.uid)),
-          where("name", ">=", searchQuery),
-          where("name", "<=", searchQuery + "\uf8ff")
+        collection(db, "Coupons"),
+        where("userId", "==", doc(db, "Organizations/" + user.uid)),
+        where("name", ">=", searchQuery),
+        where("name", "<=", searchQuery + "\uf8ff")
       );
     }
 
@@ -58,6 +70,9 @@ const Coupons: React.FC = () => {
     setCoupons(coupons);
   };
 
+  /**
+   * Closes the coupon editor dialog and fetches the updated list of coupons.
+   */
   const dialogClosed = () => {
     setOpen(false);
     setSelectedCoupon(null);
@@ -73,21 +88,21 @@ const Coupons: React.FC = () => {
       <h1>Coupons</h1>
 
       <TextField
-          label="Search by Name"
-          variant="outlined"
-          value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value)}
-          sx={{ marginBottom: 2 }}
+        label="Search by Name"
+        variant="outlined"
+        value={searchQuery}
+        onChange={(e) => setSearchQuery(e.target.value)}
+        sx={{ marginBottom: 2 }}
       />
-      <br/>
+      <br />
       <Button
-          variant="contained"
-          color="primary"
-          onClick={() => {
-            setSelectedCoupon(null);
-            setOpen(true);
-          }}
-          sx={{ marginBottom: 2 }}
+        variant="contained"
+        color="primary"
+        onClick={() => {
+          setSelectedCoupon(null);
+          setOpen(true);
+        }}
+        sx={{ marginBottom: 2 }}
       >
         Add Coupon
       </Button>
@@ -98,33 +113,23 @@ const Coupons: React.FC = () => {
             <TableRow>
               <TableCell className={"coupon-header"} onClick={() => setSortBy("name")}>
                 Name
-                {sortBy === "name" && (
-                    <span >▲</span>
-                )}
+                {sortBy === "name" && <span>▲</span>}
               </TableCell>
               <TableCell className={"coupon-header"} onClick={() => setSortBy("description")}>
                 Description
-                {sortBy === "description" && (
-                    <span >▲</span>
-                )}
+                {sortBy === "description" && <span>▲</span>}
               </TableCell>
               <TableCell className={"coupon-header"} onClick={() => setSortBy("promocode")}>
                 Promo Code
-                {sortBy === "promocode" && (
-                    <span >▲</span>
-                )}
+                {sortBy === "promocode" && <span>▲</span>}
               </TableCell>
               <TableCell className={"coupon-header"} onClick={() => setSortBy("start")}>
                 Start Date
-                {sortBy === "start" && (
-                    <span >▲</span>
-                )}
+                {sortBy === "start" && <span>▲</span>}
               </TableCell>
               <TableCell className={"coupon-header"} onClick={() => setSortBy("end")}>
                 End Date
-                {sortBy === "end" && (
-                    <span >▲</span>
-                )}
+                {sortBy === "end" && <span>▲</span>}
               </TableCell>
             </TableRow>
           </TableHead>
@@ -155,7 +160,6 @@ const Coupons: React.FC = () => {
       </TableContainer>
 
       <CouponModal open={open} onClose={() => dialogClosed()} selectedCoupon={selectedCoupon} />
-
     </Box>
   );
 };

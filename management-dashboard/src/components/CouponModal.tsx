@@ -28,6 +28,7 @@ interface CouponData {
 
 /**
  * CouponModal component displays a modal for adding or editing a coupon.
+ * Contributes to FR-6, FR-7, FR-8
  * @param open - Indicates whether the modal is open or not.
  * @param onClose - Callback function to close the modal.
  * @param selectedCoupon - The selected coupon to edit, if any.

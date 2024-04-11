@@ -12,8 +12,10 @@ import { db } from "../FirebaseConfig";
 import { LineChart } from "@mui/x-charts/LineChart";
 import { BarChart } from "@mui/x-charts/BarChart";
 
+
 /**
  * Reports page component.
+ * Contrinutes to FR-9
  */
 const Reports: React.FC = () => {
   const [startDate, setStartDate] = useState("2024-04-01");
@@ -21,10 +23,10 @@ const Reports: React.FC = () => {
   const [redeemData, setRedeemData] = useState([]);
   const [couponCountDict, setCouponCountDict] = useState({});
 
+  /**
+   * Fetches redemption data based on the selected date range.
+   */
   useEffect(() => {
-    /**
-     * Fetches the redemption data based on the selected date range.
-     */
     const fetchRedeemData = async () => {
       try {
         const endDatePlusOne = new Date(endDate);

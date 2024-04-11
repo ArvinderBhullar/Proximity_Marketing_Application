@@ -6,6 +6,7 @@ import { useNavigate } from "react-router-dom";
 
 /**
  * Represents the login page of the application.
+ * Contributes to FR-2
  * Allows users to log in with their email and password.
  */
 const Login: React.FC  = () => {
