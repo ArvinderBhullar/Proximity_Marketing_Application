@@ -5,13 +5,13 @@ import {
   TouchableOpacity,
   View,
   Alert,
-  Button,
 } from 'react-native';
 import React, {useState} from 'react';
 import {getAuth, signInWithEmailAndPassword} from 'firebase/auth';
 import styles from '../cssStyles/styles';
 import {useNavigation} from '@react-navigation/native';
 
+// FR - 11: User Login
 const LoginScreen = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -20,6 +20,7 @@ const LoginScreen = () => {
   const handleSignin = async () => {
     try {
       const auth = getAuth();
+      // FR - 11: 11.2.1 Username and password verification
       signInWithEmailAndPassword(auth, email, password)
         .then(userCredential => {
           // Signed up
@@ -28,6 +29,7 @@ const LoginScreen = () => {
           }
         })
         .catch(error => {
+          // FR - 11: 11.2.2 Error message
           Alert.alert('Login error: ' + error.message);
         });
     } catch (error) {
@@ -35,6 +37,7 @@ const LoginScreen = () => {
     }
   };
 
+  // FR -10: 10.1.1 Registration form redirect
   const handleSignup = async () => {
     // @ts-ignore
     navigation.navigate('Register');
@@ -45,6 +48,7 @@ const LoginScreen = () => {
       <View style={styles.container}>
         <View>
           <Text style={styles.title}>Closetify!</Text>
+          {/*FR - 11: 11.1.1 Login form*/}
           <TextInput
             testID="loginEmail"
             style={styles.input}
@@ -64,6 +68,7 @@ const LoginScreen = () => {
             value={password}
             onChangeText={setPassword}
           />
+          {/*FR - 11: 11.1.2 Username & Password capture*/}
           <TouchableOpacity
             testID="loginButton"
             style={styles.button}

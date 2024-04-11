@@ -12,6 +12,7 @@ import {useNavigation} from '@react-navigation/native';
 import {Alert} from 'react-native';
 // import {saveUserData} from '../services/firebaseDatabase';
 
+// FR - 10: User Registration
 const RegisterScreen = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -22,6 +23,7 @@ const RegisterScreen = () => {
   const handleSignup = async () => {
     try {
       const auth = getAuth();
+      // FR - 10: 10.3.1 Save user to database
       createUserWithEmailAndPassword(auth, email, password)
         .then(userCredential => {
           // Signed up
@@ -30,6 +32,7 @@ const RegisterScreen = () => {
           }
         })
         .catch(error => {
+          // FR - 10: 10.2.3 Error message
           if (error.code === 'auth/email-already-in-use') {
             Alert.alert(
               'Email already in use! Please choose a different email.',
@@ -45,6 +48,7 @@ const RegisterScreen = () => {
 
   const handleLogin = async () => {
     // @ts-ignore
+    // FR - 10: 10.3.2 Redirect to home page
     navigation.navigate('Login');
   };
 
@@ -53,6 +57,7 @@ const RegisterScreen = () => {
       <View style={styles.container}>
         <View>
           <Text style={styles.title}>Welcome</Text>
+          {/*FR - 10: 10.1.2 Demographic information capture*/}
           <TextInput
             testID="firstName"
             style={styles.input}
@@ -69,6 +74,7 @@ const RegisterScreen = () => {
             value={lastname}
             onChangeText={setLastname}
           />
+          {/*FR - 10: 10.1.3 Username & Password capture*/}
           <TextInput
             testID="registerEmail"
             style={styles.input}

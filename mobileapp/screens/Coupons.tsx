@@ -4,7 +4,6 @@ import {
   Card,
   Title,
   Paragraph,
-  Searchbar,
   Chip,
   Text,
   Button,
@@ -33,10 +32,10 @@ let start_Sim = false;
 export const toggleSimulation = () => {
   start_Sim = !start_Sim;
 };
+// FR - 12: 12.2 Coupon display
 const Coupons = () => {
   const [coupons, setCoupons] = useState<DocumentData[]>([]);
   const [nearestCoupons, setNearestCoupons] = useState<SimCoupon[]>([]);
-  const [searchQuery, setSearchQuery] = useState('');
   const [popupVisible, setPopupVisible] = useState(false);
   const [promocode, setPromocode] = useState('');
   const [promoname, setPromoname] = useState('');
@@ -92,6 +91,8 @@ const Coupons = () => {
     }
   };
 
+  // FR - 12: 12.2 Coupon display
+  // FR - 15: 15.1 Coupon display
   const fetchCoupons = async () => {
     try {
       const user = auth.currentUser;
@@ -260,6 +261,7 @@ const Coupons = () => {
   return (
     <View style={{flex: 1}}>
       <ScrollView style={{flex: 1}} testID="couponList">
+        {/*FR - 12: 12.2 Coupon display*/}
         {coupons.map(coupon => (
           <Card key={coupon.id} style={{margin: 10}}>
             <Card.Content>
@@ -275,6 +277,7 @@ const Coupons = () => {
                   justifyContent: 'space-between',
                   marginTop: 10,
                 }}>
+                {/*FR - 14: 14.2 Save button*/}
                 <Chip
                   testID={'save' + coupon.id}
                   icon="heart"
@@ -285,6 +288,7 @@ const Coupons = () => {
                   }}>
                   Save
                 </Chip>
+                {/*FR - 15: 15.2 Coupon redemption*/}
                 <Chip
                   testID={'redeem' + coupon.id}
                   icon="gift"
@@ -307,12 +311,6 @@ const Coupons = () => {
           </Card>
         ))}
       </ScrollView>
-      {/*<Searchbar*/}
-      {/*  placeholder="Search"*/}
-      {/*  onChangeText={search => setSearchQuery(search)}*/}
-      {/*  value={searchQuery}*/}
-      {/*  style={{margin: 10}}*/}
-      {/*/>*/}
       <Portal>
         <Modal
           visible={popupVisible}

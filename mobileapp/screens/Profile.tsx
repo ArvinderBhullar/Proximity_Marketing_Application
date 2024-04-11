@@ -5,6 +5,7 @@ import {auth} from '../services/Config';
 import {Button} from 'react-native-paper';
 import {toggleSimulation} from './Coupons';
 
+// FR - 11: User Login
 const Profile = () => {
   const [buttonText, setButtonText] = useState('Begin');
 

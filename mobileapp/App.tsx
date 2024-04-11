@@ -43,6 +43,7 @@ export default function App() {
   return (
     <NavigationContainer>
       <Stack.Navigator screenOptions={{headerShown: false}}>
+        {/*FR-11: 11.2.3 Redirect to home page*/}
         {user ? (
           <Stack.Screen name="Home" component={HomeScreen} />
         ) : (
