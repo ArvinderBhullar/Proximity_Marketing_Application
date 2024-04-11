@@ -1,7 +1,10 @@
-import { useState } from 'react';
-import { PermissionsAndroid, Platform } from 'react-native';
-import { BleManager, Device } from 'react-native-ble-plx';
-var KalmanFilter = require('kalmanjs')
+// DEPRICATED FILE
+// This service was used to scan for BLE devices and calculate their distance from the device.
+
+import {useState} from 'react';
+import {PermissionsAndroid, Platform} from 'react-native';
+import {BleManager, Device} from 'react-native-ble-plx';
+var KalmanFilter = require('kalmanjs');
 
 type PermissionCallback = (result: boolean) => void;
 
@@ -50,11 +53,11 @@ export class BLEDevice {
   }
 
   getRSSIKalman(): number {
-    console.log('This is kalman 1')
+    console.log('This is kalman 1');
     const kf = new KalmanFilter({R: 0.01, Q: 3});
-    console.log('This is kalman 2')
+    console.log('This is kalman 2');
     const kalmans = this.rssi.map(rssi => kf.filter(rssi));
-    console.log('This is kalman 3', kalmans)
+    console.log('This is kalman 3', kalmans);
     return kalmans[kalmans.length - 1];
   }
 
@@ -115,7 +118,7 @@ export default function useBLE(): BluetoothLowEnergyAPI {
         // if (device) {
         setAllBeacons(prevState => {
           // Checking if its in the list already. If it is, update it, if not, add it.
-          console.log(device.name)
+          console.log(device.name);
           const indexToReplace = prevState.findIndex(
             currentDevice => currentDevice.uuid === device.id,
           );
@@ -134,14 +137,13 @@ export default function useBLE(): BluetoothLowEnergyAPI {
           }
         });
         // Debug
-        console.log('device found stopping scan')
-        bleManager.stopDeviceScan()
+        console.log('device found stopping scan');
+        bleManager.stopDeviceScan();
       }
     });
 
     console.log('Scanning Complete');
   };
-
 
   const deviceScan = (): Promise<number> => {
     return new Promise((resolve, reject) => {
@@ -149,7 +151,7 @@ export default function useBLE(): BluetoothLowEnergyAPI {
         if (error) {
           console.warn('Error scanning');
           resolve(1);
-        } else if (device && device.id === "00:00:00:00:00:05") {
+        } else if (device && device.id === '00:00:00:00:00:05') {
           bleManager.stopDeviceScan();
           console.log('found', device.id);
           console.log('rssi found', device.rssi);
@@ -161,7 +163,7 @@ export default function useBLE(): BluetoothLowEnergyAPI {
 
   const clearDevices = () => {
     setAllBeacons([]);
-    console.log("Beacons Cleared");
+    console.log('Beacons Cleared');
   };
 
   return {
@@ -169,6 +171,6 @@ export default function useBLE(): BluetoothLowEnergyAPI {
     scanForDevices,
     allBeacons,
     clearDevices,
-    deviceScan
+    deviceScan,
   };
 }

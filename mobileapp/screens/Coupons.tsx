@@ -166,6 +166,7 @@ const Coupons = () => {
   }, []);
 
   // -------------------------------------------------------This is the main logic for the simulation-------------------------------------------------------
+  // FR 13 is simulated in this code
   const [counter, setCounter] = useState(0);
   const counterRef = useRef(counter);
   /**
