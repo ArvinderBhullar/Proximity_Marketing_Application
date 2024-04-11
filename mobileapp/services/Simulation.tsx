@@ -244,6 +244,12 @@ export const sim = async (userx: Number, usery: Number, fetch = false) => {
     ),
   );
 
+
+  beacons.forEach(beacon => {
+    console.log(
+      `${beacon.name}: ${Math.round(beacon.rssi)}`,
+    );
+  });
   const [x, y] = user_moving(beacons);
   const temp = findCouponsInRadius(x, y);
   return temp;
