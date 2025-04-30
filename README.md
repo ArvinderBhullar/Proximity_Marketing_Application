@@ -1,4 +1,4 @@
-# ECE493_Group13
+# Proximity Marketing Application
 Closetify Proximity Marketing Solution
 Group Members:
   Anuj Pradeep
