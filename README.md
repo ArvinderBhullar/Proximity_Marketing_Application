@@ -1,7 +1,7 @@
 # Proximity Marketing Application
 Closetify Proximity Marketing Solution
 
-To run the web application(Management Dashboard):
+**To run the web application(Management Dashboard):**
 1. cd into 'management_dashboard' folder
 2. Run 'npm install' from the terminal window
 3. Run 'npm start'
@@ -11,8 +11,8 @@ Before running the mobile application, you would need to install an iOS or Andro
 1. For android: https://reactnative.dev/docs/environment-setup?platform=android
 2. For iOS: https://reactnative.dev/docs/environment-setup?platform=ios&os=macos
 
-To run the mobile application(User facing app):
-1.Once you have installed an emulator, start it
+**To run the mobile application(User facing app):**
+1. Once you have installed an emulator, start it
 2. cd into 'mobileapp' folder
 3. Run 'npm install' from the terminal window
 4. cd into 'ios' folder. Then run 'pod install'.
