@@ -1,9 +1,5 @@
 # Proximity Marketing Application
 Closetify Proximity Marketing Solution
-Group Members:
-  Anuj Pradeep
-  Scott Gebert
-  Arvinder Bhullar
 
 To run the web application(Management Dashboard):
 1. cd into 'management_dashboard' folder
