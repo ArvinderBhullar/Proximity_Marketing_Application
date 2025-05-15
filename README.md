@@ -1,5 +1,5 @@
 # Proximity Marketing Application
-Closetify Proximity Marketing Solution is a project designed to employ BLE beacons to market offers to the users based on their proximity to a promotional item. The solution consists of:
+Closetify Proximity Marketing Solution is a project designed to employ beacons to market offers to the users based on their proximity to a promotional item. The solution consists of:
 1. Management Dashboard: 
 The dashboard helps the store management setup and manage the location of beacons and promotional items in the store. The management dashboard is created as a **React Web App**.
 2. Mobile Application:
